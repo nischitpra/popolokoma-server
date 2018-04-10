@@ -1,0 +1,2 @@
+model_checkpoint_path: "/Users/oyo/Desktop/awesome/express/coins/routes/bin/pythonscript/forecaster/saved_model/stock_rnn_lstm128_step1_input4.model-100"
+all_model_checkpoint_paths: "/Users/oyo/Desktop/awesome/express/coins/routes/bin/pythonscript/forecaster/saved_model/stock_rnn_lstm128_step1_input4.model-100"
