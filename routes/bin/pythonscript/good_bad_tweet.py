@@ -11,6 +11,10 @@ import pickle
 from pymongo import MongoClient
 from bson.objectid import ObjectId
 
+# Mongodb settings
+client = MongoClient()
+client = MongoClient('mongodb://nischit:nischit-root@ds241059.mlab.com:41059/heroku_w06gvgdc')
+db = client.coins
 
 base_path='/Users/oyo/Desktop/awesome/tweets/'
 HISTORY_TYPE=1*60*60*24 #1 day
@@ -69,10 +73,7 @@ def sentiment(timestamp,df):
     proba_df.to_csv(base_path+'dataset/csv/good_bad/filtered/{}_good_bad.csv'.format(timestamp), sep=',', index=False)
     return [proba_df]
 
-# Mongodb settings
-client = MongoClient()
-client = MongoClient('localhost', 27017)
-db = client.coins
+
 
 # Twitter Dataset
 gb_l=list(db.good_bad_tweets.find().sort('_id',1))

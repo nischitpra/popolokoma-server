@@ -10,7 +10,7 @@ from pymongo import MongoClient
 
 # database connection
 client = MongoClient()
-client = MongoClient('localhost', 27017)
+client = MongoClient('mongodb://nischit:nischit-root@ds241059.mlab.com:41059/heroku_w06gvgdc')
 db = client.coins
 
 
