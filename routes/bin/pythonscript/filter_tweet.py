@@ -4,14 +4,13 @@ import pandas as pd
 import numpy as np
 from pprint import pprint
 import re
-from nltk.corpus import stopwords
 from nltk.stem.snowball import EnglishStemmer
 
 base_path='/app/routes/bin/pythonscript'
 
 
 stemmer = EnglishStemmer()
-stop_words = stopwords.words('english')
+stop_words = pickle.load(open('/saved_classifier/stopwords.sav', 'rb'))
 my_stop_words='to and http https com co www'
 stop_words=stop_words+my_stop_words.split()
 
