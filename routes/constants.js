@@ -49,7 +49,7 @@ module.exports = {
 
     },
     id:{
-        params:{ count:'count', from:'f',to:'t',coinName:'coinName',type:'type',exchange:'e',toTime:'tt' },
+        params:{ count:'count', from:'f',to:'t',coinName:'coinName',type:'type',exchange:'e',toTime:'tt',fromTime:'ft' },
         application:{db:'db'},
         database:{
             name:'heroku_w06gvgdc',

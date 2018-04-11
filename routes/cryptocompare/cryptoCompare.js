@@ -26,6 +26,26 @@ router.get('/history', function(req, res, next) {
     )
 });
 
+
+/** search for saved coin pair */
+router.get('/q', function(req, res, next) {
+    var from=req.query[id.params.from]
+    var to=req.query[id.params.to]
+    var exchange=req.query[id.params.exchange]
+    var historyType=parseInt(req.query[id.params.type])
+
+    from=(from==null||from==undefined)?'BTC':from
+    to=(to==null||to==undefined)?'USD':to
+    historyType=isNaN(historyType)?1:historyType
+
+    presenter.getFullPriceHistory(historyType,from,to,(status,data)=>res.json({
+            status:status,
+            message: data
+        })
+    )
+});
+
+
 router.get('/uh',function(req, res, next) {
     const from=req.query[id.params.from]
     const to=req.query[id.params.to]
@@ -82,6 +102,9 @@ router.get('/subs', function(req, res, next) {
     )
 });
 
+
+
+// this is not required anymore.
 /* POST trend dataset. */
 router.post('/exportDataset', function(req, res, next) {
     const trendDataset=req.body[id.cryptocompare.trendData]

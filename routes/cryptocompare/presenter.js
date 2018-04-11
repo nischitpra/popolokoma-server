@@ -6,6 +6,12 @@ const db = require('../database')
 
 
 module.exports={
+    
+    getFullPriceHistory(type,from,to,callback){
+        console.log(id.database.cc.history_from_to_type(from,to,type))
+        db.findManySorted(id.database.cc.history_from_to_type(from,to,type),{},{'time':1},callback)
+    },
+
     getHistory(type,from,to,exchange,fromTime,toTime,callback){
         if(fromTime==null){
             this.getOldHistory(type,from,to,exchange,toTime,callback)
