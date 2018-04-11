@@ -60,14 +60,14 @@ router.get('/ut',function(req, res, next) {
         if(coinName==undefined||coinName==null) symbol="bitcoin"
         service.updateTweetDb(coinName,symbol)
 
-        setInterval(()=>{
-            service.updateGoodBadTweets((status,message)=>{
-                console.log('\n\n\n\x1b[41m\x1b[36m%s\x1b[0m',`good bad service: ${status} ${message}`)
-                service.updateSentimentTrend((status,message)=>{
-                    console.log('\n\n\n\x1b[41m\x1b[36m%s\x1b[0m',`sentiment trend service: ${status} ${message}`)
-                })
-            })
-        },10*60*1000)// 1 hr
+        // setInterval(()=>{
+        //     service.updateGoodBadTweets((status,message)=>{
+        //         console.log('\n\n\n\x1b[41m\x1b[36m%s\x1b[0m',`good bad service: ${status} ${message}`)
+        //         service.updateSentimentTrend((status,message)=>{
+        //             console.log('\n\n\n\x1b[41m\x1b[36m%s\x1b[0m',`sentiment trend service: ${status} ${message}`)
+        //         })
+        //     })
+        // },10*60*1000)// 1 hr
 
 
     }else if(locked){
