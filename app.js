@@ -7,7 +7,7 @@ var bodyParser = require('body-parser');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
-var cryptoCompare = require('./routes/CryptoCompare/cryptoCompare')
+var cryptoCompare = require('./routes/cryptocompare/cryptoCompare')
 var twitter = require('./routes/twitter/twitter')
 var news = require('./routes/news/news')
 var mailer = require('./routes/mailer/mailer')
