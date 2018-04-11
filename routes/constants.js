@@ -13,7 +13,7 @@ module.exports = {
     },
     files:{
         python:{
-            compiler:'python',
+            compiler:'python3.6',
             sentimentTrend:`pythonscript/sentiment_trend.py`,
             filterTweet:`pythonscript/filter_tweet.py`,
             goodBadTweet:`pythonscript/good_bad_tweet.py`,
