@@ -11,7 +11,8 @@ from pymongo import MongoClient
 # database connection
 client = MongoClient()
 client = MongoClient('mongodb://heroku_w06gvgdc:39i4hl2t7g5fqejfb07jbb9gf4@ds241059.mlab.com:41059/heroku_w06gvgdc')
-db = client.coins
+db_name="heroku_w06gvgdc"
+db = client[db_name]
 
 
 

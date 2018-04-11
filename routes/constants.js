@@ -13,13 +13,13 @@ module.exports = {
     },
     files:{
         python:{
-            compiler:'/usr/local/Cellar/python/3.6.4_2/bin/python3.6',
+            compiler:'python',
             sentimentTrend:`pythonscript/sentiment_trend.py`,
             filterTweet:`pythonscript/filter_tweet.py`,
             goodBadTweet:`pythonscript/good_bad_tweet.py`,
             forecaster:`pythonscript/forecaster/model.py`,
         },
-        buildPath:(pathFromBin)=>`/Users/oyo/Desktop/awesome/express/coins/routes/bin/${pathFromBin}`,
+        buildPath:(pathFromBin)=>`/app/routes/bin/${pathFromBin}`,
     },
 
     values:{
@@ -44,7 +44,7 @@ module.exports = {
             error:'error',
         },
         mailer:{
-            server:{name:'Gmail',email:'nischitpra@gmail.com',password:'Applebob123'},
+            server:{name:'Gmail',email:'popolokoma@gmail.com',password:'weRock123'},
         }
 
     },
@@ -52,7 +52,7 @@ module.exports = {
         params:{ count:'count', from:'f',to:'t',coinName:'coinName',type:'type',exchange:'e',toTime:'tt' },
         application:{db:'db'},
         database:{
-            name:'coins',
+            name:'heroku_w06gvgdc',
             collection:{
                 otp:'otp',
                 subscribed:'subscribed',
