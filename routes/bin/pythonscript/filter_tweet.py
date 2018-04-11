@@ -10,7 +10,7 @@ base_path='/app/routes/bin/pythonscript'
 
 
 stemmer = EnglishStemmer()
-stop_words = pickle.load(open('/saved_classifier/stopwords.sav', 'rb'))
+stop_words = pickle.load(open(base_path+'/saved_classifier/stopwords.sav', 'rb'))
 my_stop_words='to and http https com co www'
 stop_words=stop_words+my_stop_words.split()
 
