@@ -7,7 +7,7 @@ base_path='/Users/oyo/Desktop/awesome/tweets/'
 window_size=60*60 # per hour
 
 client = MongoClient()
-client = MongoClient('mongodb://nischit:nischit-root@ds241059.mlab.com:41059/heroku_w06gvgdc')
+client = MongoClient('mongodb://heroku_w06gvgdc:39i4hl2t7g5fqejfb07jbb9gf4@ds241059.mlab.com:41059/heroku_w06gvgdc')
 db = client.coins
 
 # Loading data and preparation

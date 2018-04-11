@@ -9,7 +9,7 @@ module.exports = {
         searchTweet:(name,symbol)=>`https://api.twitter.com/1.1/search/tweets.json?q=${name}%20${symbol}%20crypto%blockchain&result_type=mixed`,
         
         subscribeOtp:(email,from,to,otp)=>`http://localhost:3001/mailer/subscribe/validate?email=${email}&from=${from}&to=${to}&otp=${otp}`,
-        database:`mongodb://nischit:nischit-root@ds241059.mlab.com:41059/heroku_w06gvgdc`,
+        database:`mongodb://heroku_w06gvgdc:39i4hl2t7g5fqejfb07jbb9gf4@ds241059.mlab.com:41059/heroku_w06gvgdc`,
     },
     files:{
         python:{
