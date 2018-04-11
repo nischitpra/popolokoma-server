@@ -154,6 +154,7 @@ module.exports = {
         },
         inserted:(count)=>`${count} items added!`,
         functionLocked:`Function Locked! An instance of the function is already running.`,
+        feature_comming_soon:`Feature comming soon`,
     },
 }
 
