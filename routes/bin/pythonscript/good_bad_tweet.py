@@ -79,11 +79,9 @@ gb_l=list(db.good_bad_tweets.find().sort('_id',1))
 record_exists=len(gb_l)>0
 
 if record_exists:
-    print('old record exists')
     last_id=gb_l[-1]['_id']
     main_df=pd.DataFrame(list(db.tweets.find({'_id': {'$gt': ObjectId(last_id)}}).sort('_id',1)))
 else:
-    print('fresh start')
     main_df=pd.DataFrame(list(db.tweets.find().sort('_id',1)))
     
 if main_df.empty:
@@ -91,7 +89,6 @@ if main_df.empty:
     sys.exit()
     
 main_df=main_df.drop_duplicates(subset=['_id'], keep='first')
-print('{} many tweets found'.format(main_df.shape[0]))
 
 
 tweet_dataset=main_df[['_id','text','created_at']].copy()
@@ -108,7 +105,6 @@ current_date=tweet_df['timestamp'].iloc[0]
 last_date=tweet_df['timestamp'].iloc[-1]
 step=HISTORY_TYPE
 
-print('current: {} last: {}'.format(current_date,last_date))
 
 final_proba_df=pd.DataFrame()
 

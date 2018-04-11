@@ -166,8 +166,6 @@ class LstmRNN(object):
                     train_loss, _, train_merged_sum = self.sess.run(
                         [self.loss, self.optim, self.merged_sum], train_data_feed)
                     test_loss, test_pred = self.sess.run([self.loss_test, self.pred], test_data_feed)
-                    # print("Step:%d [Epoch:%d] [Learning rate: %.6f] train_loss:%.6f test_loss:%.6f", global_step, epoch,
-                        #   learning_rate, train_loss, test_loss)
 
 
         final_pred, final_loss = self.sess.run([self.pred, self.loss], test_data_feed)
@@ -210,7 +208,6 @@ class LstmRNN(object):
 
     def load(self,predict_X):
         ckpt = tf.train.get_checkpoint_state(base_path_nhuche+"/forecaster/saved_model")
-        # print ('checkpoint: ',ckpt)        
         if ckpt and ckpt.model_checkpoint_path:
             ckpt_name = os.path.basename(ckpt.model_checkpoint_path)
             self.saver.restore(self.sess, os.path.join(base_path_nhuche+"/forecaster/saved_model", ckpt_name))
