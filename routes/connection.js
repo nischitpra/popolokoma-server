@@ -108,10 +108,7 @@ module.exports={
         client.stream('statuses/filter', {track: `${symbol}`},  function(stream) {
             stream.on('data', function(tweet) {
                 bufferTweets.push(tweet)
-                console.log(bufferTweets.length);
-                console.log(tweet.text)
                 if(bufferTweets.length>50){
-                    console.log('--------------===========-------------')
                     callback(bufferTweets)
                     bufferTweets=[]
                 }
