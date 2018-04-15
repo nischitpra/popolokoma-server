@@ -23,7 +23,7 @@ if len(last_insert)>0:
                                              'as': "tweet"
                                          }},
                                          {'$sort':{'timestamp':1}},
-                                         { '$limit' : 5000 },
+                                         { '$limit' : 20000 },
                                         ],allowDiskUse=True)
     m_df=pd.DataFrame(list(cursor))
 else:
