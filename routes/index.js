@@ -1,4 +1,3 @@
-var news = require('./News/news')
 var express = require('express');
 var router = express.Router();
 const id=require('./constants').id
