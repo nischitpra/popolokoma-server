@@ -27,7 +27,7 @@ if len(last_insert)>0:
                                         ],allowDiskUse=True)
     m_df=pd.DataFrame(list(cursor))
 else:
-    m_df=pd.DataFrame(list(db.good_bad_tweets.find().sort('timestamp',1).limit(2500)))
+    m_df=pd.DataFrame(list(db.good_bad_tweets.find().sort('timestamp',1).limit(20000)))
 
 if m_df.empty:
     print("no good bad tweets found")
