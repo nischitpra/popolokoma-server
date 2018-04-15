@@ -7,11 +7,11 @@ import re
 from nltk.corpus import stopwords
 from nltk.stem.snowball import EnglishStemmer
 
-base_path='/Users/oyo/Desktop/awesome/tweets/'
+base_path='/app/routes/bin/pythonscript'
 
 
 stemmer = EnglishStemmer()
-stop_words = stopwords.words('english')
+stop_words = pickle.load(open(base_path+'/saved_classifier/stopwords.sav', 'rb'))
 my_stop_words='to and http https com co www'
 stop_words=stop_words+my_stop_words.split()
 

@@ -6,7 +6,7 @@ import time
 import tensorflow as tf
 import matplotlib.pyplot as plt
 
-base_path_nhuche="/Users/oyo/Desktop/awesome/express/coins/routes/bin/pythonscript/"
+base_path_nhuche='/app/routes/bin/pythonscript'
 base_path_pandu="C:\\Users\\SHYAM\\OneDrive\\UBUNTU LATEST BACKUP\\"
 
 class LstmRNN(object):
@@ -168,17 +168,6 @@ class LstmRNN(object):
                     test_loss, test_pred = self.sess.run([self.loss_test, self.pred], test_data_feed)
                     # print("Step:%d [Epoch:%d] [Learning rate: %.6f] train_loss:%.6f test_loss:%.6f", global_step, epoch,
                         #   learning_rate, train_loss, test_loss)
-        fig = plt.figure(figsize=(100, 50), facecolor='white')
-        plt.subplot(2, 2, 1)
-        plt.plot(dates, merged_test_y, 'blue')
-        plt.plot(dates, test_pred, 'red')
-        plt.subplot(2, 2, 2)
-        plt.plot(dates, merged_test_y, 'blue')
-        plt.subplot(2, 2, 3)
-        plt.plot(dates, test_pred, 'red')
-        plt.xlabel("day")
-        plt.ylabel("normalized price")
-        plt.savefig(base_path_nhuche+"image_model_trial.png", format='png', bbox_inches='tight')
         #plt.show()
 
 
