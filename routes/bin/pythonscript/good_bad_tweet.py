@@ -81,9 +81,9 @@ record_exists=len(gb_l)>0
 
 if record_exists:
     last_id=gb_l[-1]['_id']
-    main_df=pd.DataFrame(list(db.tweets.find({'_id': {'$gt': ObjectId(last_id)}}).sort('_id',1).limit(5000)))
+    main_df=pd.DataFrame(list(db.tweets.find({'_id': {'$gt': ObjectId(last_id)}}).sort('_id',1).limit(2500)))
 else:
-    main_df=pd.DataFrame(list(db.tweets.find().sort('_id',1).limit(5000)))
+    main_df=pd.DataFrame(list(db.tweets.find().sort('_id',1).limit(2500)))
     
 if main_df.empty:
     print('no values to process')
