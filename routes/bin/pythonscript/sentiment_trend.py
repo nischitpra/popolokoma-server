@@ -78,7 +78,7 @@ for i in range(df.shape[0]):
 
 
 if not senti_df.empty:
-    db.sentiment_trend.insert_many(senti_df.to_dict(orient='records'))
+    db.sentiment_trend.insert_many(senti_df.to_dict(orient='records'),ordered=False
     print('{} rows added'.format(senti_df.shape[0]))
 else:
     print('no rows filtered')

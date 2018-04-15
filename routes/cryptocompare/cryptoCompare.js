@@ -102,27 +102,27 @@ router.get('/subs', function(req, res, next) {
     )
 });
 
-/** candle stick data from binance */
-router.get('/ucs', function(req, res, next) {
-    var from=req.query[id.params.from]
-    var to=req.query[id.params.to]
-    var interval=req.query[id.params.type]
-    var fromTime=req.query[id.params.fromTime]
-    var toTime=req.query[id.params.toTime]
-    var isNew=req.query[id.params.isNew]
+// /** candle stick data from binance */
+// router.get('/ucs', function(req, res, next) {
+//     var from=req.query[id.params.from]
+//     var to=req.query[id.params.to]
+//     var interval=req.query[id.params.type]
+//     var fromTime=req.query[id.params.fromTime]
+//     var toTime=req.query[id.params.toTime]
+//     var isNew=req.query[id.params.isNew]
 
-    from=(from==undefined||from==null)?'XRP':from
-    to=(to==undefined||to==null)?'BTC':to
-    interval=(interval==undefined||interval==null)?'1h':interval
-    isNew=(isNew==undefined||isNew==null)?'true':isNew
-    isNew=(isNew.toLowerCase()=='true')
+//     from=(from==undefined||from==null)?'XRP':from
+//     to=(to==undefined||to==null)?'BTC':to
+//     interval=(interval==undefined||interval==null)?'1h':interval
+//     isNew=(isNew==undefined||isNew==null)?'true':isNew
+//     isNew=(isNew.toLowerCase()=='true')
 
-    presenter.updateCandleStick(from,to,interval,isNew,(status,data)=>res.json({
-            status:status,
-            message: data,
-        })
-    )
-});
+//     presenter.updateCandleStick(from,to,interval,isNew,(status,data)=>res.json({
+//             status:status,
+//             message: data,
+//         })
+//     )
+// });
 /** get candle stick data from db */
 router.get('/gcs', function(req, res, next) {
     var from=req.query[id.params.from]

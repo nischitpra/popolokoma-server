@@ -116,7 +116,7 @@ for time_milli in range(current_date,last_date+step,step):
 
 if not final_proba_df.empty:
     final_proba_df=final_proba_df.drop_duplicates(['_id'],keep='first')
-    db.good_bad_tweets.initialize_unordered_bulk_op().insert_many(final_proba_df.to_dict(orient='records'))
+    db.good_bad_tweets.insert_many(final_proba_df.to_dict(orient='records'),ordered=False)
     print('{} rows filtered'.format(final_proba_df.shape[0]))
 else:
     print('no rows filtered')
