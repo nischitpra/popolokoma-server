@@ -29,37 +29,37 @@ router.get('/history', function(req, res, next) {
 });
 
 /** search for saved coin pair */
-router.get('/q', function(req, res, next) {
-    var from=req.query[id.params.from]
-    var to=req.query[id.params.to]
-    var exchange=req.query[id.params.exchange]
-    var historyType=parseInt(req.query[id.params.type])
+// router.get('/q', function(req, res, next) {
+//     var from=req.query[id.params.from]
+//     var to=req.query[id.params.to]
+//     var exchange=req.query[id.params.exchange]
+//     var historyType=parseInt(req.query[id.params.type])
 
-    from=(from==null||from==undefined)?'BTC':from
-    to=(to==null||to==undefined)?'USD':to
-    historyType=isNaN(historyType)?1:historyType
+//     from=(from==null||from==undefined)?'BTC':from
+//     to=(to==null||to==undefined)?'USD':to
+//     historyType=isNaN(historyType)?1:historyType
 
-    presenter.getFullPriceHistory(historyType,from,to,(status,data)=>res.json({
-            status:status,
-            message: data
-        })
-    )
-});
+//     presenter.getFullPriceHistory(historyType,from,to,(status,data)=>res.json({
+//             status:status,
+//             message: data
+//         })
+//     )
+// });
 
-router.get('/uh',function(req, res, next) {
-    const from=req.query[id.params.from]
-    const to=req.query[id.params.to]
-    const exchange=req.query[id.params.exchange]
-    const type=parseInt(req.query[id.params.type])
-    var toTime=req.query[id.params.toTime]
+// router.get('/uh',function(req, res, next) {
+//     const from=req.query[id.params.from]
+//     const to=req.query[id.params.to]
+//     const exchange=req.query[id.params.exchange]
+//     const type=parseInt(req.query[id.params.type])
+//     var toTime=req.query[id.params.toTime]
 
-    presenter.getHistoryStartTime(id.database.cc.history_from_to_type(from,to,type),(status,toTime)=>{
-        service.insertHistory(type,from,to,exchange,toTime,(status,message)=>res.json({
-            status:status,
-            message: message
-        }))
-    })
-});
+//     presenter.getHistoryStartTime(id.database.cc.history_from_to_type(from,to,type),(status,toTime)=>{
+//         service.insertHistory(type,from,to,exchange,toTime,(status,message)=>res.json({
+//             status:status,
+//             message: message
+//         }))
+//     })
+// });
 
 
 /* GET favourites. */
@@ -114,7 +114,7 @@ router.get('/ucs', function(req, res, next) {
     from=(from==undefined||from==null)?'XRP':from
     to=(to==undefined||to==null)?'BTC':to
     interval=(interval==undefined||interval==null)?'1h':interval
-    isNew=(isNew==undefined||isNew==null)?true:isNew
+    isNew=(isNew==undefined||isNew==null)?'true':isNew
     isNew=(isNew.toLowerCase()=='true')
 
     presenter.updateCandleStick(from,to,interval,isNew,(status,data)=>res.json({
@@ -137,7 +137,7 @@ router.get('/gcs', function(req, res, next) {
     interval=(interval==undefined||interval==null)?'1h':interval
     fromTime=(fromTime==undefined||fromTime==null)?new Date().getTime()-1000*60*60*500:fromTime
     toTime=(toTime==undefined||toTime==null)?new Date().getTime():toTime
-    isNew=(isNew==undefined||isNew==null)?true:isNew
+    isNew=(isNew==undefined||isNew==null)?'true':isNew
     isNew=isNew=='true'
 
 
