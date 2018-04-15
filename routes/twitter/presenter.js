@@ -97,6 +97,6 @@ module.exports={
         db.findManySorted(id.database.collection.sentimentTrend,{},{'time':1},(status,data)=>{
             callback(status,data)
         })
-    }
+    },
     
 }

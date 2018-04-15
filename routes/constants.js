@@ -8,8 +8,15 @@ module.exports = {
         cryptocompareWebSocket:`https://streamer.cryptocompare.com/`,
         searchTweet:(name,symbol)=>`https://api.twitter.com/1.1/search/tweets.json?q=${name}%20${symbol}%20crypto%blockchain&result_type=mixed`,
         
+        binance:{
+            ticker24h:(from,to)=>`https://api.binance.com/api/v1/ticker/24hr?symbol=${from}${to}`,
+            ticker24hAll:`https://api.binance.com/api/v1/ticker/24hr`,
+            candleStick:(from,to,interval,fromTime,toTime)=>`https://api.binance.com/api/v1/klines?symbol=${from}${to}&interval=${interval}&startTime=${fromTime}&endTime=${toTime}`,
+
+        },
+
         subscribeOtp:(email,from,to,otp)=>`http://localhost:3001/mailer/subscribe/validate?email=${email}&from=${from}&to=${to}&otp=${otp}`,
-        database:`mongodb://heroku_w06gvgdc:39i4hl2t7g5fqejfb07jbb9gf4@ds241059.mlab.com:41059/heroku_w06gvgdc`,
+        database:`mongodb://localhost:27017/`,
     },
     files:{
         python:{
@@ -18,6 +25,9 @@ module.exports = {
             filterTweet:`pythonscript/filter_tweet.py`,
             goodBadTweet:`pythonscript/good_bad_tweet.py`,
             forecaster:`pythonscript/forecaster/model.py`,
+            binance:{
+                candlestick:`pythonscript/binance/candlestick.py`
+            },
         },
         buildPath:(pathFromBin)=>`/app/routes/bin/${pathFromBin}`,
     },
@@ -45,11 +55,68 @@ module.exports = {
         },
         mailer:{
             server:{name:'Gmail',email:'popolokoma@gmail.com',password:'weRock123'},
-        }
-
+        },
+        binance:{
+            candle_interval:{   
+                _1m:'1m', //minute
+                _3m:'3m',
+                _5m:'5m',
+                _15m:'15m',
+                _30m:'30m',
+                _1h:'1h',  //hour
+                _2h:'2h',
+                _4h:'4h',
+                _6h:'6h',
+                _8h:'8h',
+                _12h:'12h',
+                _1d:'1d', //day
+                _3d:'3d',
+                _1w:'1w',
+                _1M:'1M', //month
+            }, candle_interval_milliseconds:{   
+                _1m:1000*60*1, //minute
+                _3m:1000*60*3,
+                _5m:1000*60*5,
+                _15m:1000*60*15,
+                _30m:1000*60*30,
+                _1h:1000*60*60*1,  //hour
+                _2h:1000*60*60*2,
+                _4h:1000*60*60*4,
+                _6h:1000*60*60*6,
+                _8h:1000*60*60*8,
+                _12h:1000*60*60*12,
+                _1d:1000*60*60*24*1, //day
+                _3d:1000*60*60*24*3,
+                _1w:1000*60*60*24*7, //week
+                _1M:1000*60*60*24*30, //month
+            }
+        },
     },
     id:{
-        params:{ count:'count', from:'f',to:'t',coinName:'coinName',type:'type',exchange:'e',toTime:'tt',fromTime:'ft' },
+        params:{ 
+            count:'count', 
+            from:'f',
+            to:'t',
+            coinName:'coinName',
+            type:'type',
+            exchange:'e',
+            toTime:'tt',
+            fromTime:'ft',
+            isNew:'n'
+        },
+        binance:{
+            id:'_id',
+            open:'open',
+            high:'high',
+            low:'low',
+            close:'close',
+            volume:'volume',
+            close_time:'close_time',
+            quote_asset_volume:'quote_asset_volume',
+            number_of_trades:'number_of_trades',
+            taker_buy_base_asset_volume:'taker_buy_base_asset_volume',
+            taker_buy_quote_asset_volume:'taker_buy_quote_asset_volume',
+        },
         application:{db:'db'},
         database:{
             name:'heroku_w06gvgdc',
@@ -61,6 +128,9 @@ module.exports = {
                 sentimentTrend:'sentiment_trend',
                 history:'history',
                 forecast:'forecast',
+                dump:{
+                    candlestick:'candlestick_dump'
+                },
             },
             email:'email',
             from:'from',
@@ -74,6 +144,7 @@ module.exports = {
                 history_from_to_type:(from,to,type)=>`${from}_${to}_${type}`,
             
             },
+            
         },
         news:{everything:0,headlines:1,articles:'articles'},
         cryptocompare:{
@@ -141,6 +212,7 @@ module.exports = {
             unsubscribedMessage:(from,to)=>`You have unsubscribed email alerts for ${from}:${to}`,
             requestSubscription:`Verification for subscription`,
             
+            
         },
         database:{
             insert:{
@@ -154,7 +226,7 @@ module.exports = {
         },
         inserted:(count)=>`${count} items added!`,
         functionLocked:`Function Locked! An instance of the function is already running.`,
-        feature_comming_soon:`Feature comming soon`,
+        
     },
 }
 

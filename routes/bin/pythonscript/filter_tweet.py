@@ -4,13 +4,14 @@ import pandas as pd
 import numpy as np
 from pprint import pprint
 import re
+from nltk.corpus import stopwords
 from nltk.stem.snowball import EnglishStemmer
 
-base_path='/app/routes/bin/pythonscript'
+base_path='/Users/oyo/Desktop/awesome/tweets/'
 
 
 stemmer = EnglishStemmer()
-stop_words = pickle.load(open(base_path+'/saved_classifier/stopwords.sav', 'rb'))
+stop_words = stopwords.words('english')
 my_stop_words='to and http https com co www'
 stop_words=stop_words+my_stop_words.split()
 
@@ -26,7 +27,7 @@ def preprocess(_df):
     _df['text']=_df['text'].apply(lambda tweet:stemmer.stem(tweet.strip()))
     return _df
 
-classifier = pickle.load(open(base_path+'/saved_classifier/filter_model.sav', 'rb'))
+classifier = pickle.load(open(base_path+'saved_classifier/filter_model.sav', 'rb'))
 df=pd.read_json(sys.argv[1],encoding = 'utf8')
 
 p_df=preprocess(df.copy())

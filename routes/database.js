@@ -44,7 +44,7 @@ module.exports={
         MongoClient.connect(network.database,(err, db)=>{
             if (err) throw err;
             var dbo = db.db(id.database.name);
-            dbo.collection(collection).insertMany(value, (err, res)=>{
+            dbo.collection(collection).insertMany(value, {ordered:false},(err, res)=>{
                 if (err) {
                     callback(values.status.error,string.someWrong)
                     throw err;
@@ -56,6 +56,7 @@ module.exports={
             });
         })
     },
+
     findOne(collection,query,callback){
         MongoClient.connect(network.database,(err, db)=>{
             if (err) throw err;
@@ -94,6 +95,8 @@ module.exports={
                     callback(values.status.error,string.someWrong)
                     throw err;
                 }
+
+                console.log(`db.${collection}.find(${JSON.stringify(query)}).sort(${JSON.stringify(sortQuery)})`)
                 callback(values.status.ok,result)
                 db.close();
             });

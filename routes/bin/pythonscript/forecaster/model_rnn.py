@@ -6,7 +6,7 @@ import time
 import tensorflow as tf
 import matplotlib.pyplot as plt
 
-base_path_nhuche='/app/routes/bin/pythonscript'
+base_path_nhuche="/Users/oyo/Desktop/awesome/express/coins/routes/bin/pythonscript/"
 base_path_pandu="C:\\Users\\SHYAM\\OneDrive\\UBUNTU LATEST BACKUP\\"
 
 class LstmRNN(object):
@@ -166,6 +166,20 @@ class LstmRNN(object):
                     train_loss, _, train_merged_sum = self.sess.run(
                         [self.loss, self.optim, self.merged_sum], train_data_feed)
                     test_loss, test_pred = self.sess.run([self.loss_test, self.pred], test_data_feed)
+                    # print("Step:%d [Epoch:%d] [Learning rate: %.6f] train_loss:%.6f test_loss:%.6f", global_step, epoch,
+                        #   learning_rate, train_loss, test_loss)
+        fig = plt.figure(figsize=(100, 50), facecolor='white')
+        plt.subplot(2, 2, 1)
+        plt.plot(dates, merged_test_y, 'blue')
+        plt.plot(dates, test_pred, 'red')
+        plt.subplot(2, 2, 2)
+        plt.plot(dates, merged_test_y, 'blue')
+        plt.subplot(2, 2, 3)
+        plt.plot(dates, test_pred, 'red')
+        plt.xlabel("day")
+        plt.ylabel("normalized price")
+        plt.savefig(base_path_nhuche+"image_model_trial.png", format='png', bbox_inches='tight')
+        #plt.show()
 
 
         final_pred, final_loss = self.sess.run([self.pred, self.loss], test_data_feed)
@@ -202,15 +216,16 @@ class LstmRNN(object):
         model_name = self.model_name + ".model"
         self.saver.save(
             self.sess,
-            os.path.join(base_path_nhuche+"/forecaster/saved_model", model_name),
+            os.path.join(base_path_nhuche+"forecaster/saved_model", model_name),
             global_step=step
         )
 
     def load(self,predict_X):
-        ckpt = tf.train.get_checkpoint_state(base_path_nhuche+"/forecaster/saved_model")
+        ckpt = tf.train.get_checkpoint_state(base_path_nhuche+"forecaster/saved_model")
+        # print ('checkpoint: ',ckpt)        
         if ckpt and ckpt.model_checkpoint_path:
             ckpt_name = os.path.basename(ckpt.model_checkpoint_path)
-            self.saver.restore(self.sess, os.path.join(base_path_nhuche+"/forecaster/saved_model", ckpt_name))
+            self.saver.restore(self.sess, os.path.join(base_path_nhuche+"forecaster/saved_model", ckpt_name))
             counter = int(next(re.finditer("(\d+)(?!.*\d)", ckpt_name)).group(0))
             predict_X = predict_X.reshape(predict_X.shape[0],1,predict_X.shape[1])
             pred_feed_dict = {
@@ -226,4 +241,21 @@ class LstmRNN(object):
     def plot_samples(self, preds, targets, figname, stock_sym=None, multiplier=5):
         def _flatten(seq):
             return np.array([x for y in seq for x in y])
-      
+        truths = _flatten(targets)[-200:]
+        preds = (_flatten(preds) * multiplier)[-200:]
+        days = range(len(truths))[-200:]
+
+        plt.figure(figsize=(12, 6))
+        plt.plot(days, truths, label='truth')
+        plt.plot(days, preds, label='pred')
+        plt.legend(loc='upper left', frameon=False)
+        plt.xlabel("day")
+        plt.ylabel("normalized price")
+        plt.ylim((min(truths), max(truths)))
+        plt.grid(ls='--')
+
+        if stock_sym:
+            plt.title(stock_sym + " | Last %d days in test" % len(truths))
+
+        plt.savefig(figname, format='png', bbox_inches='tight', transparent=True)
+        plt.close()

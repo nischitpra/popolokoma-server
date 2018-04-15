@@ -5,23 +5,19 @@ import numpy as np
 import math
 from datetime import datetime
 import re
+from nltk.corpus import stopwords
 from nltk.stem.snowball import EnglishStemmer
 import pickle
 from pymongo import MongoClient
 from bson.objectid import ObjectId
 
-# Mongodb settings
-client = MongoClient()
-client = MongoClient('mongodb://heroku_w06gvgdc:39i4hl2t7g5fqejfb07jbb9gf4@ds241059.mlab.com:41059/heroku_w06gvgdc')
-db_name = 'heroku_w06gvgdc'
-db = client[db_name]
 
-base_path='/app/routes/bin/pythonscript'
+base_path='/Users/oyo/Desktop/awesome/tweets/'
 HISTORY_TYPE=1*60*60*24 #1 day
 
 
 stemmer = EnglishStemmer()
-stop_words = pickle.load(open(base_path+'/saved_classifier/stopwords.sav', 'rb'))
+stop_words = stopwords.words('english')
 my_stop_words='to and http https com co www'
 stop_words=stop_words+my_stop_words.split()
 
@@ -57,6 +53,7 @@ def sentiment(timestamp,df):
     probability=classifier.predict_proba(p_df['text'])
     
     proba_df=pd.DataFrame()
+    print('current time: ',timestamp)
     for i,row in enumerate(probability):
         if row[0]>0.5 and np.argmax(row)==0: # good 
             proba_df=proba_df.append({'_id':p_df['_id'].iloc[i],'timestamp':p_df['timestamp'].iloc[i],'category':0,'probability':row[0]},ignore_index=True)
@@ -69,9 +66,13 @@ def sentiment(timestamp,df):
         else:
             proba_df=proba_df.append({'_id':p_df['_id'].iloc[i],'timestamp':p_df['timestamp'].iloc[i],'category':3,'probability':row[3]},ignore_index=True)
 
+    proba_df.to_csv(base_path+'dataset/csv/good_bad/filtered/{}_good_bad.csv'.format(timestamp), sep=',', index=False)
     return [proba_df]
 
-
+# Mongodb settings
+client = MongoClient()
+client = MongoClient('localhost', 27017)
+db = client.coins
 
 # Twitter Dataset
 gb_l=list(db.good_bad_tweets.find().sort('_id',1))
@@ -79,9 +80,11 @@ gb_l=list(db.good_bad_tweets.find().sort('_id',1))
 record_exists=len(gb_l)>0
 
 if record_exists:
+    print('old record exists')
     last_id=gb_l[-1]['_id']
     main_df=pd.DataFrame(list(db.tweets.find({'_id': {'$gt': ObjectId(last_id)}}).sort('_id',1)))
 else:
+    print('fresh start')
     main_df=pd.DataFrame(list(db.tweets.find().sort('_id',1)))
     
 if main_df.empty:
@@ -89,6 +92,7 @@ if main_df.empty:
     sys.exit()
     
 main_df=main_df.drop_duplicates(subset=['_id'], keep='first')
+print('{} many tweets found'.format(main_df.shape[0]))
 
 
 tweet_dataset=main_df[['_id','text','created_at']].copy()
@@ -98,13 +102,14 @@ tweet_dataset['timestamp'] = [time_to_milli(_time) for _time in tweet_dataset['t
 tweet_df = tweet_dataset.sort_values(['timestamp'], ascending=True)
 
 # Saved Model
-classifier = pickle.load(open(base_path+'/saved_classifier/good_bad_classifier.sav', 'rb'))
+classifier = pickle.load(open(base_path+'saved_classifier/good_bad_classifier.sav', 'rb'))
 
 # Main Loop
 current_date=tweet_df['timestamp'].iloc[0]
 last_date=tweet_df['timestamp'].iloc[-1]
 step=HISTORY_TYPE
 
+print('current: {} last: {}'.format(current_date,last_date))
 
 final_proba_df=pd.DataFrame()
 

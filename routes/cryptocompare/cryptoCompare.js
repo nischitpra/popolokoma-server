@@ -7,6 +7,8 @@ const values = require('../constants').values
 const string = require('../constants').string
 const WebSocket = require('ws')
 
+var lock=false;
+
 
 /* GET home page. */
 router.get('/history', function(req, res, next) {
@@ -26,7 +28,6 @@ router.get('/history', function(req, res, next) {
     )
 });
 
-
 /** search for saved coin pair */
 router.get('/q', function(req, res, next) {
     var from=req.query[id.params.from]
@@ -44,7 +45,6 @@ router.get('/q', function(req, res, next) {
         })
     )
 });
-
 
 router.get('/uh',function(req, res, next) {
     const from=req.query[id.params.from]
@@ -102,24 +102,66 @@ router.get('/subs', function(req, res, next) {
     )
 });
 
+/** candle stick data from binance */
+router.get('/ucs', function(req, res, next) {
+    var from=req.query[id.params.from]
+    var to=req.query[id.params.to]
+    var interval=req.query[id.params.type]
+    var fromTime=req.query[id.params.fromTime]
+    var toTime=req.query[id.params.toTime]
+    var isNew=req.query[id.params.isNew]
+
+    from=(from==undefined||from==null)?'XRP':from
+    to=(to==undefined||to==null)?'BTC':to
+    interval=(interval==undefined||interval==null)?'1h':interval
+    isNew=(isNew==undefined||isNew==null)?true:isNew
+    isNew=(isNew.toLowerCase()=='true')
+
+    presenter.updateCandleStick(from,to,interval,isNew,(status,data)=>res.json({
+            status:status,
+            message: data,
+        })
+    )
+});
+/** get candle stick data from db */
+router.get('/gcs', function(req, res, next) {
+    var from=req.query[id.params.from]
+    var to=req.query[id.params.to]
+    var interval=req.query[id.params.type]
+    var fromTime=req.query[id.params.fromTime]
+    var toTime=req.query[id.params.toTime]
+    var isNew=req.query[id.params.isNew]
+
+    from=(from==undefined||from==null)?'XRP':from
+    to=(to==undefined||to==null)?'BTC':to
+    interval=(interval==undefined||interval==null)?'1h':interval
+    fromTime=(fromTime==undefined||fromTime==null)?new Date().getTime()-1000*60*60*500:fromTime
+    toTime=(toTime==undefined||toTime==null)?new Date().getTime():toTime
+    isNew=(isNew==undefined||isNew==null)?true:isNew
+    isNew=isNew=='true'
 
 
-// this is not required anymore.
-/* POST trend dataset. */
-router.post('/exportDataset', function(req, res, next) {
-    const trendDataset=req.body[id.cryptocompare.trendData]
-    const pairHistoryType=req.body[id.cryptocompare.pairHistoryType]
-    const datasetType=req.body[id.cryptocompare.datasetType]
-    
-    presenter.saveDataset(trendDataset,pairHistoryType,datasetType,
-        (status,data)=>res.json({
+    presenter.getCandleStick(from,to,interval,parseInt(fromTime),parseInt(toTime),isNew,(status,data)=>res.json({
+            status:status,
+            type:interval,
+            message: data,
+        }),
+        lock,(islocked)=>{console.log('lock callback');lock=islocked}
+    )
+});
+
+/** ticker 24 hours for all pair supported in binance api */
+router.get('/t', function(req, res, next) {
+    var from=req.query[id.params.from]
+    var to=req.query[id.params.to]
+
+    service.get24HrTicker(from,to,(status,data)=>res.json({
             status:status,
             message: data
         })
     )
 });
 
-  
 
 
 

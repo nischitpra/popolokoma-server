@@ -10,9 +10,8 @@ from pymongo import MongoClient
 
 # database connection
 client = MongoClient()
-client = MongoClient('mongodb://heroku_w06gvgdc:39i4hl2t7g5fqejfb07jbb9gf4@ds241059.mlab.com:41059/heroku_w06gvgdc')
-db_name = 'heroku_w06gvgdc'
-db = client[db_name]
+client = MongoClient('localhost', 27017)
+db = client.coins
 
 
 
@@ -53,6 +52,10 @@ def checkTrendChange(result):
     result = feature_unnormalize(result)
     n = len(local_minima[0])
     m = len(local_maxima[0])
+    # print(result[0][0])
+    # print(local_minima[0][n-1])
+    # print(local_maxima[0][m-1])
+    # print(result)
     if result[0][0] > local_maxima[0][m-1] or result[0][0] < local_minima[0][n-1]:
         return False, result
     return True, result
@@ -71,6 +74,8 @@ def main(_):
         y[i] = float(y[i])
     global local_minima, local_maxima
     local_maxima, local_minima = get_maxima_and_minima(np.array(y))
+    # print(local_maxima)
+    # print(local_minima)
     check =True
     with tf.Session() as sess:
         rnn_model_new = LstmRNN(
@@ -91,6 +96,8 @@ def main(_):
             training_data=df,
             target_symbol=FLAGS.stock_symbol
         )
+        # print(data[0].sigma)
+        # print(data[0].mu)
         global sigma
         global mu
         sigma = data[0].sigma
@@ -112,7 +119,11 @@ def main(_):
     res_df['time']=history_df['time'].iloc[-1]+np.arange(res_df['low'].shape[0])*24*60*60
     val={'_id':sys.argv[1],'history':res_df.to_dict(orient='records')}
     
+    print(res_df.shape)
     if not res_df.empty:
+        print('inserting into database')
+
+
 
 # should remove this. only ment for as a quick hack
         db.forecast.drop()

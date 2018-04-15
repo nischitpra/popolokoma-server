@@ -3,14 +3,12 @@ from pymongo import MongoClient
 from bson.objectid import ObjectId
 import sys
 import json
-
-base_path='/app/routes/bin/pythonscript'
+base_path='/Users/oyo/Desktop/awesome/tweets/'
 window_size=60*60 # per hour
 
 client = MongoClient()
-client = MongoClient('mongodb://heroku_w06gvgdc:39i4hl2t7g5fqejfb07jbb9gf4@ds241059.mlab.com:41059/heroku_w06gvgdc')
-db_name = 'heroku_w06gvgdc'
-db = client[db_name]
+client = MongoClient('localhost', 27017)
+db = client.coins
 
 # Loading data and preparation
 last_insert=list(db.sentiment_trend.find().sort('time',-1).limit(1))

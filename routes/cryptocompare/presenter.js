@@ -3,13 +3,14 @@ const string = require('../constants').string
 const values = require('../constants').values
 const connection = require('../connection')
 const db = require('../database')
+const service = require('./service')
 
 
 module.exports={
     
     getFullPriceHistory(type,from,to,callback){
         console.log(id.database.cc.history_from_to_type(from,to,type))
-        db.findManySorted(id.database.cc.history_from_to_type(from,to,type),{},{'time':1},callback)
+        db.findManySorted(id.database.cc.history_from_to_type(from,to,type),{},{[id.database.cc.time]:1},callback)
     },
 
     getHistory(type,from,to,exchange,fromTime,toTime,callback){
@@ -52,28 +53,68 @@ module.exports={
             }
         })
     },
-
-    saveDataset(trendDataset,pairHistoryType,datasetType,callback){
-        for(var i in trendDataset){
-            var startTime=new Date(trendDataset[i][id.cryptocompare.params.start][0]).getTime()/1000
-            var endTime=new Date(trendDataset[i][id.cryptocompare.params.end][0]).getTime()/1000
-            if(startTime>endTime){
-                const t=endTime
-                endTime=startTime
-                startTime=t
-            }
-            db.findManySorted(pairHistoryType,{'time':{'$gte':startTime,'$lte':endTime}},{'time':1},(status,data)=>{
-                db.insertOne(`${pairHistoryType}_${datasetType}`,{
-                    [id.cryptocompare.trendData]:data,
-                    [id.cryptocompare.params.start]:startTime,
-                    [id.cryptocompare.params.end]:endTime,
-                },(status,message)=>{
-                    console.log(`${data.length} rows added! status:${status} message:${message}`)
-                })
+    updateCandleStick(from,to,interval,isNew,callback,lock_callback){
+        if(isNew){
+            db.findManyLimited(id.database.cc.history_from_to_type(from,to,interval),{},{[id.binance.id]:-1},1,(status,data)=>{
+                if(status==values.status.ok){
+                    if(data.length>0){
+                        console.log('if is new')
+                        const fromTime=data[0][id.binance.id]+1
+                        const toTime=new Date().getTime()
+                        service.updateCandleStick(from,to,interval,fromTime,toTime,isNew,callback,lock_callback)
+                    }else{
+                        console.log('if is old')
+                        const toTime=new Date().getTime()
+                        const fromTime=toTime-values.binance.candle_interval_milliseconds[`_${interval}`]*500
+                        service.updateCandleStick(from,to,interval,fromTime,toTime,isNew,callback,lock_callback)
+                    }
+                }else{
+                    lock_callback(false)
+                    callback(status,data)
+                }
+            })
+        }else{
+            db.findManyLimited(id.database.cc.history_from_to_type(from,to,interval),{},{[id.binance.id]:1},1,(status,data)=>{
+                if(status==values.status.ok){
+                    if(data.length>0){
+                        console.log('if')
+                        const toTime=data[0][id.binance.id]-1
+                        const fromTime=toTime-values.binance.candle_interval_milliseconds[`_${interval}`]*500
+                        service.updateCandleStick(from,to,interval,fromTime,toTime,isNew,callback,lock_callback)
+                    }else{
+                        console.log('else')
+                        const toTime=new Date().getTime()
+                        const fromTime=toTime-values.binance.candle_interval_milliseconds[`_${interval}`]*500
+                        service.updateCandleStick(from,to,interval,fromTime,toTime,isNew,callback,lock_callback)
+                    }
+                }else{
+                    lock_callback(false)
+                    callback(status,data)
+                }
             })
         }
-        callback('ok',`${trendDataset.length} trend lines saved`)
+    },
+    getCandleStick(from,to,interval,fromTime,toTime,isNew,callback,lock,lock_callback){
+        console.log(`isNew: ${isNew} from time: ${fromTime} totime: ${toTime} key: ${id.database.cc.history_from_to_type(from,to,interval)}`)
+        console.log(`db.${id.database.cc.history_from_to_type(from,to,interval)}.find(${JSON.stringify({[id.database.cc.id]:{$gte:fromTime,$lte:toTime}})}).sort(${JSON.stringify({[id.database.cc.id]:1})})`)
+        db.findManySorted(id.database.cc.history_from_to_type(from,to,interval),{[id.database.cc.id]:{$gte:fromTime,$lte:toTime}},{[id.database.cc.id]:1},(status,data)=>{
+            if(status==values.status.ok){
+                console.log(`data length: ${data.length}`)
+                if(data.length>0){
+                    callback(status,data)
+                }else{
+                    if(!lock){
+                        console.log(`no data found, updating candle stick`)
+                        lock_callback(true)
+                        this.updateCandleStick(from,to,interval,isNew,callback,lock_callback)
+                    }else{
+                        callback(values.status.error,string.functionLocked)
+                    }
+                    
+                }
+            }else{
+                callback(status,data)            
+            }
+        })
     }
-
-   
 }
