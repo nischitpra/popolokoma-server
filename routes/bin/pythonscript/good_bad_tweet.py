@@ -72,13 +72,7 @@ def sentiment(timestamp,df):
         else:
             proba_df=proba_df.append({'_id':p_df['_id'].iloc[i],'timestamp':p_df['timestamp'].iloc[i],'category':3,'probability':row[3]},ignore_index=True)
 
-    proba_df.to_csv(base_path+'dataset/csv/good_bad/filtered/{}_good_bad.csv'.format(timestamp), sep=',', index=False)
     return [proba_df]
-
-# Mongodb settings
-client = MongoClient()
-client = MongoClient('localhost', 27017)
-db = client.coins
 
 # Twitter Dataset
 gb_l=list(db.good_bad_tweets.find().sort('_id',1))
@@ -108,7 +102,7 @@ tweet_dataset['timestamp'] = [time_to_milli(_time) for _time in tweet_dataset['t
 tweet_df = tweet_dataset.sort_values(['timestamp'], ascending=True)
 
 # Saved Model
-classifier = pickle.load(open(base_path+'saved_classifier/good_bad_classifier.sav', 'rb'))
+classifier = pickle.load(open(base_path+'/saved_classifier/good_bad_classifier.sav', 'rb'))
 
 # Main Loop
 current_date=tweet_df['timestamp'].iloc[0]

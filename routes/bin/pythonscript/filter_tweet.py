@@ -27,7 +27,7 @@ def preprocess(_df):
     _df['text']=_df['text'].apply(lambda tweet:stemmer.stem(tweet.strip()))
     return _df
 
-classifier = pickle.load(open(base_path+'saved_classifier/filter_model.sav', 'rb'))
+classifier = pickle.load(open(base_path+'/saved_classifier/filter_model.sav', 'rb'))
 df=pd.read_json(sys.argv[1],encoding = 'utf8')
 
 p_df=preprocess(df.copy())

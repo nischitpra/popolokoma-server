@@ -205,16 +205,16 @@ class LstmRNN(object):
         model_name = self.model_name + ".model"
         self.saver.save(
             self.sess,
-            os.path.join(base_path_nhuche+"forecaster/saved_model", model_name),
+            os.path.join(base_path_nhuche+"/forecaster/saved_model", model_name),
             global_step=step
         )
 
     def load(self,predict_X):
-        ckpt = tf.train.get_checkpoint_state(base_path_nhuche+"forecaster/saved_model")
+        ckpt = tf.train.get_checkpoint_state(base_path_nhuche+"/forecaster/saved_model")
         # print ('checkpoint: ',ckpt)        
         if ckpt and ckpt.model_checkpoint_path:
             ckpt_name = os.path.basename(ckpt.model_checkpoint_path)
-            self.saver.restore(self.sess, os.path.join(base_path_nhuche+"forecaster/saved_model", ckpt_name))
+            self.saver.restore(self.sess, os.path.join(base_path_nhuche+"/forecaster/saved_model", ckpt_name))
             counter = int(next(re.finditer("(\d+)(?!.*\d)", ckpt_name)).group(0))
             predict_X = predict_X.reshape(predict_X.shape[0],1,predict_X.shape[1])
             pred_feed_dict = {
