@@ -82,10 +82,10 @@ record_exists=len(gb_l)>0
 if record_exists:
     print('old record exists')
     last_id=gb_l[-1]['_id']
-    main_df=pd.DataFrame(list(db.tweets.find({'_id': {'$gt': ObjectId(last_id)}}).sort('_id',1)))
+    main_df=pd.DataFrame(list(db.tweets.find({'_id': {'$gt': ObjectId(last_id)}}).sort('_id',1).limit(5000)))
 else:
     print('fresh start')
-    main_df=pd.DataFrame(list(db.tweets.find().sort('_id',1)))
+    main_df=pd.DataFrame(list(db.tweets.find().sort('_id',1).limit(5000)))
     
 if main_df.empty:
     print('no values to process')
