@@ -22,11 +22,12 @@ if len(last_insert)>0:
                                              'foreignField': "_id",
                                              'as': "tweet"
                                          }},
-                                         {'$sort':{'timestamp':1}}
+                                         {'$sort':{'timestamp':1}},
+                                         { '$limit' : 5000 },
                                         ],allowDiskUse=True)
     m_df=pd.DataFrame(list(cursor))
 else:
-    m_df=pd.DataFrame(list(db.good_bad_tweets.find()))
+    m_df=pd.DataFrame(list(db.good_bad_tweets.find().sort('timestamp',1).limit(2500)))
 
 if m_df.empty:
     print("no good bad tweets found")
