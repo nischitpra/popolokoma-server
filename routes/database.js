@@ -275,6 +275,11 @@ module.exports={
             client.end()
             return callback(values.status.ok,string.database.create.table(name))
         })
+        query.on('error', () => { 
+            client.end()
+            console.log(`create table candle stick: status:${values.status.error}, message:${string.someWrong}`)
+            return callback(values.status.error,string.someWrong)
+        })
     },
     createGoodbadTable(callback){
         const pg = require('pg');
@@ -291,6 +296,11 @@ module.exports={
         query.on('end', () => { 
             client.end()
             return callback(values.status.ok,string.database.create.table(id.database.collection.goodBadTweets))
+        })
+        query.on('error', () => { 
+            client.end()
+            console.log(`create table goodbad: status:${values.status.error}, message:${string.someWrong}`)
+            return callback(values.status.error,string.someWrong)
         })
     },
     createSentimentTrendTable(callback){
@@ -311,6 +321,11 @@ module.exports={
             client.end()
             return callback(values.status.ok,string.database.create.table(id.database.collection.sentimentTrend))
         })
+        query.on('error', () => { 
+            client.end()
+            console.log(`create table sentiment trend: status:${values.status.error}, message:${string.someWrong}`)
+            return callback(values.status.error,string.someWrong)
+        })
     },
     createTweetsTable(callback){
         const pg = require('pg');
@@ -330,6 +345,11 @@ module.exports={
         query.on('end', () => { 
             client.end()
             return callback(values.status.ok,string.database.create.table(id.database.collection.tweets))
+        })
+        query.on('error', () => { 
+            client.end()
+            console.log(`create table tweets: status:${values.status.error}, message:${string.someWrong}`)
+            return callback(values.status.error,string.someWrong)
         })
     },
 
@@ -359,13 +379,17 @@ module.exports={
         valueString=valueString.substring(0,valueString.length-1) // remove last comma
 
         const finalQ=`insert into ${tableName} ${columnName} values ${valueString};`
-        console.log(finalQ)
-
+        // console.log(finalQ)
 
         const query = client.query(finalQ)
         query.on('end', () => { 
             client.end()
             return callback(values.status.ok,string.database.insert.values(_values.length))
+        })
+        query.on('error', () => { 
+            client.end()
+            console.log(`insert: status:${values.status.error}, message:${string.someWrong}`)
+            return callback(values.status.error,string.someWrong)
         })
     },
     find(_query,callback){
@@ -380,6 +404,11 @@ module.exports={
         query.on('end', () => { 
             client.end()
             return callback(values.status.ok,result)
+        })
+        query.on('error', () => { 
+            client.end()
+            console.log(`find: status:${values.status.error}, message:${string.someWrong}`)
+            return callback(values.status.error,string.someWrong)
         })
     },
 
