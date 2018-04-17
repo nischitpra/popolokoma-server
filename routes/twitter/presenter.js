@@ -83,11 +83,9 @@ module.exports={
         var preparedList=this.preFilterTweetsList(tweets)
         pythoninvoker.getFilteredTweet(JSON.stringify(preparedList),(status,filteredData)=>{
             filteredData=this.postFilterTweetsList(tweets,filteredData)
-            console.log(`\n\n\n\n\n\n\n`)
             console.log(`${filteredData.length} tweets filtered`)
             if(filteredData.length>0){
                 db.insert(id.database.collection.tweets,id.database.collection.keyList.tweets,filteredData,(status,message)=>console.log(message))
-                console.log(`\n\n\n\n\n\n\n`)
             }else{
                 console.log(string.database.insert.emptyList)
             }

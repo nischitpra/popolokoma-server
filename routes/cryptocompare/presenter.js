@@ -8,51 +8,51 @@ const service = require('./service')
 
 module.exports={
     
-    getFullPriceHistory(type,from,to,callback){
-        console.log(id.database.cc.history_from_to_type(from,to,type))
-        db.findManySorted(id.database.cc.history_from_to_type(from,to,type),{},{[id.database.cc.time]:1},callback)
-    },
+    // getFullPriceHistory(type,from,to,callback){
+    //     console.log(id.database.cc.history_from_to_type(from,to,type))
+    //     db.findManySorted(id.database.cc.history_from_to_type(from,to,type),{},{[id.database.cc.time]:1},callback)
+    // },
 
-    getHistory(type,from,to,exchange,fromTime,toTime,callback){
-        if(fromTime==null){
-            this.getOldHistory(type,from,to,exchange,toTime,callback)
-        }else if(toTime==null){
-            this.getNewHistory(type,from,to,exchange,fromTime,callback)
-        }else{
-            callback(values.status.error,[])
-        }
+    // getHistory(type,from,to,exchange,fromTime,toTime,callback){
+    //     if(fromTime==null){
+    //         this.getOldHistory(type,from,to,exchange,toTime,callback)
+    //     }else if(toTime==null){
+    //         this.getNewHistory(type,from,to,exchange,fromTime,callback)
+    //     }else{
+    //         callback(values.status.error,[])
+    //     }
         
-    },
-    getOldHistory(type,from,to,exchange,toTime,callback){
-        connection.getHistory(id.cryptocompare.history[type],from,to,exchange,toTime,callback)
-    },
-    getNewHistory(_id,from,to,exchange,fromTime,callback){
+    // },
+    // getOldHistory(type,from,to,exchange,toTime,callback){
+    //     connection.getHistory(id.cryptocompare.history[type],from,to,exchange,toTime,callback)
+    // },
+    // getNewHistory(_id,from,to,exchange,fromTime,callback){
 
-    },
+    // },
 
 
-    getFavourites(from,to,exchange,callback){
-        connection.getFavourites(from,to,exchange,callback)
-    },
-    getCoinList(callback){
-        connection.getCoinList(callback)
-    },
-    getSubsList(from,to,callback){
-        connection.getSocketScubscriptionList(from,to,callback)
-    },
+    // getFavourites(from,to,exchange,callback){
+    //     connection.getFavourites(from,to,exchange,callback)
+    // },
+    // getCoinList(callback){
+    //     connection.getCoinList(callback)
+    // },
+    // getSubsList(from,to,callback){
+    //     connection.getSocketScubscriptionList(from,to,callback)
+    // },
 
-    getHistoryStartTime(key,callback){
-        db.findManyLimited(key,{},{[id.database.cc.time]:1},1,(status,data)=>{
-            data=data[0]
-            if(status==values.status.ok && data!=undefined){
-                console.log('previous records exists: '+data[id.database.cc.time])
-                callback(status,data[id.database.cc.time])
-            }else{
-                console.log('fresh start')
-                callback(status,Math.round(new Date().getTime()/1000))
-            }
-        })
-    },
+    // getHistoryStartTime(key,callback){
+    //     db.findManyLimited(key,{},{[id.database.cc.time]:1},1,(status,data)=>{
+    //         data=data[0]
+    //         if(status==values.status.ok && data!=undefined){
+    //             console.log('previous records exists: '+data[id.database.cc.time])
+    //             callback(status,data[id.database.cc.time])
+    //         }else{
+    //             console.log('fresh start')
+    //             callback(status,Math.round(new Date().getTime()/1000))
+    //         }
+    //     })
+    // },
     updateCandleStick(from,to,interval,isNew,callback,lock_callback){
         if(isNew){
             db.find(`select * from ${id.database.cc.history_from_to_type(from,to,interval)} order by _id desc limit 1`,(status,data)=>{
@@ -160,7 +160,6 @@ module.exports={
     // },
     getCandleStick(from,to,interval,fromTime,toTime,isNew,callback,lock,lock_callback){
         console.log(`isNew: ${isNew} from time: ${fromTime} totime: ${toTime} key: ${id.database.cc.history_from_to_type(from,to,interval)}`)
-        console.log(`db.${id.database.cc.history_from_to_type(from,to,interval)}.find(${JSON.stringify({[id.database.cc.id]:{$gte:fromTime,$lte:toTime}})}).sort(${JSON.stringify({[id.database.cc.id]:1})})`)
         db.find(`select * from ${id.database.cc.history_from_to_type(from,to,interval)} order by _id asc`,(status,data)=>{
             if(status==values.status.ok){
                 console.log(`data length: ${data.length}`)

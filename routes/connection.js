@@ -119,8 +119,6 @@ module.exports={
                 tweet_obj[id.database.collection.keyList.tweets[6]]=tweet.timestamp_ms
 
                 bufferTweets.push(tweet_obj)
-                console.log(bufferTweets.length);
-                console.log(tweet.text)
                 if(bufferTweets.length>50){
                     console.log('--------------===========-------------')
                     callback(bufferTweets)
