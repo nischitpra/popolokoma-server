@@ -6,7 +6,7 @@ import json
 import pandas as pd
 import base64
 
-connection=psycopg2.connect("postgres://popo:weareawesome@popo-server.ckhrqovrxtw4.us-east-1.rds.amazonaws.com/coins")
+connection=psycopg2.connect("postgres://popo:weareawesome@popo-server.ckhrqovrxtw4.us-east-1.rds.amazonaws.com:5432/coins")
 cur=connection.cursor()
 
 base_path='/app/routes/bin/pythonscript'
