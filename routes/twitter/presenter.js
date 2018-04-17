@@ -5,6 +5,7 @@ const connection = require('../connection')
 const db = require('../database')
 const pythoninvoker=require('../../routes/pythoninvoker')
 const ObjectID = require('mongodb').ObjectID
+const utils = require('../utils')
 
 
 /** twitter api */
@@ -40,10 +41,10 @@ module.exports={
         list=[]
         for(var i in data){
             var item={}
-            item[id.twitter.tweet.id]=data[i][id.twitter.tweet.id]
+            item[id.twitter.tweet.id]=data[i][id.database.collection.keyList.tweets[1]]
             item[id.twitter.tweet.index]=i
-            item[id.twitter.tweet.text]=data[i][id.twitter.tweet.text]
-            item[id.twitter.tweet.timestamp]=data[i][id.twitter.tweet.createdAt]
+            item[id.twitter.tweet.text]=utils.base64Decode(data[i][id.database.collection.keyList.tweets[2]])
+            item[id.twitter.tweet.timestamp]=data[i][id.database.collection.keyList.tweets[0]]
             list.push(item)
         }
         return list
@@ -53,7 +54,6 @@ module.exports={
         console.log(`filtered data length: ${filteredData.length}`)
         for(var i in filteredData){
             var item=data[filteredData[i][id.twitter.tweet.index]]
-            console.log(item)
             list.push(item)
         }
         return list
@@ -83,10 +83,11 @@ module.exports={
         var preparedList=this.preFilterTweetsList(tweets)
         pythoninvoker.getFilteredTweet(JSON.stringify(preparedList),(status,filteredData)=>{
             filteredData=this.postFilterTweetsList(tweets,filteredData)
+            console.log(`\n\n\n\n\n\n\n`)
             console.log(`${filteredData.length} tweets filtered`)
-
             if(filteredData.length>0){
-                db.insertMany(id.database.collection.tweets,filteredData,(status,message)=>console.log(message))
+                db.insert(id.database.collection.tweets,id.database.collection.keyList.tweets,filteredData,(status,message)=>console.log(message))
+                console.log(`\n\n\n\n\n\n\n`)
             }else{
                 console.log(string.database.insert.emptyList)
             }

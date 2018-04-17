@@ -6,6 +6,7 @@ const values = require('../constants').values
 const string = require('../constants').string
 const WebSocket = require('ws')
 const service = require('./service')
+const db = require('../database')
 
 var locked=false
 
@@ -53,6 +54,9 @@ router.get('/s',function(req, res, next) {
 // update tweet (after removing spams)
 router.get('/ut',function(req, res, next) {
     if(locked==false){
+        db.createTweetsTable((status,message)=>{
+            console.log(`status: ${status}, message: ${message}`)
+        })
         locked=true
         var symbol=req.query[id.twitter.symbol]
         var coinName=req.query[id.twitter.coinName]

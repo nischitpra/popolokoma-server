@@ -16,7 +16,8 @@ module.exports = {
         },
 
         subscribeOtp:(email,from,to,otp)=>`http://localhost:3001/mailer/subscribe/validate?email=${email}&from=${from}&to=${to}&otp=${otp}`,
-        database:`mongodb://heroku_w06gvgdc:39i4hl2t7g5fqejfb07jbb9gf4@ds241059.mlab.com:41059/heroku_w06gvgdc`,
+        // database:`mongodb://localhost:27017/`,
+        database:`postgres://fbmvbdliqjkxsl:bb91a946f4894d2ddeeadc1a97f05ebd754e06035e044391c4714361652daea9@ec2-54-83-204-6.compute-1.amazonaws.com:5432/dbingm2b5mn7og`,
     },
     files:{
         python:{
@@ -54,7 +55,7 @@ module.exports = {
             error:'error',
         },
         mailer:{
-            server:{name:'Gmail',email:'popolokoma@gmail.com',password:'weRock123'},
+            server:{name:'Gmail',email:'nischitpra@gmail.com',password:'Applebob123'},
         },
         binance:{
             candle_interval:{   
@@ -119,7 +120,7 @@ module.exports = {
         },
         application:{db:'db'},
         database:{
-            name:'heroku_w06gvgdc',
+            name:'dbingm2b5mn7og',
             collection:{
                 otp:'otp',
                 subscribed:'subscribed',
@@ -130,6 +131,13 @@ module.exports = {
                 forecast:'forecast',
                 dump:{
                     candlestick:'candlestick_dump'
+                },
+                keyList:{
+                    history:['_id','open','high','low','close','volume','close_time','quote_asset_volume','number_of_trades','taker_buy_base_asset_volume','taker_buy_quote_asset_volume'],
+                    goodBadTweets:['_id','category','probability','timestamp'],
+                    sentimentTrend:['_id','close','high','low','open','time'],
+                    // tweets:['_id','created_at','id_str','text','name','screen_name','profile_image_url','timestamp_ms'],
+                    tweets:['created_at','id_str','text','name','screen_name','profile_image_url','timestamp_ms'],
                 },
             },
             email:'email',
@@ -216,7 +224,11 @@ module.exports = {
         },
         database:{
             insert:{
-                emptyList:`Trying to insert empty list.`
+                emptyList:`Trying to insert empty list.`,
+                values:(count)=>`${count} rows added`,
+            },
+            create:{
+                table:(name)=>`${name} table has been created/initialized`,
             }
         },
         invalidRequest:'Invalid Request',

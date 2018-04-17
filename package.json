@@ -19,9 +19,11 @@
     "nodemon": "^1.17.2",
     "npm": "^5.7.1",
     "passport-twitter": "^1.0.4",
+    "pg": "^6.1.0",
     "serve-favicon": "~2.4.5",
     "socket.io": "^2.0.4",
-    "twitter": "^1.7.1"
+    "twitter": "^1.7.1",
+    "utf8": "^3.0.0"
   },
   "devDependencies": {
     "@types/express": "^4.11.1",

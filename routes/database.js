@@ -4,6 +4,7 @@ const values = require('./constants').values;
 const string = require('./constants').string;
 var MongoClient = require('mongodb').MongoClient;
 
+
 module.exports={
     updateHistory(key,hist,callback){
         MongoClient.connect(network.database,(err, db)=>{
@@ -240,4 +241,136 @@ module.exports={
             });
         });
     },
+
+    createCandleStickTable(name,callback){
+        const pg = require('pg');
+        const client = new pg.Client(network.database);
+        client.connect();
+        const query = client.query(
+        `create table if not exists ${name} (
+            _id char(13), 
+            open varchar(13), 
+            high varchar(13), 
+            low varchar(13), 
+            close varchar(13), 
+            volume varchar(15), 
+            close_time varchar(13), 
+            quote_asset_volume varchar(13), 
+            number_of_trades varchar(10), 
+            taker_buy_base_asset_volume varchar(13), 
+            taker_buy_quote_asset_volume varchar(13), 
+            primary key(_id)
+        ) ;`)
+        query.on('end', () => { 
+            client.end()
+            return callback(values.status.ok,string.database.create.table(name))
+        })
+    },
+    createGoodbadTable(callback){
+        const pg = require('pg');
+        const client = new pg.Client(network.database);
+        client.connect();
+        const query = client.query(
+        `create table if not exists ${id.database.collection.goodBadTweets} (
+            _id varchar(24),
+            category char(1),
+            probability varchar(8),
+            timestamp varchar(13),
+            primary key(_id)
+        );`)
+        query.on('end', () => { 
+            client.end()
+            return callback(values.status.ok,string.database.create.table(id.database.collection.goodBadTweets))
+        })
+    },
+    createSentimentTrendTable(callback){
+        const pg = require('pg');
+        const client = new pg.Client(network.database);
+        client.connect();
+        const query = client.query(
+        `create table if not exists ${id.database.collection.sentimentTrend} (
+            _id varchar(24),
+            close varchar(13),
+            high varchar(13),
+            low varchar(13),
+            open varchar(13),
+            time varchar(13),
+            primary key(_id)
+        ) ;`)
+        query.on('end', () => { 
+            client.end()
+            return callback(values.status.ok,string.database.create.table(id.database.collection.sentimentTrend))
+        })
+    },
+    createTweetsTable(callback){
+        const pg = require('pg');
+        const client = new pg.Client(network.database);
+        client.connect();
+        const query = client.query(
+        `create table if not exists ${id.database.collection.tweets} (
+            _id SERIAL PRIMARY KEY,
+            created_at char(32),
+            id_str varchar(20),
+            text text,
+            name varchar(120),
+            screen_name varchar(120),
+            profile_image_url text,
+            timestamp_ms varchar(13)
+        );`)
+        query.on('end', () => { 
+            client.end()
+            return callback(values.status.ok,string.database.create.table(id.database.collection.tweets))
+        })
+    },
+
+    insert(tableName,keys,_values,callback){
+        const pg = require('pg');
+        const client = new pg.Client(network.database);
+        client.connect();
+        
+        var columnName=``
+        for(var i in keys){
+            columnName+=`${keys[i]},`
+        }
+        columnName=columnName.substring(0,columnName.length-1)// remove last comma
+        columnName=`(${columnName})`
+
+
+        var valueString=``
+        for(var j in _values){
+            var insertString=``
+            for(var i in keys){
+                insertString+=`'${_values[j][keys[i]]}',`
+            }
+            insertString=insertString.substring(0,insertString.length-1)// remove last comma
+            insertString=`(${insertString}),`
+            valueString+=insertString
+        }
+        valueString=valueString.substring(0,valueString.length-1) // remove last comma
+
+        const finalQ=`insert into ${tableName} ${columnName} values ${valueString};`
+        console.log(finalQ)
+
+
+        const query = client.query(finalQ)
+        query.on('end', () => { 
+            client.end()
+            return callback(values.status.ok,string.database.insert.values(_values.length))
+        })
+    },
+    find(_query,callback){
+        const pg = require('pg');
+        const client = new pg.Client(network.database);
+        client.connect();
+        const query = client.query(_query)
+        const result=[]
+        query.on('row', (row) => { 
+            result.push(row)
+        })
+        query.on('end', () => { 
+            client.end()
+            return callback(values.status.ok,result)
+        })
+    },
+
 }

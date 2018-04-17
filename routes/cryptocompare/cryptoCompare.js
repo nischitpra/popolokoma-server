@@ -5,28 +5,29 @@ const service = require('./service')
 const id = require('../constants').id
 const values = require('../constants').values
 const string = require('../constants').string
+const db = require('../database')
 const WebSocket = require('ws')
 
 var lock=false;
 
 
 /* GET home page. */
-router.get('/history', function(req, res, next) {
-    const from=req.query[id.cryptocompare.from]
-    const to=req.query[id.cryptocompare.to]
-    const exchange=req.query[id.cryptocompare.exchange]
-    const historyType=parseInt(req.query[id.cryptocompare.historyType])
-    const fromTime=req.query[id.cryptocompare.fromTime]
-    const toTime=req.query[id.cryptocompare.toTime]
+// router.get('/history', function(req, res, next) {
+//     const from=req.query[id.cryptocompare.from]
+//     const to=req.query[id.cryptocompare.to]
+//     const exchange=req.query[id.cryptocompare.exchange]
+//     const historyType=parseInt(req.query[id.cryptocompare.historyType])
+//     const fromTime=req.query[id.cryptocompare.fromTime]
+//     const toTime=req.query[id.cryptocompare.toTime]
 
-    presenter.getHistory(historyType,from,to,exchange,fromTime,toTime,
-        (status,data)=>res.json({
-            status:status,
-            [id.cryptocompare.historyType]:historyType,
-            message: data
-        })
-    )
-});
+//     presenter.getHistory(historyType,from,to,exchange,fromTime,toTime,
+//         (status,data)=>res.json({
+//             status:status,
+//             [id.cryptocompare.historyType]:historyType,
+//             message: data
+//         })
+//     )
+// });
 
 /** search for saved coin pair */
 // router.get('/q', function(req, res, next) {
@@ -63,44 +64,44 @@ router.get('/history', function(req, res, next) {
 
 
 /* GET favourites. */
-router.get('/favourites', function(req, res, next) {
-    const from=req.query[id.cryptocompare.from]
-    const to=req.query[id.cryptocompare.to]
-    const exchange=req.query[id.cryptocompare.exchange]
+// router.get('/favourites', function(req, res, next) {
+//     const from=req.query[id.cryptocompare.from]
+//     const to=req.query[id.cryptocompare.to]
+//     const exchange=req.query[id.cryptocompare.exchange]
 
-    presenter.getFavourites(from,to,exchange,
-        (status,data)=>res.json({
-            status:status,
-            message: data
-        })
-    )
-});
+//     presenter.getFavourites(from,to,exchange,
+//         (status,data)=>res.json({
+//             status:status,
+//             message: data
+//         })
+//     )
+// });
 
 
 /* GET coinlist. */
-router.get('/coinlist', function(req, res, next) {
-    presenter.getCoinList(
-        (status,data,baseImageUrl)=>res.json({
-            status:status,
-            message: data,
-            baseImageUrl:baseImageUrl,
-        })
-    )
-});
+// router.get('/coinlist', function(req, res, next) {
+//     presenter.getCoinList(
+//         (status,data,baseImageUrl)=>res.json({
+//             status:status,
+//             message: data,
+//             baseImageUrl:baseImageUrl,
+//         })
+//     )
+// });
 
 
 /* GET socket subscription list. */
-router.get('/subs', function(req, res, next) {
-    const from=req.query[id.cryptocompare.from]
-    const to=req.query[id.cryptocompare.to]
+// router.get('/subs', function(req, res, next) {
+//     const from=req.query[id.cryptocompare.from]
+//     const to=req.query[id.cryptocompare.to]
 
-    presenter.getSubsList(from,to,
-        (status,data)=>res.json({
-            status:status,
-            message: data,
-        })
-    )
-});
+//     presenter.getSubsList(from,to,
+//         (status,data)=>res.json({
+//             status:status,
+//             message: data,
+//         })
+//     )
+// });
 
 // /** candle stick data from binance */
 // router.get('/ucs', function(req, res, next) {
@@ -114,7 +115,7 @@ router.get('/subs', function(req, res, next) {
 //     from=(from==undefined||from==null)?'XRP':from
 //     to=(to==undefined||to==null)?'BTC':to
 //     interval=(interval==undefined||interval==null)?'1h':interval
-//     isNew=(isNew==undefined||isNew==null)?'true':isNew
+//     isNew=(isNew==undefined||isNew==null)?true:isNew
 //     isNew=(isNew.toLowerCase()=='true')
 
 //     presenter.updateCandleStick(from,to,interval,isNew,(status,data)=>res.json({
@@ -137,17 +138,25 @@ router.get('/gcs', function(req, res, next) {
     interval=(interval==undefined||interval==null)?'1h':interval
     fromTime=(fromTime==undefined||fromTime==null)?new Date().getTime()-1000*60*60*500:fromTime
     toTime=(toTime==undefined||toTime==null)?new Date().getTime():toTime
-    isNew=(isNew==undefined||isNew==null)?'true':isNew
+    isNew=(isNew==undefined||isNew==null)?true:isNew
     isNew=isNew=='true'
 
-
-    presenter.getCandleStick(from,to,interval,parseInt(fromTime),parseInt(toTime),isNew,(status,data)=>res.json({
-            status:status,
-            type:interval,
-            message: data,
-        }),
-        lock,(islocked)=>{console.log('lock callback');lock=islocked}
-    )
+    db.createCandleStickTable(id.database.cc.history_from_to_type(from,to,interval),(status,message)=>{
+        if(status==values.status.ok){
+            presenter.getCandleStick(from,to,interval,parseInt(fromTime),parseInt(toTime),isNew,(status,data)=>res.json({
+                status:status,
+                type:interval,
+                message: data,
+            }),
+            lock,(islocked)=>{console.log('lock callback');lock=islocked})
+        }else{
+            res.json({
+                status:values.status.error,
+                type:interval,
+                message: string.someWrong,
+            })
+        }
+    })
 });
 
 /** ticker 24 hours for all pair supported in binance api */

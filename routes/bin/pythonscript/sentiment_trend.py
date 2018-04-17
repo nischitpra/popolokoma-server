@@ -3,34 +3,35 @@ from pymongo import MongoClient
 from bson.objectid import ObjectId
 import sys
 import json
+import pandas as pd
+import base64
+
+connection=psycopg2.connect('postgres://popo:wewillrock@localhost:5432/coins')
+cur=connection.cursor()
 
 base_path='/app/routes/bin/pythonscript'
 window_size=60*60 # per hour
 
-client = MongoClient()
-client = MongoClient('mongodb://heroku_w06gvgdc:39i4hl2t7g5fqejfb07jbb9gf4@ds241059.mlab.com:41059/heroku_w06gvgdc')
-db_name = 'heroku_w06gvgdc'
-db = client[db_name]
 
 # Loading data and preparation
-last_insert=list(db.sentiment_trend.find().sort('time',-1).limit(1))
+cur.execute('select * from sentiment_trend order by time desc limit 1')
+last_insert=list(cur.fetchall())
 if len(last_insert)>0:
-    cursor=db.good_bad_tweets.aggregate([{'$match': { '_id':{'$gte':last_insert[0]['_id']} }},
-                                         {'$lookup':{
-                                             'from': "tweets",
-                                             'localField': "_id",
-                                             'foreignField': "_id",
-                                             'as': "tweet"
-                                         }},
-                                         {'$sort':{'timestamp':1}}
-                                        ],allowDiskUse=True)
-    m_df=pd.DataFrame(list(cursor))
+    cur.execute('select * from good_bad_tweets inner join sentiment_trend on cast(good_bad_tweets._id as int) > {} order by timestamp asc'.format(last_insert[0][0]))    
+    m_df=pd.DataFrame(list(cur.fetchall()))
 else:
-    m_df=pd.DataFrame(list(db.good_bad_tweets.find().sort('timestamp',1)))
+    cur.execute('select * from good_bad_tweets')    
+    m_df=pd.DataFrame(list(cur.fetchall()))
 
 if m_df.empty:
     print("no good bad tweets found")
     sys.exit(0)
+    
+m_df.columns=['_id','category','probability','timestamp']
+m_df['timestamp']=m_df['timestamp'].apply(lambda time:int(time))
+m_df['category']=m_df['category'].apply(lambda time:int(time))
+m_df['probability']=m_df['probability'].apply(lambda time:float(time))
+
 df=pd.DataFrame()
 df['category']=m_df['category'].copy()
 df['timestamp']=m_df['timestamp']
@@ -71,14 +72,16 @@ for i in range(df.shape[0]):
     elif df['category'].iloc[i]==1.0:
         close-=df['probability'].iloc[i]
     elif df['category'].iloc[i]==4.0:
-        close+=df['probability'].iloc[i]
-#     close+=df['probability'].iloc[i] if df['category'].iloc[i]==0 else -df['probability'].iloc[i]
+        close+=df['probability'].iloc[i]*0.25
     low=close if close<low else low
     high=close if close>high else high
-
-
+    
 if not senti_df.empty:
-    db.sentiment_trend.insert_many(senti_df.to_dict(orient='records'),ordered=False)
+    query=[]
+    for index, row in senti_df.iterrows():
+        query.append('({},{},{},{},{},{})'.format(row['_id'],round(row['close'],6),round(row['high'],6),round(row['low'],6),round(row['open'],6),int(row['time'])))
+    cur.execute("insert into sentiment_trend (_id,close,high,low,open,time) values {}".format(','.join(query)))
+    connection.commit()
     print('{} rows added'.format(senti_df.shape[0]))
 else:
     print('no rows filtered')

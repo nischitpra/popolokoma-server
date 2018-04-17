@@ -62,6 +62,83 @@ module.exports={
             callback(status,data)
         })
     },
+    // updateCandleStick(from,to,interval,fromTime,toTime,isNew,callback,lock_callback){
+    //     connection.getCandleStick(from,to,interval,fromTime,toTime,(status,data)=>{
+    //         if(status==values.status.ok&& data.length>0){
+    //             console.log(`no of records in json : ${data.length}`)
+    //             const collection=id.database.cc.history_from_to_type(from,to,interval)
+    //             if (isNew){
+    //                 console.log('inserting for new')
+    //                 db.findManyLimited(collection,{},{[id.database.cc.id]:-1},1,(status,prevData)=>{
+    //                     if(prevData.length==0){
+    //                         this.saveHistoryDataset(collection,data,isNew,0,callback,lock_callback)
+    //                     }else{
+    //                         this.saveHistoryDataset(collection,data,isNew,prevData[0][id.database.cc.id],callback,lock_callback)
+    //                     }
+    //                 })
+    //             }else{
+    //                 console.log('inserting for old')
+    //                 db.findManyLimited(collection,{},{[id.database.cc.id]:1},1,(status,prevData)=>{
+    //                     if(prevData.length==0){
+    //                         this.saveHistoryDataset(collection,data,isNew,new Date().getTime(),callback,lock_callback)
+    //                     }else{
+    //                         this.saveHistoryDataset(collection,data,isNew,prevData[0][id.database.cc.id],callback,lock_callback)
+    //                     }
+    //                 })
+    //             }
+    //         }else{
+    //             console.log(`something is worng,, inside outer else`)
+    //             lock_callback(false)
+    //             callback(status,data)
+    //         }
+    //     })
+    // },
+
+    // saveHistoryDataset(key,data,isNew,entryTime,callback,lock_callback){
+    //     console.log('saving dataset')
+    //     var list=[]
+    //     data.map(row=>{
+    //         var ob={}
+    //         var i=0
+    //         ob[id.binance.id]=parseInt(row[i++])
+    //         ob[id.binance.open]=parseFloat(row[i++])
+    //         ob[id.binance.high]=parseFloat(row[i++])
+    //         ob[id.binance.low]=parseFloat(row[i++])
+    //         ob[id.binance.close]=parseFloat(row[i++])
+    //         ob[id.binance.volume]=parseFloat(row[i++])
+    //         ob[id.binance.close_time]=parseFloat(row[i++])
+    //         ob[id.binance.quote_asset_volume]=parseFloat(row[i++])
+    //         ob[id.binance.number_of_trades]=parseFloat(row[i++])
+    //         ob[id.binance.taker_buy_base_asset_volume]=parseFloat(row[i++])
+    //         ob[id.binance.taker_buy_quote_asset_volume]=parseFloat(row[i++])
+    //         if(isNew){
+    //             if(ob[id.binance.id]>entryTime){
+    //                 list.push(ob)
+    //             }
+    //         }
+    //         if(!isNew){
+    //             if(ob[id.binance.id]<entryTime){
+    //                 list.push(ob)
+    //             }
+    //         }
+    //     })
+    //     if(list.length>0){
+    //         console.log('inserting into the database')
+    //         db.insertMany(key,list,(status,message)=>{
+    //             if(status==values.status.ok){
+    //                 lock_callback(false)
+    //                 callback(status,list)
+    //             }else{
+    //                 lock_callback(false)
+    //                 callback(values.status.error,message)
+    //             }
+    //         })
+    //     }else{
+    //         console.log(string.database.insert.emptyList)
+    //         lock_callback(false)
+    //         callback(values.status.error,[])
+    //     }
+    // }
     updateCandleStick(from,to,interval,fromTime,toTime,isNew,callback,lock_callback){
         connection.getCandleStick(from,to,interval,fromTime,toTime,(status,data)=>{
             if(status==values.status.ok&& data.length>0){
@@ -69,7 +146,7 @@ module.exports={
                 const collection=id.database.cc.history_from_to_type(from,to,interval)
                 if (isNew){
                     console.log('inserting for new')
-                    db.findManyLimited(collection,{},{[id.database.cc.id]:-1},1,(status,prevData)=>{
+                    db.find(`select * from ${collection} order by _id desc limit 1`,(status,prevData)=>{
                         if(prevData.length==0){
                             this.saveHistoryDataset(collection,data,isNew,0,callback,lock_callback)
                         }else{
@@ -78,7 +155,7 @@ module.exports={
                     })
                 }else{
                     console.log('inserting for old')
-                    db.findManyLimited(collection,{},{[id.database.cc.id]:1},1,(status,prevData)=>{
+                    db.find(`select * from ${collection} order by _id asc limit 1`,(status,prevData)=>{
                         if(prevData.length==0){
                             this.saveHistoryDataset(collection,data,isNew,new Date().getTime(),callback,lock_callback)
                         }else{
@@ -89,54 +166,38 @@ module.exports={
             }else{
                 console.log(`something is worng,, inside outer else`)
                 lock_callback(false)
-                callback(status,data)
+                return callback(status,data)
             }
         })
     },
 
-    saveHistoryDataset(key,data,isNew,entryTime,callback,lock_callback){
+    saveHistoryDataset(tableName,data,isNew,entryTime,callback,lock_callback){
         console.log('saving dataset')
         var list=[]
+
         data.map(row=>{
             var ob={}
             var i=0
-            ob[id.binance.id]=parseInt(row[i++])
-            ob[id.binance.open]=parseFloat(row[i++])
-            ob[id.binance.high]=parseFloat(row[i++])
-            ob[id.binance.low]=parseFloat(row[i++])
-            ob[id.binance.close]=parseFloat(row[i++])
-            ob[id.binance.volume]=parseFloat(row[i++])
-            ob[id.binance.close_time]=parseFloat(row[i++])
-            ob[id.binance.quote_asset_volume]=parseFloat(row[i++])
-            ob[id.binance.number_of_trades]=parseFloat(row[i++])
-            ob[id.binance.taker_buy_base_asset_volume]=parseFloat(row[i++])
-            ob[id.binance.taker_buy_quote_asset_volume]=parseFloat(row[i++])
-            if(isNew){
-                if(ob[id.binance.id]>entryTime){
-                    list.push(ob)
-                }
+            for(var i in id.database.collection.keyList.history){
+                ob[id.database.collection.keyList.history[i]]=parseFloat(row[i])
             }
-            if(!isNew){
-                if(ob[id.binance.id]<entryTime){
-                    list.push(ob)
-                }
-            }
+            list.push(ob)
         })
         if(list.length>0){
             console.log('inserting into the database')
-            db.insertMany(key,list,(status,message)=>{
+            db.insert(tableName,id.database.collection.keyList.history,list,(status,message)=>{
                 if(status==values.status.ok){
                     lock_callback(false)
-                    callback(status,list)
+                    return callback(status,list)
                 }else{
                     lock_callback(false)
-                    callback(values.status.error,message)
+                    return callback(values.status.error,message)
                 }
             })
         }else{
             console.log(string.database.insert.emptyList)
             lock_callback(false)
-            callback(values.status.error,[])
+            return callback(values.status.error,[])
         }
     }
 }

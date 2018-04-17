@@ -36,17 +36,21 @@ app.use(express.static(path.join(__dirname, 'public')));
 /** setting up cors options */
 var cors = require('cors')
 
-app.use(cors())
 
+/** Initialize database */
+database.createGoodbadTable((status,message)=>{console.log(`status: ${status}, message: ${message}`)})
+database.createSentimentTrendTable((status,message)=>{console.log(`status: ${status}, message: ${message}`)})
+database.createTweetsTable((status,message)=>{console.log(`status: ${status}, message: ${message}`)})
+
+
+/** Initialize url paths */
+app.use(cors())
 app.use('/', index);
 app.use('/news', news);
 app.use('/cc',cryptoCompare);
 app.use('/twitter',twitter);
 app.use('/mailer',mailer)
 app.use('/forecast',forecast)
-
-
-
 
 
 
@@ -74,8 +78,7 @@ app.use(function(err, req, res, next) {
 // /* socket  to communicate with client */
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
-var port = process.env.PORT || 3004;
-server.listen(port);
+server.listen(3004);
 
 
 var cryptoSocketList={}

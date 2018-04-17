@@ -2,7 +2,9 @@ const network = require('./constants').network
 const values = require('./constants').values
 const string = require('./constants').string
 const id = require('./constants').id
+const utils = require('./utils')
 const fetch = require('node-fetch')
+
 
 module.exports={
     getNews(type,count,page,callback){
@@ -107,7 +109,16 @@ module.exports={
         console.log('streaming tweets from twitter api')
         client.stream('statuses/filter', {track: `${symbol}`},  function(stream) {
             stream.on('data', function(tweet) {
-                bufferTweets.push(tweet)
+                const tweet_obj={}
+                tweet_obj[id.database.collection.keyList.tweets[0]]=tweet.created_at
+                tweet_obj[id.database.collection.keyList.tweets[1]]=tweet.id_str
+                tweet_obj[id.database.collection.keyList.tweets[2]]=utils.base64(tweet.text)
+                tweet_obj[id.database.collection.keyList.tweets[3]]=utils.base64(tweet.user.name)
+                tweet_obj[id.database.collection.keyList.tweets[4]]=utils.base64(tweet.user.screen_name)
+                tweet_obj[id.database.collection.keyList.tweets[5]]=utils.base64(tweet.user.profile_image_url)
+                tweet_obj[id.database.collection.keyList.tweets[6]]=tweet.timestamp_ms
+
+                bufferTweets.push(tweet_obj)
                 console.log(bufferTweets.length);
                 console.log(tweet.text)
                 if(bufferTweets.length>50){
