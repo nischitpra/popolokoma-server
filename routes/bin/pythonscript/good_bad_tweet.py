@@ -19,7 +19,7 @@ HISTORY_TYPE=1*60*60*24 #1 day
 
 
 stemmer = EnglishStemmer()
-stop_words = pickle.load(open('saved_classifier/stopwords.sav', 'rb'))
+stop_words = pickle.load(open(base_path+'/saved_classifier/stopwords.sav', 'rb'))
 my_stop_words='to and http https com co www'
 stop_words=stop_words+my_stop_words.split()
 
