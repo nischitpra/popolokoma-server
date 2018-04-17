@@ -17,7 +17,7 @@ module.exports = {
 
         subscribeOtp:(email,from,to,otp)=>`http://localhost:3001/mailer/subscribe/validate?email=${email}&from=${from}&to=${to}&otp=${otp}`,
         // database:`mongodb://localhost:27017/`,
-        database:`postgres://fbmvbdliqjkxsl:bb91a946f4894d2ddeeadc1a97f05ebd754e06035e044391c4714361652daea9@ec2-54-83-204-6.compute-1.amazonaws.com:5432/dbingm2b5mn7og`,
+        database:`postgres://popo:weareawesome@popo-server.ckhrqovrxtw4.us-east-1.rds.amazonaws.com/coins`,
     },
     files:{
         python:{
@@ -120,7 +120,7 @@ module.exports = {
         },
         application:{db:'db'},
         database:{
-            name:'dbingm2b5mn7og',
+            name:'coins',
             collection:{
                 otp:'otp',
                 subscribed:'subscribed',

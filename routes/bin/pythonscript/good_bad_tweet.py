@@ -11,7 +11,7 @@ import psycopg2
 import pandas as pd
 import base64
 
-connection=psycopg2.connect('postgres://fbmvbdliqjkxsl:bb91a946f4894d2ddeeadc1a97f05ebd754e06035e044391c4714361652daea9@ec2-54-83-204-6.compute-1.amazonaws.com:5432/dbingm2b5mn7og')
+connection=psycopg2.connect("postgres://popo:weareawesome@popo-server.ckhrqovrxtw4.us-east-1.rds.amazonaws.com/coins")
 cur=connection.cursor()
 
 base_path='/app/routes/bin/pythonscript'
@@ -67,7 +67,6 @@ def sentiment(timestamp,df):
         else:
             proba_df=proba_df.append({'_id':p_df['_id'].iloc[i],'timestamp':p_df['timestamp'].iloc[i],'category':3,'probability':row[3]},ignore_index=True)
 
-    proba_df.to_csv(base_path+'/dataset/csv/good_bad/filtered/{}_good_bad.csv'.format(timestamp), sep=',', index=False)
     return [proba_df]
 
 
