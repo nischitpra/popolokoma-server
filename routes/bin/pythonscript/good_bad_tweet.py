@@ -11,7 +11,7 @@ import psycopg2
 import pandas as pd
 import base64
 
-connection=psycopg2.connect('postgres://popo:wewillrock@localhost:5432/coins')
+connection=psycopg2.connect('postgres://fbmvbdliqjkxsl:bb91a946f4894d2ddeeadc1a97f05ebd754e06035e044391c4714361652daea9@ec2-54-83-204-6.compute-1.amazonaws.com:5432/dbingm2b5mn7og')
 cur=connection.cursor()
 
 base_path='/app/routes/bin/pythonscript'
