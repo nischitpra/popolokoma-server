@@ -78,7 +78,7 @@ app.use(function(err, req, res, next) {
 // /* socket  to communicate with client */
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
-server.listen(3004);
+server.listen(process.env.PORT || 3004);
 
 
 var cryptoSocketList={}
