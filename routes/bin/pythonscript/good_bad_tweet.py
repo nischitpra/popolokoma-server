@@ -1,9 +1,4 @@
 import sys
-import json
-import pandas as pd
-import numpy as np
-import math
-from datetime import datetime
 import re
 from nltk.stem.snowball import EnglishStemmer
 import pickle
