@@ -4,6 +4,7 @@ from nltk.stem.snowball import EnglishStemmer
 import pickle
 import psycopg2
 import pandas as pd
+import numpy as np
 import base64
 
 connection=psycopg2.connect("postgres://popo:weareawesome@popo-server.ckhrqovrxtw4.us-east-1.rds.amazonaws.com:5432/coins")
