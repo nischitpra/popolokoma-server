@@ -71,19 +71,19 @@ def sentiment(timestamp,df):
 
 
 # Twitter Dataset
-cur.execute("select * from good_bad_tweets order by _id desc limit 1")
+cur.execute("select * from good_bad_tweets order by cast(_id as int) desc limit 1;")
 gb_l = list(cur.fetchall())
 
 record_exists=len(gb_l)>0
 
 if record_exists:
     last_id=gb_l[-1][0]
-    cur.execute("select * from tweets where _id>{} order by _id asc".format(last_id))
+    cur.execute("select * from tweets where cast(_id as int)>{} order by cast(_id as int) asc;".format(last_id))
     main_df = pd.DataFrame(list(cur.fetchall()))
     main_df.columns = ['_id','created_at','id_str','text','name','screen_name','profile_image_url','timestamp_ms']
     main_df['text'] = main_df['text'].apply(lambda tweet: base64.b64decode(tweet))
 else:
-    cur.execute("select * from tweets order by _id asc")
+    cur.execute("select * from tweets order by cast(_id as int) asc;")
     main_df = pd.DataFrame(list(cur.fetchall()))
     main_df.columns = ['_id','created_at','id_str','text','name','screen_name','profile_image_url','timestamp_ms']
     main_df['text'] = main_df['text'].apply(lambda tweet: base64.b64decode(tweet))
@@ -123,7 +123,7 @@ if not final_proba_df.empty:
     for index, row in final_proba_df.iterrows():
         query.append('({},{},{},{})'.format(int(row['_id']),int(row['category']),round(row['probability'],6),int(row['timestamp'])))
     query=','.join(query)
-    cur.execute("insert into good_bad_tweets (_id,category,probability,timestamp) values {}".format(query))
+    cur.execute("insert into good_bad_tweets (_id,category,probability,timestamp) values {};".format(query))
     connection.commit()
     print('{} rows filtered'.format(final_proba_df.shape[0]))
 else:

@@ -9,7 +9,7 @@ var MongoClient = require('mongodb').MongoClient;
 module.exports={
     // for subscribe
     validateOtp(key,otp,callback,mailerCallback){
-        this.find(`select * from ${id.database.collection.otp} where _key=${key} and otp=${otp}`,(status,data)=>{
+        this.find(`select * from ${id.database.collection.otp} where _key=${key} and otp=${otp};`,(status,data)=>{
             if(status==values.status.ok){
                 if(data!=null && data.length>0 && data[0][id.database.collection.keyList.otp[3]]=='false'){
                     this.deleteWhere(id.database.collection.otp,`_key=${key} and otp = ${otp}`,(status,message)=>{
@@ -43,7 +43,7 @@ module.exports={
         })
     },
     isSubscribed(email,from,to,mailerCallback){
-        this.find(`select * from ${id.database.collection.subscribed} where ${id.database.email}=${email} and ${id.database.from}=${from} and ${id.database.to}=${to} and ${id.database.isDeleted}=false`,(status,data)=>{
+        this.find(`select * from ${id.database.collection.subscribed} where ${id.database.email}=${email} and ${id.database.from}=${from} and ${id.database.to}=${to} and ${id.database.isDeleted}=false;`,(status,data)=>{
             if(status==values.status.ok){
                 if(data!=undefined&&data.length>0){
                     return mailerCallback(values.status.ok,true)
@@ -55,7 +55,7 @@ module.exports={
         })
     },
     getGoodBadTweets(callback){
-        this.find(`select * from ${id.database.collection.goodBadTweets} inner join ${id.database.collection.tweets} on cast(${id.database.collection.goodBadTweets}._id as int)=cast(${id.database.collection.tweets}._id as int) order by ${id.database.collection.goodBadTweets}._id desc`,(status,data)=>{
+        this.find(`select * from ${id.database.collection.goodBadTweets} inner join ${id.database.collection.tweets} on cast(${id.database.collection.goodBadTweets}._id as int)=cast(${id.database.collection.tweets}._id as int) order by ${id.database.collection.goodBadTweets}._id desc;`,(status,data)=>{
             if(status==values.status.ok){
                 for(var i in data){
                     data[i][id.database.text]=utils.base64Decode(data[i][id.database.text])
@@ -65,7 +65,7 @@ module.exports={
         })
     },
     getGoodBadTweetsFew(count,callback){
-        this.find(`select * from ${id.database.collection.goodBadTweets} inner join ${id.database.collection.tweets} on cast(${id.database.collection.goodBadTweets}._id as int)=cast(${id.database.collection.tweets}._id as int) order by ${id.database.collection.goodBadTweets}._id desc limit ${count}`,(status,data)=>{
+        this.find(`select * from ${id.database.collection.goodBadTweets} inner join ${id.database.collection.tweets} on cast(${id.database.collection.goodBadTweets}._id as int)=cast(${id.database.collection.tweets}._id as int) order by ${id.database.collection.goodBadTweets}._id desc limit ${count};`,(status,data)=>{
             if(status==values.status.ok){
                 for(var i in data){
                     data[i][id.database.text]=utils.base64Decode(data[i][id.database.text])
@@ -267,7 +267,6 @@ module.exports={
             valueString=valueString.substring(0,valueString.length-1) // remove last comma
     
             const finalQ=`insert into ${tableName} ${columnName} values ${valueString};`
-            console.log(finalQ)
             const query = client.query(finalQ,(err, res) => {
                 if(err){
                     client.end()

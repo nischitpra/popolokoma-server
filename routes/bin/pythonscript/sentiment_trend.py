@@ -14,13 +14,13 @@ window_size=60*60 # per hour
 
 
 # Loading data and preparation
-cur.execute('select * from sentiment_trend order by time desc limit 1')
+cur.execute('select * from sentiment_trend order by cast(time as int) desc limit 1;')
 last_insert=list(cur.fetchall())
 if len(last_insert)>0:
-    cur.execute('select * from good_bad_tweets inner join sentiment_trend on cast(good_bad_tweets._id as int) > {} order by timestamp asc'.format(last_insert[0][0]))    
+    cur.execute('select * from good_bad_tweets inner join sentiment_trend on cast(good_bad_tweets._id as int) > {} order by cast(timestamp as int) asc;'.format(last_insert[0][0]))    
     m_df=pd.DataFrame(list(cur.fetchall()))
 else:
-    cur.execute('select * from good_bad_tweets')    
+    cur.execute('select * from good_bad_tweets;')    
     m_df=pd.DataFrame(list(cur.fetchall()))
 
 if m_df.empty:
@@ -80,7 +80,7 @@ if not senti_df.empty:
     query=[]
     for index, row in senti_df.iterrows():
         query.append('({},{},{},{},{},{})'.format(row['_id'],round(row['close'],6),round(row['high'],6),round(row['low'],6),round(row['open'],6),int(row['time'])))
-    cur.execute("insert into sentiment_trend (_id,close,high,low,open,time) values {}".format(','.join(query)))
+    cur.execute("insert into sentiment_trend (_id,close,high,low,open,time) values {};".format(','.join(query)))
     connection.commit()
     print('{} rows added'.format(senti_df.shape[0]))
 else:
