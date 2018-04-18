@@ -2,6 +2,7 @@ const network = require('./constants').network;
 const id = require('./constants').id;
 const values = require('./constants').values;
 const string = require('./constants').string;
+const utils = require('./utils');
 var MongoClient = require('mongodb').MongoClient;
 
 
@@ -54,10 +55,24 @@ module.exports={
         })
     },
     getGoodBadTweets(callback){
-        this.find(`select * from ${id.database.collection.goodBadTweets} inner join ${id.database.collection.tweets} order by _id desc`,callback)
+        this.find(`select * from ${id.database.collection.goodBadTweets} inner join ${id.database.collection.tweets} on cast(${id.database.collection.goodBadTweets}._id as int)=cast(${id.database.collection.tweets}._id as int) order by ${id.database.collection.goodBadTweets}._id desc`,(status,data)=>{
+            if(status==values.status.ok){
+                for(var i in data){
+                    data[i][id.database.text]=utils.base64Decode(data[i][id.database.text])
+                }
+            }
+            return callback(status,data)
+        })
     },
     getGoodBadTweetsFew(count,callback){
-        this.find(`select * from ${id.database.collection.goodBadTweets} inner join ${id.database.collection.tweets} order by _id desc limit ${count}`,callback)
+        this.find(`select * from ${id.database.collection.goodBadTweets} inner join ${id.database.collection.tweets} on cast(${id.database.collection.goodBadTweets}._id as int)=cast(${id.database.collection.tweets}._id as int) order by ${id.database.collection.goodBadTweets}._id desc limit ${count}`,(status,data)=>{
+            if(status==values.status.ok){
+                for(var i in data){
+                    data[i][id.database.text]=utils.base64Decode(data[i][id.database.text])
+                }
+            }
+            return callback(status,data)
+        })
     },
     createSubscribedTable(callback){
         const pg = require('pg');
