@@ -71,7 +71,7 @@ def sentiment(timestamp,df):
 
 
 # Twitter Dataset
-cur.execute("select * from good_bad_tweets order by _id asc limit 1")
+cur.execute("select * from good_bad_tweets order by _id desc limit 1")
 gb_l = list(cur.fetchall())
 
 record_exists=len(gb_l)>0
