@@ -121,7 +121,7 @@ if not final_proba_df.empty:
     final_proba_df=final_proba_df.drop_duplicates(['_id'],keep='first')
     query=[]
     for index, row in final_proba_df.iterrows():
-        query.append('({},{},{},{})'.format(int(row['_id']),int(row['category']),round(row['probability'],8),int(row['timestamp'])))
+        query.append('({},{},{},{})'.format(int(row['_id']),int(row['category']),round(row['probability'],6),int(row['timestamp'])))
     query=','.join(query)
     cur.execute("insert into good_bad_tweets (_id,category,probability,timestamp) values {}".format(query))
     connection.commit()
