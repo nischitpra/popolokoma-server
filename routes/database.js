@@ -42,7 +42,7 @@ module.exports={
         })
     },
     isSubscribed(email,from,to,mailerCallback){
-        find(`select * from ${id.database.collection.subscribed} where ${id.database.email}=${email} and ${id.database.from}=${from} and ${id.database.to}=${to} and ${id.database.isDeleted}=false`,(status,data)=>{
+        this.find(`select * from ${id.database.collection.subscribed} where ${id.database.email}=${email} and ${id.database.from}=${from} and ${id.database.to}=${to} and ${id.database.isDeleted}=false`,(status,data)=>{
             if(status==values.status.ok){
                 if(data!=undefined&&data.length>0){
                     return mailerCallback(values.status.ok,true)
@@ -54,10 +54,10 @@ module.exports={
         })
     },
     getGoodBadTweets(callback){
-        find(`select * from ${id.database.collection.goodBadTweets} inner join ${id.database.collection.tweets} order by _id desc`,callback)
+        this.find(`select * from ${id.database.collection.goodBadTweets} inner join ${id.database.collection.tweets} order by _id desc`,callback)
     },
     getGoodBadTweetsFew(count,callback){
-        find(`select * from ${id.database.collection.goodBadTweets} inner join ${id.database.collection.tweets} order by _id desc limit ${count}`,callback)
+        this.find(`select * from ${id.database.collection.goodBadTweets} inner join ${id.database.collection.tweets} order by _id desc limit ${count}`,callback)
     },
     createSubscribedTable(callback){
         const pg = require('pg');
