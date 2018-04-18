@@ -13,9 +13,18 @@ var locked=false
 // for general search tweets
 router.get('/q', function(req, res, next) {
     const from=req.query[id.params.from]
-    // const to=req.query[id.params.to]
     const coinName=req.query[id.twitter.coinName]
-    presenter.getSpecificTweetsDb(coinName,from,10,(status,data)=>{
+
+    from=(from==undefined||from==null)?'XVG':from
+    coinName=(coinName==undefined||to==null)?'Verge':coinName
+
+    // presenter.getSpecificTweetsDb(coinName,from,10,(status,data)=>{
+    //     res.json({
+    //         status:status,
+    //         message: data
+    //     })
+    // })
+    presenter.getTweetsDb((status,data)=>{
         res.json({
             status:status,
             message: data

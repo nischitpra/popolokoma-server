@@ -18,16 +18,21 @@ var client = new Twitter({
 });
 
 module.exports={
-    getSpecificTweetsDb(name,from,limit,callback){
-        console.log(`getting tweet for ${name} ${from}`)
-        db.findManyLimited(id.database.collection.tweets,{[id.twitter.tweet.text] : {$regex : new RegExp( `${name}|${from}`, 'i')}},{'_id':-1},limit,(status,data)=>{
-            callback(status,data)
-        })
-    },
+    // getSpecificTweetsDb(name,from,limit,callback){
+    //     console.log(`getting tweet for ${name} ${from}`)
+    //     db.find(`select * from ${id.database.collection.tweets} where ${id.database.text}=${name} or ${id.database.text}=${name}`,{[id.twitter.tweet.text] : {$regex : new RegExp( `${name}|${from}`, 'i')}},{'_id':-1},limit,(status,data)=>{
+    //         callback(status,data)
+    //     })
+    // },
     getTweetsDb(callback){
         console.log(`getting home tweets`)
-        db.findMany(id.database.collection.tweets,{},(status,data)=>{
-            callback(status,data)
+        db.find(`select * from ${id.database.collection.tweets} order by _id desc limit 20`,(status,data)=>{
+            if(status==values.status.ok){
+                for(var i in data){
+                    data[i][id.database.text]=utils.base64Decode(data[i][id.database.text])
+                }
+            }
+            return callback(status,data)
         })
     },
     searchTweets(name,symbol,callback){
@@ -93,7 +98,7 @@ module.exports={
     },
     getSentimentTrend(callback){
         console.log(`getting sentiment trend`)
-        db.findManySorted(id.database.collection.sentimentTrend,{},{'time':1},(status,data)=>{
+        db.find(`select * from ${id.database.collection.sentimentTrend} order by time asc`,(status,data)=>{
             callback(status,data)
         })
     },
