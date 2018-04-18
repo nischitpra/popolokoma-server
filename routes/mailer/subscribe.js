@@ -32,11 +32,18 @@ module.exports={
           subject: subject,
           text: message,
         }).then(()=>{
-            db.insertOne(id.database.collection.otp,{[this.generateKey(user,from,to)]:otp,[id.database.createdAt]:new Date().getTime(),[id.database.isDeleted]:false})
-            callback(values.status.ok,string.subscribe.optSent(user))    
+            db.insert(id.database.collection.otp,id.database.collection.keyList.otp,{
+                [id.database.collection.keyList.otp[0]]:this.generateKey(user,from,to),
+                [id.database.collection.keyList.otp[1]]:otp,
+                [id.database.collection.keyList.otp[2]]:new Date().getTime(),
+                [id.database.collection.keyList.otp[3]]:false
+            },(status,message)=>{
+                console.log(`status:${status}, message:${message}`)
+                return callback(values.status.ok,string.subscribe.optSent(user))   
+            })
         }).catch((error)=>{
             console.log(error);
-            callback(values.status.error,string.someWrong)
+            return callback(values.status.error,string.someWrong)
         })
     },
     sendMail(user,subject,message,callback){
@@ -65,7 +72,7 @@ module.exports={
     },
 
     validateOtp(user,from,to,otp,mailerCallback){
-        db.validateOtp(id.database.collection.otp,this.generateKey(user,from,to),otp,this.validation,mailerCallback)
+        db.validateOtp(this.generateKey(user,from,to),otp,this.validation,mailerCallback)
     },
     validation(status,callback){
         if(status===id.mailer.subscribe.validationSuccess){
@@ -80,7 +87,7 @@ module.exports={
     saveSubscription(email,from,to){
         db.findOne(id.database.collection.subscribed,{[id.database.email]:utils.base64(email),[id.database.from]:from,[id.database.to]:to,[id.database.isDeleted]:false},(status,item)=>{
             if(status==values.status.error){
-                db.insertOne(id.database.collection.subscribed,{[id.database.email]:utils.base64(email),[id.database.from]:from,[id.database.to]:to,[id.database.createdAt]:new Date().getTime(),[id.database.isDeleted]:false})
+                db.insert(id.database.collection.subscribed,id.database.collection.keyList.subscribed,{[id.database.email]:utils.base64(email),[id.database.from]:from,[id.database.to]:to,[id.database.createdAt]:new Date().getTime(),[id.database.isDeleted]:false})
             }
         })
     },
@@ -97,6 +104,6 @@ module.exports={
         db.isSubscribed(utils.base64(email),from,to,callback)
     },
     unSubscribe(email,from,to,callback){
-        db.delete(id.database.collection.subscribed,{[id.database.email]:utils.base64(email),[id.database.from]:from,[id.database.to]:to,[id.database.isDeleted]:false},callback)
+        db.deleteWhere(id.database.collection.subscribed,`${id.database.email}=${utils.base64(email)} and ${id.database.to} = ${to} and ${id.database.isDeleted} = false`,callback)
     },
 }
