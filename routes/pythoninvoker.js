@@ -15,8 +15,9 @@ module.exports={
             callback(values.status.ok,data.toString('utf8'))
         })
         process.stderr.on('data',(error)=>{
-            console.log('some error occured')
-            callback(values.status.error,error.toString('utf8'))
+            console.log('---ERROR-----')
+            console.log(error.toString('utf8'))
+            console.log('=============')
         })
     },
     getFilteredTweet(tweets,callback){
