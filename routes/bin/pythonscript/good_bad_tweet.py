@@ -76,17 +76,16 @@ if record_exists:
     last_id=gb_l[-1][0]
     cur.execute("select * from tweets where cast(_id as BIGINT)>{} order by cast(_id as BIGINT) asc;".format(last_id))
     main_df = pd.DataFrame(list(cur.fetchall()))
-    main_df.columns = ['_id','created_at','id_str','text','name','screen_name','profile_image_url','timestamp_ms']
-    main_df['text'] = main_df['text'].apply(lambda tweet: base64.b64decode(tweet))
 else:
     cur.execute("select * from tweets order by cast(_id as BIGINT) asc;")
     main_df = pd.DataFrame(list(cur.fetchall()))
-    main_df.columns = ['_id','created_at','id_str','text','name','screen_name','profile_image_url','timestamp_ms']
-    main_df['text'] = main_df['text'].apply(lambda tweet: base64.b64decode(tweet))
     
 if main_df.empty:
     print('no values to process')
     sys.exit()
+
+main_df.columns = ['_id','created_at','id_str','text','name','screen_name','profile_image_url','timestamp_ms']
+main_df['text'] = main_df['text'].apply(lambda tweet: base64.b64decode(tweet))
 
 main_df=main_df.drop_duplicates(subset=['_id'], keep='first')
 
@@ -112,9 +111,8 @@ for time_milli in range(current_date,last_date+step,step):
         [proba_df]=x
         final_proba_df=pd.concat([final_proba_df,proba_df])
 
-        
 if not final_proba_df.empty:
-    final_proba_df=final_proba_df.drop_duplicates(['_id'],keep='first')
+    final_proba_df=final_proba_df.drop_duplicates(['_id'],keep='last')
     query=[]
     for index, row in final_proba_df.iterrows():
         query.append('({},{},{},{})'.format(int(row['_id']),int(row['category']),round(row['probability'],6),int(row['timestamp'])))

@@ -135,17 +135,17 @@ module.exports={
             }
             const query = client.query(
                 `create table if not exists ${name} (
-                    _id char(13), 
-                    open varchar(13), 
-                    high varchar(13), 
-                    low varchar(13), 
-                    close varchar(13), 
-                    volume varchar(15), 
-                    close_time varchar(13), 
-                    quote_asset_volume varchar(13), 
-                    number_of_trades varchar(10), 
-                    taker_buy_base_asset_volume varchar(13), 
-                    taker_buy_quote_asset_volume varchar(13), 
+                    _id bigint, 
+                    open real, 
+                    high real, 
+                    low real, 
+                    close real, 
+                    volume real, 
+                    close_time bigint, 
+                    quote_asset_volume real, 
+                    number_of_trades int, 
+                    taker_buy_base_asset_volume real, 
+                    taker_buy_quote_asset_volume real, 
                     primary key(_id)
                 ) ;`,(err, res) => {
                     if(err){
@@ -167,10 +167,10 @@ module.exports={
             }
             const query = client.query(
                 `create table if not exists ${id.database.collection.goodBadTweets} (
-                    _id varchar(24),
+                    _id bigint,
                     category char(1),
-                    probability varchar(8),
-                    timestamp varchar(13),
+                    probability real,
+                    timestamp bigint,
                     primary key(_id)
                 );`,(err, res) => {
                     if(err){
@@ -192,12 +192,12 @@ module.exports={
             }
             const query = client.query(
                 `create table if not exists ${id.database.collection.sentimentTrend} (
-                    _id varchar(24),
-                    close varchar(13),
-                    high varchar(13),
-                    low varchar(13),
-                    open varchar(13),
-                    time varchar(13),
+                    _id bigint,
+                    close real,
+                    high real,
+                    low real,
+                    open real,
+                    time bigint,
                     primary key(_id)
                 ) ;`,(err, res) => {
                     if(err){
@@ -221,12 +221,12 @@ module.exports={
                 `create table if not exists ${id.database.collection.tweets} (
                     _id SERIAL PRIMARY KEY,
                     created_at char(32),
-                    id_str varchar(20),
+                    id_str bigint,
                     text text,
                     name varchar(120),
                     screen_name varchar(120),
                     profile_image_url text,
-                    timestamp_ms varchar(13)
+                    timestamp_ms bigint
                 );`,(err, res) => {
                     if(err){
                         client.end()

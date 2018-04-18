@@ -14,7 +14,7 @@ window_size=60*60 # per hour
 cur.execute('select * from sentiment_trend order by cast(time as BIGINT) desc limit 1;')
 last_insert=list(cur.fetchall())
 if len(last_insert)>0:
-    cur.execute('select * from good_bad_tweets inner join sentiment_trend on cast(good_bad_tweets._id as BIGINT) > {} order by cast(timestamp as BIGINT) asc;'.format(last_insert[0][0]))    
+    cur.execute('select good_bad_tweets._id,category,probability,timestamp from good_bad_tweets inner join sentiment_trend on cast(good_bad_tweets._id as BIGINT) > {} order by cast(timestamp as BIGINT) asc;'.format(last_insert[0][0]))    
     m_df=pd.DataFrame(list(cur.fetchall()))
 else:
     cur.execute('select * from good_bad_tweets;')    
@@ -51,7 +51,7 @@ if len(last_insert)==0:
     high=opn
     low=opn
 else:
-    opn=last_insert[0]['close']
+    opn=float(last_insert[0][1])
     close=opn
     high=opn
     low=opn
@@ -64,16 +64,17 @@ for i in range(df.shape[0]):
         close=opn
         high=opn
         low=opn
-    if df['category'].iloc[i]==0:
-        close+=df['probability'].iloc[i]
-    elif df['category'].iloc[i]==1.0:
-        close-=df['probability'].iloc[i]
-    elif df['category'].iloc[i]==4.0:
-        close+=df['probability'].iloc[i]*0.25
+    if float(df['category'].iloc[i])==0.0:
+        close+=float(df['probability'].iloc[i])
+    elif float(df['category'].iloc[i])==1.0:
+        close-=float(df['probability'].iloc[i])
+    elif float(df['category'].iloc[i])==4.0:
+        close+=float(df['probability'].iloc[i])*0.25
     low=close if close<low else low
     high=close if close>high else high
-    
+
 if not senti_df.empty:
+    senti_df=senti_df.drop_duplicates(subset=['_id'], keep='last')
     query=[]
     for index, row in senti_df.iterrows():
         query.append('({},{},{},{},{},{})'.format(row['_id'],round(row['close'],6),round(row['high'],6),round(row['low'],6),round(row['open'],6),int(row['time'])))
