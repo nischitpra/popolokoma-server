@@ -14,7 +14,7 @@ window_size=60*60 # per hour
 cur.execute('select * from sentiment_trend order by cast(time as BIGINT) desc limit 1;')
 last_insert=list(cur.fetchall())
 if len(last_insert)>0:
-    cur.execute('select good_bad_tweets._id,category,probability,timestamp from good_bad_tweets inner join sentiment_trend on cast(good_bad_tweets._id as BIGINT) > {} order by cast(timestamp as BIGINT) asc;'.format(last_insert[0][0]))    
+    cur.execute('select * from good_bad_tweets where cast(_id as BIGINT) > {} order by cast(timestamp as BIGINT) asc;'.format(last_insert[0][0]))    
     m_df=pd.DataFrame(list(cur.fetchall()))
 else:
     cur.execute('select * from good_bad_tweets;')    

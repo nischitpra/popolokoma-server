@@ -59,6 +59,9 @@ module.exports={
             if(status==values.status.ok){
                 for(var i in data){
                     data[i][id.database.text]=utils.base64Decode(data[i][id.database.text])
+                    data[i][id.database.name]=utils.base64Decode(data[i][id.database.name])
+                    data[i][id.database.screenName]=utils.base64Decode(data[i][id.database.screenName])
+                    data[i][id.database.profileImageUrl]=utils.base64Decode(data[i][id.database.profileImageUrl])
                 }
             }
             return callback(status,data)
@@ -69,6 +72,9 @@ module.exports={
             if(status==values.status.ok){
                 for(var i in data){
                     data[i][id.database.text]=utils.base64Decode(data[i][id.database.text])
+                    data[i][id.database.name]=utils.base64Decode(data[i][id.database.name])
+                    data[i][id.database.screenName]=utils.base64Decode(data[i][id.database.screenName])
+                    data[i][id.database.profileImageUrl]=utils.base64Decode(data[i][id.database.profileImageUrl])
                 }
             }
             return callback(status,data)
