@@ -90,7 +90,7 @@ module.exports={
             }
             const query = client.query(
                 `create table if not exists ${id.database.collection.subscribed} (
-                    _id serial primary key, 
+                    _id bigint primary key, 
                     email varchar(52), 
                     _from varchar(7), 
                     _to varchar(7), 
@@ -116,7 +116,7 @@ module.exports={
             }
             const query = client.query(
                 `create table if not exists ${id.database.collection.otp} (
-                    _id serial primary key, 
+                    _id bigint primary key, 
                     _key varchar(13), 
                     otp varchar(13), 
                     created_at varchar(13), 
@@ -225,7 +225,7 @@ module.exports={
             }
             const query = client.query(
                 `create table if not exists ${id.database.collection.tweets} (
-                    _id SERIAL PRIMARY KEY,
+                    _id bigint primary key,
                     created_at char(32),
                     id_str bigint,
                     text text,
