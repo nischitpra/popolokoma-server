@@ -58,6 +58,8 @@ def sentiment(timestamp,df):
             proba_df=proba_df.append({'_id':p_df['_id'].iloc[i],'timestamp':p_df['timestamp'].iloc[i],'category':1,'probability':row[1]},ignore_index=True)
         elif row[4]>0.5 and np.argmax(row)==4: # less good
             proba_df=proba_df.append({'_id':p_df['_id'].iloc[i],'timestamp':p_df['timestamp'].iloc[i],'category':4,'probability':row[4]},ignore_index=True)
+        elif row[5]>0.5 and np.argmax(row)==5: # less bad
+            proba_df=proba_df.append({'_id':p_df['_id'].iloc[i],'timestamp':p_df['timestamp'].iloc[i],'category':5,'probability':row[5]},ignore_index=True)
         elif np.argmax(row)==2:
             proba_df=proba_df.append({'_id':p_df['_id'].iloc[i],'timestamp':p_df['timestamp'].iloc[i],'category':2,'probability':row[2]},ignore_index=True)
         else:
