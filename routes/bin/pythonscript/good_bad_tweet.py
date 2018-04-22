@@ -11,7 +11,7 @@ connection=psycopg2.connect("postgres://popo:weareawesome@popo-server.ckhrqovrxt
 cur=connection.cursor()
 
 base_path='/app/routes/bin/pythonscript'
-HISTORY_TYPE=1*60*60*24 #1 day
+HISTORY_TYPE=1*60*60 #1 hour
 
 
 stemmer = EnglishStemmer()
