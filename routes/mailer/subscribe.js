@@ -32,12 +32,12 @@ module.exports={
           subject: subject,
           text: message,
         }).then(()=>{
-            db.insert(id.database.collection.otp,id.database.collection.keyList.otp,{
+            db.insert(id.database.collection.otp,id.database.collection.keyList.otp,[{
                 [id.database.collection.keyList.otp[0]]:this.generateKey(user,from,to),
                 [id.database.collection.keyList.otp[1]]:otp,
                 [id.database.collection.keyList.otp[2]]:new Date().getTime(),
                 [id.database.collection.keyList.otp[3]]:false
-            },(status,message)=>{
+            }],(status,message)=>{
                 console.log(`status:${status}, message:${message}`)
                 return callback(values.status.ok,string.subscribe.optSent(user))   
             })
@@ -72,22 +72,24 @@ module.exports={
     },
 
     validateOtp(user,from,to,otp,mailerCallback){
-        db.validateOtp(this.generateKey(user,from,to),otp,this.validation,mailerCallback)
-    },
-    validation(status,callback){
-        if(status===id.mailer.subscribe.validationSuccess){
-            callback(values.status.ok)
-        }else if(status===id.mailer.subscribe.validationError){
-            callback(values.status.error)
-        }
+        db.validateOtp(this.generateKey(user,from,to),otp,mailerCallback)
     },
     validateEmail(email) {
         return re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
     },
     saveSubscription(email,from,to){
-        db.findOne(id.database.collection.subscribed,{[id.database.email]:utils.base64(email),[id.database.from]:from,[id.database.to]:to,[id.database.isDeleted]:false},(status,item)=>{
-            if(status==values.status.error){
-                db.insert(id.database.collection.subscribed,id.database.collection.keyList.subscribed,{[id.database.email]:utils.base64(email),[id.database.from]:from,[id.database.to]:to,[id.database.createdAt]:new Date().getTime(),[id.database.isDeleted]:false})
+        db.find(`select * from ${id.database.collection.subscribed} where ${id.database.email}='${utils.base64(email)}' and ${id.database.from}='${from}' and ${id.database.to}='${to}' and ${id.database.isDeleted}='false';`,(status,data)=>{
+            if(data.length==0){
+                db.insert(id.database.collection.subscribed,id.database.collection.keyList.subscribed,[{
+                    [id.database.collection.keyList.subscribed[0]]:utils.base64(email),
+                    [id.database.collection.keyList.subscribed[1]]:from,
+                    [id.database.collection.keyList.subscribed[2]]:to,
+                    [id.database.collection.keyList.subscribed[3]]:new Date().getTime(),
+                    [id.database.collection.keyList.subscribed[4]]:false
+                }],
+                (status,message)=>{
+                    console.log(`save subscription: ${status}, ${JSON.stringify(message)}`)
+                })
             }
         })
     },

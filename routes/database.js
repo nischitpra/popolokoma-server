@@ -8,16 +8,16 @@ var MongoClient = require('mongodb').MongoClient;
 
 module.exports={
     // for subscribe
-    validateOtp(key,otp,callback,mailerCallback){
-        this.find(`select * from ${id.database.collection.otp} where _key=${key} and otp=${otp};`,(status,data)=>{
+    validateOtp(key,otp,callback){
+        this.find(`select * from ${id.database.collection.otp} where _key='${key}' and ${id.database.otp}='${otp}' and ${id.database.isDeleted}='false';`,(status,data)=>{
             if(status==values.status.ok){
-                if(data!=null && data.length>0 && data[0][id.database.collection.keyList.otp[3]]=='false'){
-                    this.deleteWhere(id.database.collection.otp,`_key=${key} and otp = ${otp}`,(status,message)=>{
-                        console.log(`validate otp database.js: status:${status}, message:${message}`)
+                if(data!=null && data.length>0){
+                    this.deleteWhere(id.database.collection.otp,`_key='${key}' and otp = ${otp}`,(status,message)=>{
+                        console.log(`validateOtp database.js: status:${status}, message:${message}`)
                     })
-                    return callback(id.mailer.subscribe.validationSuccess,mailerCallback)
+                    return callback(values.status.ok,callback)
                 }else{
-                    return callback(id.mailer.subscribe.validationError,mailerCallback)
+                    return callback(values.status.error,callback)
                 }
             }
             return callback(status,data)
@@ -43,9 +43,9 @@ module.exports={
         })
     },
     isSubscribed(email,from,to,mailerCallback){
-        this.find(`select * from ${id.database.collection.subscribed} where ${id.database.email}=${email} and ${id.database.from}=${from} and ${id.database.to}=${to} and ${id.database.isDeleted}=false;`,(status,data)=>{
+        this.find(`select * from ${id.database.collection.subscribed} where ${id.database.email}='${email}' and ${id.database.from}='${from}' and ${id.database.to}='${to}' and ${id.database.isDeleted}='false';`,(status,data)=>{
             if(status==values.status.ok){
-                if(data!=undefined&&data.length>0){
+                if(data.length>0){
                     return mailerCallback(values.status.ok,true)
                 }else{
                     return mailerCallback(values.status.ok,false)
@@ -116,9 +116,9 @@ module.exports={
             }
             const query = client.query(
                 `create table if not exists ${id.database.collection.otp} (
-                    _id bigint primary key, 
-                    _key varchar(13), 
-                    otp varchar(13), 
+                    _id serial primary key , 
+                    _key varchar(84), 
+                    otp char(6), 
                     created_at varchar(13), 
                     is_deleted varchar(13) 
                 );`,(err, res) => {
@@ -225,7 +225,7 @@ module.exports={
             }
             const query = client.query(
                 `create table if not exists ${id.database.collection.tweets} (
-                    _id bigint primary key,
+                    _id SERIAL PRIMARY KEY,
                     created_at char(32),
                     id_str bigint,
                     text text,

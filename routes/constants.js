@@ -62,7 +62,7 @@ module.exports = {
             error:'error',
         },
         mailer:{
-            server:{name:'Gmail',email:'nischitpra@gmail.com',password:'Applebob123'},
+            server:{name:'Gmail',email:'popolokoma@gmail.com',password:'weRock123'},
         },
         binance:{
             candle_interval:{   
@@ -146,7 +146,7 @@ module.exports = {
                     // tweets:['_id','created_at','id_str','text','name','screen_name','profile_image_url','timestamp_ms'],
                     tweets:['created_at','id_str','text','name','screen_name','profile_image_url','timestamp_ms'],
                     otp:['_key','otp','created_at','is_deleted'],
-                    subscribed:['email','f_rom','_to','created_at','is_deleted'],
+                    subscribed:['email','_from','_to','created_at','is_deleted'],
                 },
             },
             id:'_id',
