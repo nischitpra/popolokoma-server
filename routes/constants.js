@@ -15,8 +15,7 @@ module.exports = {
 
         },
 
-        subscribeOtp:(email,from,to,otp)=>`http://localhost:3001/mailer/subscribe/validate?email=${email}&from=${from}&to=${to}&otp=${otp}`,
-        // database:`mongodb://localhost:27017/`,
+        subscribeOtp:(email,from,to,otp)=>`https://dry-sands-22825.herokuapp.com/mailer/subscribe/validate?email=${email}&from=${from}&to=${to}&otp=${otp}`,
         database:`postgres://popo:weareawesome@popo-server.ckhrqovrxtw4.us-east-1.rds.amazonaws.com:5432/coins`,
         database_details:{
             host: 'popo-server.ckhrqovrxtw4.us-east-1.rds.amazonaws.com',
