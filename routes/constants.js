@@ -125,6 +125,7 @@ module.exports = {
             taker_buy_quote_asset_volume:'taker_buy_quote_asset_volume',
         },
         application:{db:'db'},
+        
         database:{
             name:'coins',
             collection:{
@@ -135,6 +136,8 @@ module.exports = {
                 sentimentTrend:'sentiment_trend',
                 history:'history',
                 forecast:'forecast',
+                history_from_to_type:(from,to,type)=>`${from}_${to}_${type}`,
+                trend_velocity:(from,to)=>`trend_velocity`,
                 dump:{
                     candlestick:'candlestick_dump'
                 },
@@ -179,13 +182,13 @@ module.exports = {
                 history:'history',
                 time:'time',
                 history_from_to_type:(from,to,type)=>`${from}_${to}_${type}`,
-            
+                
             },
             
         },
         news:{everything:0,headlines:1,articles:'articles'},
         cryptocompare:{
-            history:{0:'histominute',1:'histohour',2:'histoday'},
+            history:{0:'1m',1:'1h',2:'1d'},
             from:'from',
             to:'to',
             exchange:'exchange',
@@ -209,6 +212,8 @@ module.exports = {
                 start:'start',
                 end:'end',
             },
+            interval:'interval',
+            intervalObject:'intervalObject',
         },
         twitter:{
             symbol:'symbol',

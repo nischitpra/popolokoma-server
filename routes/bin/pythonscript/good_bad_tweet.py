@@ -14,6 +14,7 @@ base_path='/app/routes/bin/pythonscript'
 HISTORY_TYPE=1*60*60 #1 hour
 
 
+
 stemmer = EnglishStemmer()
 stop_words = pickle.load(open(base_path+'/saved_classifier/stopwords.sav', 'rb'))
 my_stop_words='to and http https com co www'

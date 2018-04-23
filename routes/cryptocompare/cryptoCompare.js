@@ -8,7 +8,12 @@ const string = require('../constants').string
 const db = require('../database')
 const WebSocket = require('ws')
 
-var lock=false;
+var lock=false
+var intervalList={
+    _1m:undefined,
+    _1h:undefined,
+    _1d:undefined,
+}
 
 
 /** get candle stick data from db */
@@ -19,7 +24,7 @@ router.get('/gcs', function(req, res, next) {
     var fromTime=req.query[id.params.fromTime]
     var toTime=req.query[id.params.toTime]
     var isNew=req.query[id.params.isNew]
-
+    
     from=(from==undefined||from==null)?'XRP':from
     to=(to==undefined||to==null)?'BTC':to
     interval=(interval==undefined||interval==null)?'1h':interval
@@ -28,23 +33,15 @@ router.get('/gcs', function(req, res, next) {
     isNew=(isNew==undefined||isNew==null)?true:isNew
     isNew=isNew=='true'
 
-    db.createCandleStickTable(id.database.cc.history_from_to_type(from,to,interval),(status,message)=>{
-        if(status==values.status.ok){
-            presenter.getCandleStick(from,to,interval,parseInt(fromTime),parseInt(toTime),isNew,(status,data)=>res.json({
-                status:status,
-                type:interval,
-                message: data,
-            }),
-            lock,(islocked)=>{console.log('lock callback');lock=islocked})
-        }else{
-            res.json({
-                status:values.status.error,
-                type:interval,
-                message: string.someWrong,
-            })
-        }
-    })
+    presenter.initGCS(from,to,interval,fromTime,toTime,isNew,(status,data)=>{
+        res.json({
+            status:status,
+            type:interval,
+            message: data,
+        })
+    },lock)
 });
+
 
 /** ticker 24 hours for all pair supported in binance api */
 router.get('/t', function(req, res, next) {
@@ -56,6 +53,35 @@ router.get('/t', function(req, res, next) {
             message: data
         })
     )
+});
+
+router.get('/uscs', function(req, res, next) {
+    var type=req.query[id.params.type]
+    if(type==undefined) type="1"
+    type=id.cryptocompare.history[type]
+    if(intervalList[`_${type}`]==undefined){
+        service.setIntervalCandleStick(type,(status,data)=>{
+            if(status==values.status.ok){
+                intervalList[`_${data[id.cryptocompare.interval]}`]=data[id.cryptocompare.intervalObject]
+                res.json({
+                    status:status,
+                    message: `interval ${data[id.cryptocompare.interval]} interval started`
+                })
+            }else{
+                res.json({
+                    status:status,
+                    message: data
+                })
+            }
+        },lock)
+    }else{
+        res.json({
+            status:values.status.ok,
+            message: 'interval already running'
+        })
+    }
+
+    
 });
 
 
