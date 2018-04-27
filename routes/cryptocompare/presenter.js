@@ -66,10 +66,12 @@ module.exports={
                             lock_callback(true)
                             return this.updateCandleStick(from,to,interval,isNew,callback,lock_callback)
                         }else{
-                            return callback(values.status.error,'inside else of getCandleStick')
+                            console.log(`status: error message: inside else of getCandleStick !isNew:${!isNew}||${data.length==0}||${(isNew  && parseInt(data[data.length-1][id.database.id])+values.binance.candle_interval_milliseconds[`_${interval}`]<toTime)}`)
+                            return callback(values.status.ok,data)
                         }
                     }
-                    return callback(values.status.error,string.functionLocked)
+                    console.log(`values.status.error,string.functionLocked`)
+                    return callback(values.status.ok,data)
                 }
             }else{
                 callback(status,data)            
