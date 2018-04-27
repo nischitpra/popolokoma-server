@@ -57,13 +57,17 @@ module.exports={
         db.find(`select * from ${id.database.cc.history_from_to_type(from,to,interval)} where cast(_id as bigint)>=${fromTime} and cast(_id as bigint)<=${toTime} order by cast(_id as bigint) asc limit 2000;`,(status,data)=>{
             if(status==values.status.ok){
                 console.log(`data length: ${data.length}`)
-                if(data.length>0){
+                if(data.length>0 && !isNew){
                     return callback(status,data)
                 }else{
                     if(!lock){
-                        console.log(`no data found, updating candle stick`)
-                        lock_callback(true)
-                        return this.updateCandleStick(from,to,interval,isNew,callback,lock_callback)
+                        if(!isNew||data.length==0||(isNew  && parseInt(data[data.length-1][id.database.id])+values.binance.candle_interval_milliseconds[`_${interval}`]<toTime)){
+                            console.log(`new data available, updating candle stick`)
+                            lock_callback(true)
+                            return this.updateCandleStick(from,to,interval,isNew,callback,lock_callback)
+                        }else{
+                            return callback(values.status.error,'inside else of getCandleStick')
+                        }
                     }
                     return callback(values.status.error,string.functionLocked)
                 }
