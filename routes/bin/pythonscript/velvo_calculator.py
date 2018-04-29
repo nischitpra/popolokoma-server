@@ -10,7 +10,6 @@ cur=connection.cursor()
 
 base_path='/app/routes/bin/pythonscript'
 
-
 table_name=sys.argv[1]
 window_size=24
 day=0
@@ -92,17 +91,17 @@ def summary_days(df):
         vola=max(vola,up_vola,down_vola)
         
         if confidence>consolidation_threshold or up_confidence<up_down_trend_threshhold or down_confidence<up_down_trend_threshhold:
-            i=i+idx
+            i=i+max(idx,1)
             plot.plot(range(prev_index,i+1),np.ones(len(range(prev_index,i+1)))*y,'y')
             trend_df=trend_df.append([[0,confidence,vel,df['time'].iloc[prev_index],df['time'].iloc[i]]],ignore_index=True)
         else:
             vel=up_price_vel if abs(up_price_vel)>abs(down_price_vel) else down_price_vel
             if up_confidence > down_confidence:
-                i = i + up_idx
+                i = i + max(up_idx,1)
                 plot.plot(range(prev_index,i+1),np.ones(len(range(prev_index,i+1)))*y,'g')
                 trend_df=trend_df.append([[1,up_confidence,vel,df['time'].iloc[prev_index],df['time'].iloc[i]]],ignore_index=True)
             else:
-                i= i + down_idx
+                i= i + max(down_idx,1)
                 plot.plot(range(prev_index,i+1),np.ones(len(range(prev_index,i+1)))*y,'r')
                 trend_df=trend_df.append([[-1,down_confidence,vel,df['time'].iloc[prev_index],df['time'].iloc[i]]],ignore_index=True)
         vola_df=vola_df.append([[vola,df['time'].iloc[prev_index],df['time'].iloc[min(i+window_size,df.shape[0]-1)]]],ignore_index=True)

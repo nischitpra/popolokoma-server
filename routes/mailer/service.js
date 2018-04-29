@@ -144,9 +144,9 @@ module.exports={
         db.deleteWhere(id.database.collection.subscribed,`${id.database.email}=${utils.base64(email)} and ${id.database.to} = ${to} and ${id.database.isDeleted} = false`,callback)
     },
     // get 4day summary
-    mailSummary(callback) {
+    mailSummary(interval,callback) {
         db.find(`select ${id.database.email}, ${id.database.from}, ${id.database.to} from ${id.database.collection.subscribed} where ${id.database.isDeleted}='false';`,(status,data)=>{
-            callback(values.status.ok,`summary mail service started! subscriber: ${data.length}`)
+            callback(values.status.ok,`summary mail service started! subscriber: ${JSON.stringify(data)}`)
             for(var i in data){
                 const email=data[i][id.database.email]
                 const from=data[i][id.database.from]
@@ -154,24 +154,23 @@ module.exports={
                 const type=1
                 console.log(`${email}, ${from}, ${to}`)
                 pythoninvoker.get4DaySummary(id.database.cc.history_from_to_type(from,to,id.cryptocompare.history[type]),(status,data)=>{
-                    this.sendImageMail(utils.base64Decode(email),`${from}:${to} Summary`,presenter.getSummaryMessage(from,to,data),`${id.database.collection.history_from_to_type(from,to,'1h')}.png`,(status,message)=>{
+                    this.sendImageMail(utils.base64Decode(email),`${from}:${to} Summary`,presenter.getSummaryMessage(from,to,data),`${id.database.collection.history_from_to_type(from,to,interval)}.png`,(status,message)=>{
                         console.log(`status: ${status}, message: ${message}`)
                     })
                 })
             }
         })
     },
-    // get 4day summary
-    mailTrendChangeSpecific(from,to,data,callback) {
-        db.find(`select ${id.database.email}, ${id.database.from}, ${id.database.to} from ${id.database.collection.subscribed} where ${id.database.from}=${from} and ${id.database.to}=${to} and ${id.database.isDeleted}='false';`,(status,data)=>{
-            callback(values.status.ok,`summary mail service started! subscriber: ${data.length}`)
+    // get trend change alert
+    mailTrendChangeSpecific(from,to,interval,trendData,callback) {
+        db.find(`select ${id.database.email}, ${id.database.from}, ${id.database.to} from ${id.database.collection.subscribed} where ${id.database.from}='${from}' and ${id.database.to}='${to}' and ${id.database.isDeleted}='false';`,(status,data)=>{
+            callback(values.status.ok,`summary mail service started! subscriber: ${JSON.stringify(data)}`)
             for(var i in data){
                 const email=data[i][id.database.email]
                 const from=data[i][id.database.from]
                 const to=data[i][id.database.to]
                 const type=1
-                console.log(`${email}, ${from}, ${to}`)
-                this.sendImageMail(utils.base64Decode(email),`${from}:${to} Summary`,presenter.getTrendChangeMessage(from,to,data),`${id.database.collection.history_from_to_type(from,to,'1h')}.png`,(status,message)=>{
+                this.sendImageMail(utils.base64Decode(email),`${from}:${to} Alert`,presenter.getTrendChangeMessage(from,to,interval,trendData),`${id.database.collection.history_from_to_type(from,to,interval)}.png`,(status,message)=>{
                     console.log(`status: ${status}, message: ${message}`)
                 })
             }

@@ -30,7 +30,7 @@ module.exports={
         return message
     },
     
-    getTrendChangeMessage(from,to,data){
+    getTrendChangeMessage(from,to,interval,data){
         const prevTrend=data[data.length-2][id.summarydays.trend]>0?'Up trend':data[data.length-2][id.summarydays.trend]<0?'Down trend':'Consolidation'
         const currTrend=data[data.length-1][id.summarydays.trend]>0?'Up trend':data[data.length-1][id.summarydays.trend]<0?'Down trend':'Consolidation'
         var message=`
@@ -39,7 +39,7 @@ module.exports={
                 <p>Dear subscriber,</p>
                 <h3>Heads up! ${from}:${to} Trend Changed!</h3>
                 <p>The trend has just changed from <b>${prevTrend}</b> to <b>${currTrend}</b> at <b>${data[data.length-1][id.summarydays.start_time]}</b></p>
-                <p><img src='cid:${id.database.collection.history_from_to_type(from,to,'1h')}.png'/></p>
+                <p><img src='cid:${id.database.collection.history_from_to_type(from,to,interval)}.png'/></p>
                 <p>regards,<br/>Popo Team</p></body></html>
             </body>
         </html>

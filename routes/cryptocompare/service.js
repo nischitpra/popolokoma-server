@@ -87,11 +87,14 @@ module.exports={
                         const to=data[i][id.database.to]
                         require('./presenter').initGCS(from,to,interval, new Date().getTime()-500,new Date().getTime(),true,(status,data)=>{
                             if(status==values.status.ok){
-                                pythoninvoker.get4DaySummary(id.database.collection.history_from_to_type(from,to,'1h'),(status,data)=>{
-                                    if(presenter.hasTrendChanged(data)){
-                                        mailer.trendChangeAlert(from,to,data,(status,message)=>{
+                                pythoninvoker.get4DaySummary(id.database.collection.history_from_to_type(from,to,interval),(status,data)=>{
+                                    data=require('./presenter').hasTrendChanged(data)
+                                    if(data.length>0){
+                                        require('../mailer/mailer').trendChangeAlert(from,to,interval,data,(status,message)=>{
                                             console.log(`status: ${status}, message: ${message}`)
                                         })
+                                    }else{
+                                        console.log(`${from} ${to}==> trend change alert calling ${JSON.stringify(data)}`)
                                     }
                                 })
                             }

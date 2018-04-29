@@ -56,7 +56,7 @@ app.use('/f',forecast)
 cryptoCompare.uscs(1)
 
 /** Initialize 4 Day summary mailer */
-mailer.summary4Days()
+mailer.summary4Days('1d',(status,message)=>{ console.log(`status: ${status}, message: ${message}`) })
 
 
 // catch 404 and forward to error handler
