@@ -6,8 +6,8 @@ import time
 import tensorflow as tf
 import matplotlib.pyplot as plt
 
-base_path_nhuche='/app/routes/bin/pythonscript'
-base_path_pandu="C:\\Users\\SHYAM\\OneDrive\\UBUNTU LATEST BACKUP\\"
+base_path='/app/routes/bin/routes/bin/pythonscript'
+base_path_pandu="C:\\Users\\SHYAM\\OneDrive\\CryptoCompare\\"
 
 class LstmRNN(object):
     def __init__(self, sess, crypto_count,
@@ -50,10 +50,9 @@ class LstmRNN(object):
         self.keep_prob = tf.placeholder(tf.float32, None, name="keep_prob")
 
         # Stock symbols are mapped to integers.
-        #self.symbols = tf.placeholder(tf.int32, [None, 1], name='coin_labels')
 
         self.inputs = tf.placeholder(tf.float32, [None, self.num_steps, self.input_size], name="inputs")
-        self.targets = tf.placeholder(tf.float32, [None,self.output_size], name="targets")
+        self.targets = tf.placeholder(tf.float32, [None, self.output_size], name="targets")
 
         def _create_one_cell():
             lstm_cell = tf.contrib.rnn.LSTMCell(self.lstm_size, state_is_tuple=True)
@@ -67,15 +66,12 @@ class LstmRNN(object):
 
         self.inputs_with_embed = tf.identity(self.inputs)
         self.embed_matrix_summ = None
-        #val = tf.Variable()
+
         # Run dynamic RNN
         val, state_ = tf.nn.dynamic_rnn(cell, self.inputs_with_embed, dtype=tf.float32, scope="dynamic_rnn")
-        # Before transpose, val.get_shape() = (batch_size, num_steps, lstm_size)
-        # After transpose, val.get_shape() = (num_steps, batch_size, lstm_size)
         val = tf.transpose(val, [1, 0, 2])
 
         last = tf.gather(val, int(val.get_shape()[0]) - 1, name="lstm_state")
-        #last = tf.dynamic_partition(val, int(val.get_shape()[0]) - 1,1, name="lstm_state")
         ws = tf.Variable(tf.truncated_normal([self.lstm_size, self.output_size]), name="w")
         bias = tf.Variable(tf.constant(0.1, shape=[self.output_size]), name="b")
         self.pred = tf.matmul(last, ws) + bias
@@ -85,7 +81,6 @@ class LstmRNN(object):
         self.b_sum = tf.summary.histogram("b", bias)
         self.pred_summ = tf.summary.histogram("pred", self.pred)
 
-        # self.loss = -tf.reduce_sum(targets * tf.log(tf.clip_by_value(prediction, 1e-10, 1.0)))
         self.loss = tf.reduce_mean(tf.square(self.pred - self.targets), name="loss_mse_train")
         self.optim = tf.train.RMSPropOptimizer(self.learning_rate).minimize(self.loss, name="rmsprop_optim")
 
@@ -100,9 +95,10 @@ class LstmRNN(object):
         self.saver = tf.train.Saver()
 
 
-    def train(self, dataset_list, config, to, i):
+    def train(self,sess, dataset_list, config, i):
 
         self.merged_sum = tf.summary.merge_all()
+        self.sess = sess
         self.sess.run(tf.global_variables_initializer())
 
         # Merged test data of different stocks.
@@ -166,15 +162,9 @@ class LstmRNN(object):
                     train_loss, _, train_merged_sum = self.sess.run(
                         [self.loss, self.optim, self.merged_sum], train_data_feed)
                     test_loss, test_pred = self.sess.run([self.loss_test, self.pred], test_data_feed)
-                    # print("Step:%d [Epoch:%d] [Learning rate: %.6f] train_loss:%.6f test_loss:%.6f", global_step, epoch,
-                        #   learning_rate, train_loss, test_loss)
-        #plt.show()
-
+        self.save(global_step)
 
         final_pred, final_loss = self.sess.run([self.pred, self.loss], test_data_feed)
-        
-        # Save the final model
-        self.save(global_step,to)
         return final_pred
 
     @property
@@ -201,31 +191,29 @@ class LstmRNN(object):
             os.makedirs(model_logs_dir)
         return model_logs_dir
 
-    def save(self, step,to):
+    def save(self, step):
         model_name = self.model_name + ".model"
         self.saver.save(
             self.sess,
-            os.path.join(base_path_nhuche+"/forecaster/saved_model", model_name),
+            os.path.join(base_path+"/modelsNewApproach3/new_model", model_name),
             global_step=step
         )
 
-    def load(self,predict_X):
-        ckpt = tf.train.get_checkpoint_state(base_path_nhuche+"/forecaster/saved_model")
-        # print ('checkpoint: ',ckpt)        
+    def load(self, sess, data):
+        ckpt = tf.train.get_checkpoint_state(base_path+"/modelsNewApproach3/new_model")
         if ckpt and ckpt.model_checkpoint_path:
             ckpt_name = os.path.basename(ckpt.model_checkpoint_path)
-            self.saver.restore(self.sess, os.path.join(base_path_nhuche+"/forecaster/saved_model", ckpt_name))
+            self.saver.restore(sess, os.path.join(base_path+"/modelsNewApproach3/new_model", ckpt_name))
             counter = int(next(re.finditer("(\d+)(?!.*\d)", ckpt_name)).group(0))
-            predict_X = predict_X.reshape(predict_X.shape[0],1,predict_X.shape[1])
-            pred_feed_dict = {
+            test_data_feed = {
                 self.learning_rate: 0.0,
                 self.keep_prob: 1.0,
-                self.inputs: predict_X,
+                self.inputs: data
             }
-            results = self.sess.run(self.pred, pred_feed_dict)
-            return True, counter, results
+            result = sess.run(self.pred,test_data_feed)
+            return result
         else:
-            return False, 0,[[],[],[],[]]
+            return None
 
     def plot_samples(self, preds, targets, figname, stock_sym=None, multiplier=5):
         def _flatten(seq):
