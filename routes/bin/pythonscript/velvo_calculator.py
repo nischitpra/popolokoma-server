@@ -15,7 +15,8 @@ table_name=sys.argv[1]
 window_size=24
 day=0
 trend_reversal_threshold=5 # if has been decreasing for x hrs 
-consolidation_threshold=0.95 # to consider if is consolidating
+consolidation_threshold=0.8 # to consider if is consolidating
+up_down_trend_threshhold=0.55 # to consider if is uptrend or down trend
 volatility_threshold=0.023
 
 def consolidation(day_df):
@@ -36,7 +37,7 @@ def consolidation(day_df):
     vola=(day_df['high'].iloc[0:-1].std())
     vel=(day_df['close'].iloc[index]-day_df['close'].iloc[0])/max(count,1)
     return [confidence,index,vola,vel]
-
+    
 def up_trend(day_df):
     index=0
     count=0
@@ -86,15 +87,15 @@ def summary_days(df):
     while i < df.shape[0]-1: # 1 day step size
         day_df=df.iloc[i:min(i+window_size,df.shape[0])]
         [confidence,idx,vola,vel]=consolidation(day_df)
-        if confidence>consolidation_threshold:
+        [up_confidence,up_idx,up_vola,up_price_vel]=up_trend(day_df)
+        [down_confidence,down_idx,down_vola,down_price_vel]=down_trend(day_df)
+        vola=max(vola,up_vola,down_vola)
+        
+        if confidence>consolidation_threshold or up_confidence<up_down_trend_threshhold or down_confidence<up_down_trend_threshhold:
             i=i+idx
             plot.plot(range(prev_index,i+1),np.ones(len(range(prev_index,i+1)))*y,'y')
             trend_df=trend_df.append([[0,confidence,vel,df['time'].iloc[prev_index],df['time'].iloc[i]]],ignore_index=True)
         else:
-            day_df=df.iloc[i:min(i+window_size,df.shape[0])]
-            [up_confidence,up_idx,up_vola,up_price_vel]=up_trend(day_df)
-            [down_confidence,down_idx,down_vola,down_price_vel]=down_trend(day_df)
-            vola=down_vola if not math.isnan(down_vola) else up_vola
             vel=up_price_vel if abs(up_price_vel)>abs(down_price_vel) else down_price_vel
             if up_confidence > down_confidence:
                 i = i + up_idx
@@ -108,11 +109,9 @@ def summary_days(df):
         if vola>volatility_threshold:
             plot.plot(range(prev_index,min(i+window_size,df.shape[0]-1)),np.ones(len(range(prev_index,min(i+window_size,df.shape[0]-1))))*y*1.005,'k')
         prev_index=i
-
     plot.plot(range(df.shape[0]),df['high'],'r') 
     plot.plot(range(df.shape[0]),df['low'],'g') 
     plot.savefig(base_path+'/{}.png'.format(sys.argv[1]))
-    # plot.show()
     trend_df.columns=['trend','confidence','velocity','start_time','end_time']
     vola_df.columns=['volatility','start_time','end_time']
     return trend_df,vola_df
