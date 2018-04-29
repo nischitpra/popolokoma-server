@@ -217,6 +217,16 @@ module.exports = {
             interval:'interval',
             intervalObject:'intervalObject',
         },
+        summarydays:{
+            trend:'trend',
+            velocity:'velocity',
+            start_time:'start_time',
+            end_time:'end_time',
+            confidence:'confidence',
+            start_time:'start_time',
+            start_time:'start_time',
+
+        },
         twitter:{
             symbol:'symbol',
             statuses:'statuses',

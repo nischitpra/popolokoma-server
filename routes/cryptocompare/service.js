@@ -5,6 +5,7 @@ const id = require('../constants').id
 const values = require('../constants').values
 const string = require('../constants').string
 const pythoninvoker=require('../../routes/pythoninvoker')
+const mailer=require('../../routes/mailer/mailer')
 
 module.exports={
     get24HrTicker(from,to,callback){
@@ -84,8 +85,17 @@ module.exports={
                     for(var i in data){
                         const from=data[i][id.database.from]
                         const to=data[i][id.database.to]
-                        require('./presenter').initGCS(from,to,interval, new Date().getTime()-500,new Date().getTime(),true,(status,message)=>{
-                            console.log(`${status}, ${JSON.stringify(message)}`)  
+                        require('./presenter').initGCS(from,to,interval, new Date().getTime()-500,new Date().getTime(),true,(status,data)=>{
+                            if(status==values.status.ok){
+                                pythoninvoker.get4DaySummary(id.database.collection.history_from_to_type(from,to,'1h'),(status,data)=>{
+                                    if(presenter.hasTrendChanged(data)){
+                                        mailer.trendChangeAlert(from,to,data,(status,message)=>{
+                                            console.log(`status: ${status}, message: ${message}`)
+                                        })
+                                    }
+                                })
+                            }
+                            console.log(`${status}, ${JSON.stringify(data)}`)  
                         },lock)
                     }
                 }
@@ -102,7 +112,6 @@ module.exports={
         return values.binance.candle_interval_milliseconds[`_${interval}`]
     },
     uscs(intervalList,type,callback,lock){
-        // var type=req.query[id.params.type]
         if(type==undefined) type="1"
         type=id.cryptocompare.history[type]
         if(intervalList[`_${type}`]==undefined){

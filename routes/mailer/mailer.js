@@ -75,17 +75,10 @@ router.get('/sum', function(req, res, next) {
 });
 
 
-
-
-
-
-
 module.exports={
     router:router,
-    summary4Days:()=>{
-        setInterval(()=>service.mailSummary((status,message)=>{
-            console.log(`status: ${status}, message: ${message}`)
-        }),values.binance.candle_interval_milliseconds['_1d'])
-        
-    }
+    summary4Days:(callback)=>{
+        setInterval(()=>service.mailSummary(callback),values.binance.candle_interval_milliseconds['_1d'])
+    },
+    trendChangeAlert:(from,to,data,callback)=>{ service.mailTrendChangeSpecific(from,to,data,callback) }
 }

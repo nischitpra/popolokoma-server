@@ -160,5 +160,21 @@ module.exports={
                 })
             }
         })
-    }
+    },
+    // get 4day summary
+    mailTrendChangeSpecific(from,to,data,callback) {
+        db.find(`select ${id.database.email}, ${id.database.from}, ${id.database.to} from ${id.database.collection.subscribed} where ${id.database.from}=${from} and ${id.database.to}=${to} and ${id.database.isDeleted}='false';`,(status,data)=>{
+            callback(values.status.ok,`summary mail service started! subscriber: ${data.length}`)
+            for(var i in data){
+                const email=data[i][id.database.email]
+                const from=data[i][id.database.from]
+                const to=data[i][id.database.to]
+                const type=1
+                console.log(`${email}, ${from}, ${to}`)
+                this.sendImageMail(utils.base64Decode(email),`${from}:${to} Summary`,presenter.getTrendChangeMessage(from,to,data),`${id.database.collection.history_from_to_type(from,to,'1h')}.png`,(status,message)=>{
+                    console.log(`status: ${status}, message: ${message}`)
+                })
+            }
+        })
+    },
 }

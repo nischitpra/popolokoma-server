@@ -55,37 +55,6 @@ router.get('/t', function(req, res, next) {
     )
 });
 
-// // update service for candle stick               
-// router.get('/uscs', function(req, res, next) {
-//     var type=req.query[id.params.type]
-//     if(type==undefined) type="1"
-//     type=id.cryptocompare.history[type]
-//     if(intervalList[`_${type}`]==undefined){
-//         service.setIntervalCandleStick(type,(status,data)=>{
-//             if(status==values.status.ok){
-//                 intervalList[`_${data[id.cryptocompare.interval]}`]=data[id.cryptocompare.intervalObject]
-//                 res.json({
-//                     status:status,
-//                     message: `interval ${data[id.cryptocompare.interval]} interval started`
-//                 })
-//             }else{
-//                 res.json({
-//                     status:status,
-//                     message: data
-//                 })
-//             }
-//         },lock)
-//     }else{
-//         res.json({
-//             status:values.status.ok,
-//             message: 'interval already running'
-//         })
-//     }
-// });
-// module.exports = router;
-
-
-
 module.exports = { 
     router:router,
     lock:lock,

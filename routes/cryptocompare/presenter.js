@@ -78,11 +78,10 @@ module.exports={
             }
         })
     },
-    calculateCSVelocity(){
-        
+    hasTrendChanged(data){
+        if(data.length>0 && data[data.length-2][id.summarydays.trend]!=data[data.length-1][id.summarydays.trend]){
+            return data
+        }
+        return false
     },
-    calculateCSPercentage(){
-        
-    }
-
 }
