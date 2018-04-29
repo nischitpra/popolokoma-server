@@ -1,10 +1,15 @@
-const string = require('../constants').string
-const id = require('../constants').id
-const network = require('../constants').network
-const utils = require('../utils')
-const values = require('../constants').values
-const nodemailer = require('nodemailer')
 const db = require('../database')
+const connection = require('../connection')
+const presenter = require('./presenter')
+const id = require('../constants').id
+const values = require('../constants').values
+const string = require('../constants').string
+const pythoninvoker=require('../../routes/pythoninvoker')
+const utils = require('../utils')
+const network = require('../constants').network
+const nodemailer = require('nodemailer')
+const files = require('../constants').files
+
 
 module.exports={
     sendOtp(user,from,to,callback){
@@ -58,7 +63,37 @@ module.exports={
         from: values.mailer.server.email,
           to: user,
           subject: subject,
-          text: message,
+        //   text: message,
+          html: message,
+        }).then(()=>{
+            if(callback!=undefined){
+                callback(values.status.ok,message)    
+            }
+        }).catch((error)=>{
+            console.log(error);
+            if(callback!=undefined){
+                callback(values.status.error,string.someWrong)
+            }
+        })
+    },
+    sendImageMail(user,subject,message,imageName,callback){
+        var transporter = nodemailer.createTransport({
+            service: values.mailer.server.name,
+            auth: {
+                user:  values.mailer.server.email,
+                pass: values.mailer.server.password
+            }
+        });
+        transporter.sendMail({
+        from: values.mailer.server.email,
+          to: user,
+          subject: subject,
+          html: message,
+          attachments: [{
+            filename: imageName,
+            path: files.buildPathImage(imageName),
+            cid: imageName
+        }]
         }).then(()=>{
             if(callback!=undefined){
                 callback(values.status.ok,message)    
@@ -108,4 +143,22 @@ module.exports={
     unSubscribe(email,from,to,callback){
         db.deleteWhere(id.database.collection.subscribed,`${id.database.email}=${utils.base64(email)} and ${id.database.to} = ${to} and ${id.database.isDeleted} = false`,callback)
     },
+    // get 4day summary
+    mailSummary(callback) {
+        db.find(`select ${id.database.email}, ${id.database.from}, ${id.database.to} from ${id.database.collection.subscribed} where ${id.database.isDeleted}='false';`,(status,data)=>{
+            callback(values.status.ok,`summary mail service started! subscriber: ${data.length}`)
+            for(var i in data){
+                const email=data[i][id.database.email]
+                const from=data[i][id.database.from]
+                const to=data[i][id.database.to]
+                const type=1
+                console.log(`${email}, ${from}, ${to}`)
+                pythoninvoker.get4DaySummary(id.database.cc.history_from_to_type(from,to,id.cryptocompare.history[type]),(status,data)=>{
+                    this.sendImageMail(utils.base64Decode(email),`${from}:${to} Summary`,presenter.getSummaryMessage(from,to,data),`${id.database.collection.history_from_to_type(from,to,'1h')}.png`,(status,message)=>{
+                        console.log(`status: ${status}, message: ${message}`)
+                    })
+                })
+            }
+        })
+    }
 }

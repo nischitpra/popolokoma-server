@@ -64,6 +64,21 @@ module.exports={
             console.log('=============')
         })
     },
+    get4DaySummary(key,callback){
+        var spawn = require("child_process").spawn
+        var process = spawn(files.python.compiler,[files.buildPath(files.python.velvoCalculator),key] )
+        console.log('4day summary process spawned')
+        process.stdout.on('data', (data)=>{
+            console.log('returned get4daySummary from python')
+            callback(values.status.ok,JSON.parse(data.toString('utf8')))
+        })
+
+        process.stderr.on('data',(error)=>{
+            console.log('---ERROR-----')
+            console.log(error.toString('utf8'))
+            console.log('=============')
+        })
+    },
 
     
 }

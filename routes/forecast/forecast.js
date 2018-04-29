@@ -13,11 +13,11 @@ router.get('/uf', function(req, res, next) {
     var from=req.query[id.params.from]
     var to=req.query[id.params.to]
     var type=req.query[id.params.type]
-    if(from==undefined) from="BTC"
-    if(to==undefined) to="USD"
-    if(type==undefined) type="2"
+    if(from==undefined) from="XRP"
+    if(to==undefined) to="BTC"
+    if(type==undefined) type="1"
 
-    pythoninvoker.updateForecastHistory(id.database.cc.history_from_to_type(from,to,type),(status,message)=>{
+    pythoninvoker.updateForecastHistory(id.database.cc.history_from_to_type(from,to,id.cryptocompare.history[type]),(status,message)=>{
         res.json({
             status:status,
             message: message
@@ -30,16 +30,18 @@ router.get('/q', function(req, res, next) {
     var from=req.query[id.params.from]
     var to=req.query[id.params.to]
     var type=req.query[id.params.type]
-    if(from==undefined) from="BTC"
-    if(to==undefined) to="USD"
-    if(type==undefined) type="2"
+    if(from==undefined) from="XRP"
+    if(to==undefined) to="BTC"
+    if(type==undefined) type="1"
 
-    presenter.getHistory(id.database.cc.history_from_to_type(from,to,type),(status,message)=>{
+    presenter.getHistory(id.database.cc.history_from_to_type(from,to,id.cryptocompare.history[type]),(status,message)=>{
         res.json({
             status:status,
             message: message
         })
     })
 });
+
+
 
 module.exports = router;

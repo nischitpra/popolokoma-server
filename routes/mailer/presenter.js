@@ -10,16 +10,6 @@ const constants = require('../constants')
 
 
 module.exports={
-    getHistory(key,callback){
-        console.log(`getting forecast history for ${key}`)
-        db.findOne(id.database.collection.forecast,{[id.database.cc.id]:key},(status,data)=>{
-            if(status==values.status.ok){
-                callback(status,data[id.database.cc.history])
-            }else{
-                callback(status,data)
-            }
-        })
-    },
     getSummaryMessage(from,to,data){
         var message=`<html><body><p>Dear subscriber,</p><p>The summary for ${from}:${to} in the past 4 days (${DateUtils.mmhh_ddMMM_range(data[0]['start_time'],data[data.length-1]['end_time'])}) is as follows:</p>`
         for(var i in data){

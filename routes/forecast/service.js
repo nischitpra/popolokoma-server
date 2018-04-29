@@ -5,6 +5,7 @@ const id = require('../constants').id
 const values = require('../constants').values
 const string = require('../constants').string
 const pythoninvoker=require('../../routes/pythoninvoker')
+const utils = require('../utils')
 
 module.exports={
     updateHistory(type,from,to,callback){
@@ -17,5 +18,5 @@ module.exports={
         pythoninvoker.getGoodBadTweet((status,message)=>{
             callback(values.status.ok,message)
         })
-    }
+    },
 }

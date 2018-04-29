@@ -15,7 +15,6 @@ var mailer = require('./routes/mailer/mailer')
 const connection=require('./routes/connection')
 const id=require('./routes/constants').id
 const network=require('./routes/constants').network
-const CryptoSocket=require('./routes/cryptocompare/cryptoSocket')
 const forecast=require('./routes/forecast/forecast')
 
 const database = require('./routes/database')
@@ -48,12 +47,17 @@ database.createSubscribedTable((status,message)=>{console.log(`status: ${status}
 app.use(cors())
 app.use('/', index);
 app.use('/news', news);
-app.use('/cc',cryptoCompare);
+app.use('/cc',cryptoCompare.router);
 app.use('/twitter',twitter);
-app.use('/mailer',mailer)
-app.use('/forecast',forecast)
+app.use('/m',mailer.router)
+app.use('/f',forecast)
 
+/** Initialize update sucscribed candlestick services */
+cryptoCompare.uscs(0)
+cryptoCompare.uscs(1)
 
+/** Initialize 4 Day summary mailer */
+mailer.summary4Days()
 
 
 // catch 404 and forward to error handler
@@ -73,44 +77,5 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
-
-
-
-// /* socket  to communicate with client */
-var server = require('http').Server(app);
-var io = require('socket.io')(server);
-server.listen(process.env.PORT || 3004);
-
-
-var cryptoSocketList={}
-io.on('connection',(client_socket)=>{
-  console.log('there was a connection')
-  
-  client_socket.on(id.cryptocompare.clientEvent,(data)=>{
-    console.log(data)
-    const from=data.from
-    const to=data.to
-    const key=`${from}_${to}`
-    // client_socket.emit(id.cryptocompare.serverEvent, key)
-
-    if(data.un=='1' && cryptoSocketList[key]!=undefined && cryptoSocketList[key]!=null){
-      console.log('unsubscibe from cryptocompare socket')
-      cryptoSocketList[key].unsubscribe()
-      cryptoSocketList[key]=undefined
-    }else if(data.un==undefined && cryptoSocketList[key]==undefined){
-      console.log(data.from+','+data.to)
-      cryptoSocketList[key]=new CryptoSocket(from,to,client_socket)
-      cryptoSocketList[key].subscribe()
-    }
-    
-  });
-});
-
-
-
-
-
-
-
 
 module.exports = app;

@@ -37,7 +37,11 @@ module.exports={
                     })
                 }
             }else{
-                console.log(`status: ${status} data:${data} -- (updateCandleStick)==> something is worng,, inside outer else`)
+                if(status==values.status.ok){
+                    console.log(`status: ${status} data:${data} --no more data in binance server`)
+                }else{
+                    console.log(`status: ${status} data:${data} -- (updateCandleStick)==> something is worng,, inside outer else`)
+                }
                 lock_callback(false)
                 return callback(status,data)
             }
@@ -75,28 +79,14 @@ module.exports={
     },
     setIntervalCandleStick(interval,callback,lock){
         const _interval=setInterval(()=>{
-            db.find(`select ${id.database.from}, ${id.database.to} from ${id.database.collection.subscribed};`,(status,data)=>{
+            db.find(`select ${id.database.from}, ${id.database.to} from ${id.database.collection.subscribed} where ${id.database.isDeleted}='false';`,(status,data)=>{
                 if(status==values.status.ok){
                     for(var i in data){
                         const from=data[i][id.database.from]
                         const to=data[i][id.database.to]
-                        console.log(`select _id from ${id.database.collection.history_from_to_type(from,to,interval)} order by cast(_id as bigint) desc limit 1;`)
-                        db.createCandleStickTable(id.database.collection.history_from_to_type(from,to,interval),(status,message)=>{
-                            if(status==values.status.ok){
-                                db.find(`select _id from ${id.database.collection.history_from_to_type(from,to,interval)} order by cast(_id as bigint) desc limit 1;`,(status,data)=>{
-                                    if(data.length>0){
-                                        console.log(`${status}, ${JSON.stringify(data)}`)
-                                        console.log(`${status}, ${parseInt(data[0][id.database.id])+1}`)
-                                        require('./presenter').initGCS(from,to,interval, parseInt(data[0][id.database.id])+1,new Date().getTime(),true,(status,message)=>{
-                                            console.log(`pair: ${id.database.collection.history_from_to_type(from,to,interval)}, status: ${status}, message: ${message.length} rows downloaded`)
-                                            // calculate velocity and trend here
-                                        },lock)
-                                    }
-                                })
-                            }else{
-                                console.log(`${status}, ${JSON.stringify(message)}`)
-                            }
-                        })
+                        require('./presenter').initGCS(from,to,interval, new Date().getTime()-500,new Date().getTime(),true,(status,message)=>{
+                            console.log(`${status}, ${JSON.stringify(message)}`)  
+                        },lock)
                     }
                 }
                 console.log(`setIntervalCandleStick: ${status}, ${JSON.stringify(data)}`)
@@ -111,4 +101,21 @@ module.exports={
         }
         return values.binance.candle_interval_milliseconds[`_${interval}`]
     },
+    uscs(intervalList,type,callback,lock){
+        // var type=req.query[id.params.type]
+        if(type==undefined) type="1"
+        type=id.cryptocompare.history[type]
+        if(intervalList[`_${type}`]==undefined){
+            this.setIntervalCandleStick(type,(status,data)=>{
+                if(status==values.status.ok){
+                    intervalList[`_${data[id.cryptocompare.interval]}`]=data[id.cryptocompare.intervalObject]
+                    callback(status,`interval ${data[id.cryptocompare.interval]} interval started`)
+                }else{
+                    callback(status,data)
+                }
+            },lock)
+        }else{
+            callback(values.status.ok,'interval already running')
+        }
+    }
 }
