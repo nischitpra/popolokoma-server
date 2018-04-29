@@ -6,7 +6,7 @@ import time
 import tensorflow as tf
 import matplotlib.pyplot as plt
 
-base_path='/app/routes/bin/routes/bin/pythonscript'
+base_path='/app/routes/bin/pythonscript'
 base_path_pandu="C:\\Users\\SHYAM\\OneDrive\\CryptoCompare\\"
 
 class LstmRNN(object):

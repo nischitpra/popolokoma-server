@@ -12,7 +12,7 @@ import psycopg2
 connection=psycopg2.connect("postgres://popo:weareawesome@popo-server.ckhrqovrxtw4.us-east-1.rds.amazonaws.com:5432/coins")
 cur=connection.cursor()
 
-base_path='/app/routes/bin/routes/bin/pythonscript'
+base_path='/app/routes/bin/pythonscript'
 total_window_size=4*24 #4 day
 
 
