@@ -66,7 +66,9 @@ router.get('/subscribe/unsubscribe',(req,res,next)=>{
 
 // get 4day summary mailer
 router.get('/sum', function(req, res, next) {
-    service.mailSummary((status,message)=>{
+    var interval=req.query[id.params.type]
+    interval=(interval==undefined||interval==null)?'1h':interval
+    service.mailSummary(interval,(status,message)=>{
         res.json({
             status:status,
             message: message

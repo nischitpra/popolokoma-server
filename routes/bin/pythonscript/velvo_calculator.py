@@ -8,14 +8,15 @@ import math
 connection=psycopg2.connect("postgres://popo:weareawesome@popo-server.ckhrqovrxtw4.us-east-1.rds.amazonaws.com:5432/coins")
 cur=connection.cursor()
 
-base_path='/app/routes/bin/pythonscript'
+base_path='/Users/oyo/Desktop/awesome/express/coins/public/images'
+
 
 table_name=sys.argv[1]
 window_size=24
 day=0
-trend_reversal_threshold=5 # if has been decreasing for x hrs 
-consolidation_threshold=0.8 # to consider if is consolidating
-up_down_trend_threshhold=0.55 # to consider if is uptrend or down trend
+trend_reversal_threshold=3 # if has been decreasing for x hrs 
+consolidation_threshold=0.9 # to consider if is consolidating
+up_down_trend_threshhold=0.5 # to consider if is uptrend or down trend
 volatility_threshold=0.023
 
 def consolidation(day_df):
@@ -90,7 +91,7 @@ def summary_days(df):
         [down_confidence,down_idx,down_vola,down_price_vel]=down_trend(day_df)
         vola=max(vola,up_vola,down_vola)
         
-        if confidence>consolidation_threshold or up_confidence<up_down_trend_threshhold or down_confidence<up_down_trend_threshhold:
+        if confidence>consolidation_threshold or (up_confidence<up_down_trend_threshhold and down_confidence<up_down_trend_threshhold):
             i=i+max(idx,1)
             plot.plot(range(prev_index,i+1),np.ones(len(range(prev_index,i+1)))*y,'y')
             trend_df=trend_df.append([[0,confidence,vel,df['time'].iloc[prev_index],df['time'].iloc[i]]],ignore_index=True)
@@ -110,7 +111,8 @@ def summary_days(df):
         prev_index=i
     plot.plot(range(df.shape[0]),df['high'],'r') 
     plot.plot(range(df.shape[0]),df['low'],'g') 
-    plot.savefig(base_path+'/{}.png'.format(sys.argv[1]))
+    plot.savefig('trend_label.png')
+    plot.show()
     trend_df.columns=['trend','confidence','velocity','start_time','end_time']
     vola_df.columns=['volatility','start_time','end_time']
     return trend_df,vola_df
