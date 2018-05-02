@@ -27,7 +27,7 @@ module.exports = {
     },
     files:{
         python:{
-            compiler:'/usr/local/Cellar/python/3.6.4_2/bin/python3.6',
+            compiler:'python3.6',
             sentimentTrend:`pythonscript/sentiment_trend.py`,
             filterTweet:`pythonscript/filter_tweet.py`,
             goodBadTweet:`pythonscript/good_bad_tweet.py`,
