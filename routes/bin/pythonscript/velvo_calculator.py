@@ -2,7 +2,8 @@ import sys
 import psycopg2
 import pandas as pd
 import numpy as np
-from matplotlib import pyplot as plot
+import matplotlib
+ from matplotlib import pyplot as plot
 import math
 
 connection=psycopg2.connect("postgres://popo:weareawesome@popo-server.ckhrqovrxtw4.us-east-1.rds.amazonaws.com:5432/coins")

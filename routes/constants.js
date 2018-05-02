@@ -27,7 +27,7 @@ module.exports = {
     },
     files:{
         python:{
-            compiler:'python3.6',
+            compiler:'/usr/local/Cellar/python/3.6.4_2/bin/python3.6',
             sentimentTrend:`pythonscript/sentiment_trend.py`,
             filterTweet:`pythonscript/filter_tweet.py`,
             goodBadTweet:`pythonscript/good_bad_tweet.py`,
@@ -40,7 +40,7 @@ module.exports = {
         buildPath:(pathFromBin)=>`/app/routes/bin/${pathFromBin}`,
         buildPathImage:(name)=>`/app/public/images/${name}`,
     },
-
+    
     values:{
         baseHeader:{
             "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:57.0) Gecko/20100101 Firefox/57.0",
