@@ -9,7 +9,8 @@ import math
 connection=psycopg2.connect("postgres://popo:weareawesome@popo-server.ckhrqovrxtw4.us-east-1.rds.amazonaws.com:5432/coins")
 cur=connection.cursor()
 
-base_path='/Users/oyo/Desktop/awesome/express/coins/public/images'
+base_path='/app/public/images'
+
 
 
 table_name=sys.argv[1]
@@ -112,8 +113,7 @@ def summary_days(df):
         prev_index=i
     plot.plot(range(df.shape[0]),df['high'],'r') 
     plot.plot(range(df.shape[0]),df['low'],'g') 
-    plot.savefig('trend_label.png')
-    plot.show()
+    plot.savefig(base_path+'/{}.png'.format(sys.argv[1]))
     trend_df.columns=['trend','confidence','velocity','start_time','end_time']
     vola_df.columns=['volatility','start_time','end_time']
     return trend_df,vola_df
