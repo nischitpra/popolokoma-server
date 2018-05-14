@@ -5,7 +5,6 @@ const connection = require('../connection')
 const db = require('../database')
 const service = require('./service')
 
-
 module.exports={
     initGCS(from,to,interval,fromTime,toTime,isNew,callback,lock){
         db.createCandleStickTable(id.database.cc.history_from_to_type(from,to,interval),(status,message)=>{
@@ -84,4 +83,44 @@ module.exports={
         }
         return []
     },
+    getFilterTrend(filterType,startTime,callback){
+        db.find(`select * from ${id.database.collection.trend} where _id in (select max(_id) from ${id.database.collection.trend} group by _key) and trend=${filterType} and cast(end_time as bigint)>=${startTime} order by start_time;`,(status,data)=>{
+            if(status==values.status.ok){
+                return callback(status,data)
+            }
+            return callback(values.status.error,string.someWrong)
+        })
+    },
+    getSpecificTrend(key,startTime,callback){
+        db.find(`select * from ${id.database.collection.trend} where _key='${key}' and cast(end_time as bigint)>=${startTime} order by start_time;`,(status,data)=>{
+            if(status==values.status.ok){
+                return callback(status,data)
+            }
+            return callback(values.status.error,string.someWrong)
+        })
+    },
+    getSpecificVolatility(key,startTime,callback){
+        db.find(`select * from ${id.database.collection.volatility} where _key='${key}' and cast(end_time as bigint)>=${startTime} order by start_time;`,(status,data)=>{
+            if(status==values.status.ok){
+                return callback(status,data)
+            }
+            console.log(data)
+            return callback(values.status.error,string.someWrong)
+        })
+    },
+    getSummary(key,startTime,callback){
+        db.find(`select * from ${id.database.collection.trend} where _key='${key}' and cast(end_time as bigint)>=${startTime} order by start_time;`,(status,trend)=>{
+            if(status==values.status.ok){
+                db.find(`select * from ${id.database.collection.volatility} where _key='${key}' and cast(end_time as bigint)>=${startTime} order by start_time;`,(status,vola)=>{
+                    if(status==values.status.ok){
+                        return callback(status,{trend:trend,volatility:vola})
+                    }else{
+                        return callback(values.status.error,string.someWrong)
+                    }
+                })
+            }else{
+                return callback(values.status.error,string.someWrong)
+            }
+        })
+    }
 }

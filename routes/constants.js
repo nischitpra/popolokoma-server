@@ -111,7 +111,8 @@ module.exports = {
             exchange:'e',
             toTime:'tt',
             fromTime:'ft',
-            isNew:'n'
+            isNew:'n',
+            filterType:'filt',
         },
         binance:{
             id:'_id',
@@ -138,6 +139,8 @@ module.exports = {
                 sentimentTrend:'sentiment_trend',
                 history:'history',
                 forecast:'forecast',
+                trend:'trend',
+                volatility:'volatility',
                 history_from_to_type:(from,to,type)=>`${from}_${to}_${type}`,
                 trend_velocity:(from,to)=>`trend_velocity`,
                 dump:{

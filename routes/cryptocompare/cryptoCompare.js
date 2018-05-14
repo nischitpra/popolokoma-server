@@ -47,13 +47,85 @@ router.get('/gcs', function(req, res, next) {
 router.get('/t', function(req, res, next) {
     var from=req.query[id.params.from]
     var to=req.query[id.params.to]
-
+    
     service.get24HrTicker(from,to,(status,data)=>res.json({
             status:status,
             message: data
         })
     )
 });
+
+/** filtered trend for pairs*/
+router.get('/gft', function(req, res, next) {
+    var filterType=req.query[id.params.filterType]
+    var fromTime=req.query[id.params.fromTime]
+    filterType=(filterType==undefined || filterType==null || filterType<-1 || filterType>1)? 0 : filterType
+    fromTime=(fromTime==undefined||fromTime==null)?new Date().getTime()-96*values.binance.candle_interval_milliseconds['_1h']:fromTime
+    
+    presenter.getFilterTrend(filterType,fromTime,(status,data)=>res.json({
+            status:status,
+            message: data
+        })
+    )
+});
+/** specific filtered trend for pairs*/
+router.get('/gsft', function(req, res, next) {
+    var from=req.query[id.params.from]
+    var to=req.query[id.params.to]
+    var fromTime=req.query[id.params.fromTime]
+
+    from=(from==undefined||from==null)?'XRP':from
+    to=(to==undefined||to==null)?'BTC':to
+    fromTime=(fromTime==undefined||fromTime==null)?new Date().getTime()-96*values.binance.candle_interval_milliseconds['_1h']:fromTime
+
+    presenter.getSpecificTrend(id.database.collection.history_from_to_type(from,to,'1h'),fromTime,(status,data)=>res.json({
+            status:status,
+            message: data
+        })
+    )
+});
+
+/** filtered trend for pairs*/
+router.get('/gv', function(req, res, next) {
+    var from=req.query[id.params.from]
+    var to=req.query[id.params.to]
+    var fromTime=req.query[id.params.fromTime]
+    from=(from==undefined||from==null)?'XRP':from
+    to=(to==undefined||to==null)?'BTC':to
+    fromTime=(fromTime==undefined||fromTime==null)?new Date().getTime()-96*values.binance.candle_interval_milliseconds['_1h']:fromTime
+
+    presenter.getSpecificVolatility(id.database.collection.history_from_to_type(from,to,'1h'),fromTime,(status,data)=>res.json({
+            status:status,
+            message: data
+        })
+    )
+});
+
+/** get summary */
+router.get('/gs', function(req, res, next) {
+    var from=req.query[id.params.from]
+    var to=req.query[id.params.to]
+    var fromTime=req.query[id.params.fromTime]
+
+    from=(from==undefined||from==null)?'XRP':from
+    to=(to==undefined||to==null)?'BTC':to
+    fromTime=(fromTime==undefined||fromTime==null)?new Date().getTime()-96*values.binance.candle_interval_milliseconds['_1h']:fromTime
+
+    presenter.getSummary(id.database.collection.history_from_to_type(from,to,'1h'),fromTime,(status,data)=>res.json({
+            status:status,
+            message: data
+        })
+    )
+});
+
+/** update candle stick force */
+router.get('/ucsf', function(req, res, next) {
+    service.ucsf(1,(status,data)=>res.json({
+            status:status,
+            message: data
+        }),lock)
+});
+
 
 module.exports = { 
     router:router,

@@ -78,32 +78,36 @@ module.exports={
             return callback(values.status.error,[])
         }
     },
+    checkupdateCS(interval,callback,lock){
+        db.find(`select ${id.database.from}, ${id.database.to} from ${id.database.collection.subscribed} where ${id.database.isDeleted}='false';`,(status,data)=>{
+            callback(values.status.ok,data)
+            if(status==values.status.ok){
+                for(var i in data){
+                    const from=data[i][id.database.from]
+                    const to=data[i][id.database.to]
+                    require('./presenter').initGCS(from,to,interval, new Date().getTime()-500,new Date().getTime(),true,(status,data)=>{
+                        if(status==values.status.ok){
+                            pythoninvoker.get4DaySummary(id.database.collection.history_from_to_type(from,to,interval),(status,data)=>{
+                                data=require('./presenter').hasTrendChanged(data)
+                                if(data.length>0){
+                                    require('../mailer/mailer').trendChangeAlert(from,to,interval,data,(status,message)=>{
+                                        console.log(`status: ${status}, message: ${message}`)
+                                    })
+                                }else{
+                                    console.log(`${from} ${to}==> trend change alert calling ${JSON.stringify(data)}`)
+                                }
+                            })
+                        }else{
+                            console.log(`${status}, ${JSON.stringify(data)}`)  
+                        }
+                    },lock)
+                }
+            }
+        })
+    },
     setIntervalCandleStick(interval,callback,lock){
         const _interval=setInterval(()=>{
-            db.find(`select ${id.database.from}, ${id.database.to} from ${id.database.collection.subscribed} where ${id.database.isDeleted}='false';`,(status,data)=>{
-                if(status==values.status.ok){
-                    for(var i in data){
-                        const from=data[i][id.database.from]
-                        const to=data[i][id.database.to]
-                        require('./presenter').initGCS(from,to,interval, new Date().getTime()-500,new Date().getTime(),true,(status,data)=>{
-                            if(status==values.status.ok){
-                                pythoninvoker.get4DaySummary(id.database.collection.history_from_to_type(from,to,interval),(status,data)=>{
-                                    data=require('./presenter').hasTrendChanged(data)
-                                    if(data.length>0){
-                                        require('../mailer/mailer').trendChangeAlert(from,to,interval,data,(status,message)=>{
-                                            console.log(`status: ${status}, message: ${message}`)
-                                        })
-                                    }else{
-                                        console.log(`${from} ${to}==> trend change alert calling ${JSON.stringify(data)}`)
-                                    }
-                                })
-                            }
-                            console.log(`${status}, ${JSON.stringify(data)}`)  
-                        },lock)
-                    }
-                }
-                console.log(`setIntervalCandleStick: ${status}, ${JSON.stringify(data)}`)
-            })
+            this.checkupdateCS(interval,callback,lock)
         },this.getCSInterval(interval))
 
         return callback(values.status.ok,{[id.cryptocompare.interval]:interval, [id.cryptocompare.intervalObject]:_interval})
@@ -129,5 +133,11 @@ module.exports={
         }else{
             callback(values.status.ok,'interval already running')
         }
-    }
+    },
+    // update candlestick force
+    ucsf(type,callback,lock){
+        if(type==undefined) type="1"
+        type=id.cryptocompare.history[type]
+        this.checkupdateCS(type,callback,lock)
+    },
 }

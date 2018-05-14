@@ -127,7 +127,7 @@ module.exports={
                         return callback(values.status.error,err)
                     }
                     client.end()
-                    return callback(values.status.ok,string.database.create.table(id.database.collection.subscribed))
+                    return callback(values.status.ok,string.database.create.table(id.database.collection.otp))
                 })
         })
     },
@@ -243,7 +243,59 @@ module.exports={
                 })
         })
     },
-
+    createTrendTable(callback){
+        const pg = require('pg');
+        var pool = new pg.Pool(network.database_details)
+        pool.connect((err, client, done)=>{
+            if(err){
+                done()
+                return callback(values.status.error,err)
+            }
+            const query = client.query(
+                `create table if not exists ${id.database.collection.trend} (
+                    _id serial PRIMARY KEY,
+                    _key varchar(15),
+                    trend smallint,
+                    confidence real,
+                    velocity real,
+                    start_time bigint,
+                    end_time bigint
+                );`,(err, res) => {
+                    if(err){
+                        client.end()
+                        console.log(err)                    
+                        return callback(values.status.error,err)
+                    }
+                    client.end()
+                    return callback(values.status.ok,string.database.create.table(id.database.collection.trend))
+                })
+        })
+    },
+    createVolatilityTable(callback){
+        const pg = require('pg');
+        var pool = new pg.Pool(network.database_details)
+        pool.connect((err, client, done)=>{
+            if(err){
+                done()
+                return callback(values.status.error,err)
+            }
+            const query = client.query(
+                `create table if not exists ${id.database.collection.volatility} (
+                    _id serial PRIMARY KEY,
+                    _key varchar(15),
+                    volatility real,
+                    start_time bigint,
+                    end_time bigint
+                );`,(err, res) => {
+                    if(err){
+                        client.end()
+                        return callback(values.status.error,err)
+                    }
+                    client.end()
+                    return callback(values.status.ok,string.database.create.table(id.database.collection.volatility))
+                })
+        })
+    },
     insert(tableName,keys,_values,callback){
         const pg = require('pg');
         var pool = new pg.Pool(network.database_details)

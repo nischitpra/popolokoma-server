@@ -12,7 +12,6 @@ cur=connection.cursor()
 base_path='/app/public/images'
 
 
-
 table_name=sys.argv[1]
 window_size=24
 day=0
@@ -58,11 +57,10 @@ def up_trend(day_df):
     return [confidence,index,vola,vel]
 
 def down_trend(day_df):
-    import math
     index=0
     count=0
     confidence=0
-    trough=math.inf
+    trough=np.inf
     for i,low in enumerate(day_df['high']):
         if trough>low:
             trough=low
@@ -91,6 +89,11 @@ def summary_days(df):
         [confidence,idx,vola,vel]=consolidation(day_df)
         [up_confidence,up_idx,up_vola,up_price_vel]=up_trend(day_df)
         [down_confidence,down_idx,down_vola,down_price_vel]=down_trend(day_df)
+
+        vola=vola if not np.isnan(vola) else -1
+        up_vola=up_vola if not np.isnan(up_vola) else -1
+        down_vola=down_vola if not np.isnan(down_vola) else -1
+
         vola=max(vola,up_vola,down_vola)
         
         if confidence>consolidation_threshold or (up_confidence<up_down_trend_threshhold and down_confidence<up_down_trend_threshhold):
@@ -107,7 +110,9 @@ def summary_days(df):
                 i= i + max(down_idx,1)
                 plot.plot(range(prev_index,i+1),np.ones(len(range(prev_index,i+1)))*y,'r')
                 trend_df=trend_df.append([[-1,down_confidence,vel,df['time'].iloc[prev_index],df['time'].iloc[i]]],ignore_index=True)
-        vola_df=vola_df.append([[vola,df['time'].iloc[prev_index],df['time'].iloc[min(i+window_size,df.shape[0]-1)]]],ignore_index=True)
+
+        vola_df=vola_df.append([[vola,df['time'].iloc[prev_index],df['time'].iloc[i]]],ignore_index=True)
+        # vola_df=vola_df.append([[vola,df['time'].iloc[prev_index],df['time'].iloc[min(i+window_size,df.shape[0]-1)]]],ignore_index=True)
         if vola>volatility_threshold:
             plot.plot(range(prev_index,min(i+window_size,df.shape[0]-1)),np.ones(len(range(prev_index,min(i+window_size,df.shape[0]-1))))*y*1.005,'k')
         prev_index=i
@@ -118,11 +123,27 @@ def summary_days(df):
     vola_df.columns=['volatility','start_time','end_time']
     return trend_df,vola_df
 
-    
+# delete old values
+cur.execute("delete from trend where _key='{}';".format(table_name))
+cur.execute("delete from volatility where _key='{}';".format(table_name))
+
+
 cur.execute("select cast(high as real), cast(low as real), cast(close as real), cast(_id as bigint) from (select * from {} order by cast(_id as bigint) desc limit 96) as data order by cast(_id as bigint) asc;".format(table_name))
 df = pd.DataFrame(list(cur.fetchall()))
 df.columns = ['high', 'low', 'close', 'time']
 trend_df,vola_df=summary_days(df)
-# print([trend_df.to_json(orient='records'),vola_df.to_json(orient='records')])
+
+query=[]
+for index, row in trend_df.iterrows():
+    query.append("('{}',{},{},{},{},{})".format(table_name,row['trend'],row['confidence'],row['velocity'],row['start_time'],row['end_time']))
+cur.execute("insert into trend (_key, trend, confidence, velocity, start_time, end_time) values {};".format(','.join(query)))
+
+query=[]
+for index, row in vola_df.iterrows():
+    query.append("('{}',{},{},{})".format(table_name,row['volatility'],row['start_time'],row['end_time']))
+cur.execute("insert into volatility (_key, volatility, start_time, end_time) values {};".format(','.join(query)))
+
+connection.commit()
+
 print(trend_df.to_json(orient='records'))
 sys.stdout.flush()

@@ -38,7 +38,7 @@ module.exports={
             <body>
                 <p>Dear subscriber,</p>
                 <h3>Heads up! ${from}:${to} Trend Changed!</h3>
-                <p>The trend has just changed from <b>${prevTrend}</b> to <b>${currTrend}</b> at <b>${data[data.length-1][id.summarydays.start_time]}</b></p>
+                <p>The trend has just changed from <b>${prevTrend}</b> to <b>${currTrend}</b> at <b>${DateUtils.mmhh_ddMMM(data[data.length-1][id.summarydays.start_time])}</b></p>
                 <p><img src='cid:${id.database.collection.history_from_to_type(from,to,interval)}.png'/></p>
                 <p>regards,<br/>Popo Team</p></body></html>
             </body>
