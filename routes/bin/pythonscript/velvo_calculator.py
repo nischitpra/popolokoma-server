@@ -27,7 +27,7 @@ def consolidation(day_df):
     confidence=0
     for i in range(day_df.shape[0]):
         row=day_df.iloc[i]
-        if ((low<row['low'])and(row['low']<high)) or ((high>row['high'])and(row['high']>low)) or ((high<=row['high'])and(high>row['low'])) or ((low>=row['low'])and(low<row['high'])):
+        if ((low<=row['low'])and(row['low']<=high)) or ((high>=row['high'])and(row['high']>=low)) or ((high<=row['high'])and(high>=row['low'])) or ((low>=row['low'])and(low<=row['high'])):
             confidence=count/(i+1)
             index=i
             count=count+1
