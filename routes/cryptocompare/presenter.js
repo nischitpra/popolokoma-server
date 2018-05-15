@@ -9,7 +9,16 @@ module.exports={
     initGCS(from,to,interval,fromTime,toTime,isNew,callback,lock){
         db.createCandleStickTable(id.database.cc.history_from_to_type(from,to,interval),(status,message)=>{
             if(status==values.status.ok){
-                return this.getCandleStick(from,to,interval,parseInt(fromTime),parseInt(toTime),isNew,callback,lock,(islocked)=>{console.log('lock callback');lock=islocked})
+                return this.getCandleStick(from,to,interval,parseInt(fromTime),parseInt(toTime),isNew,callback,lock,
+                (_id,shouldLock)=>{
+                    const i= lock.indexOf(_id)
+                    if(i===-1 && shouldLock){
+                        lock.push(_id)
+                    }else if(i>-1 && !shouldLock){
+                        lock.splice(i,1)
+                    }
+                    return lock
+                })
             }
             return callback(status,message)
         })
@@ -28,7 +37,7 @@ module.exports={
                         service.updateCandleStick(from,to,interval,fromTime,toTime,isNew,callback,lock_callback)
                     }
                 }else{
-                    lock_callback(false)
+                    lock_callback(id.database.collection.history_from_to_type(from,to,interval),false)
                     callback(status,data)
                 }
             })
@@ -45,7 +54,7 @@ module.exports={
                         service.updateCandleStick(from,to,interval,fromTime,toTime,isNew,callback,lock_callback)
                     }
                 }else{
-                    lock_callback(false)
+                    lock_callback(id.database.collection.history_from_to_type(from,to,interval),false)
                     callback(status,data)
                 }
             })
@@ -59,10 +68,10 @@ module.exports={
                 if(data.length>0 && !isNew){
                     return callback(status,data)
                 }else{
-                    if(!lock){
+                    if(lock.indexOf(id.database.collection.history_from_to_type(from,to,interval)===-1)){
                         if(!isNew||data.length==0||(isNew  && parseInt(data[data.length-1][id.database.id])+values.binance.candle_interval_milliseconds[`_${interval}`]<toTime)){
                             console.log(`new data available, updating candle stick`)
-                            lock_callback(true)
+                            lock_callback(id.database.collection.history_from_to_type(from,to,interval),true)
                             return this.updateCandleStick(from,to,interval,isNew,callback,lock_callback)
                         }else{
                             console.log(`status: error message: inside else of getCandleStick !isNew:${!isNew}||${data.length==0}||${(isNew  && parseInt(data[data.length-1][id.database.id])+values.binance.candle_interval_milliseconds[`_${interval}`]<toTime)}`)

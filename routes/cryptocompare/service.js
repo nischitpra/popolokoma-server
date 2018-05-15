@@ -17,7 +17,7 @@ module.exports={
         connection.getCandleStick(from,to,interval,fromTime,toTime,(status,data)=>{
             if(status==values.status.ok&& data.length>0){
                 console.log(`no of records in json : ${data.length}`)
-                const collection=id.database.cc.history_from_to_type(from,to,interval)
+                const collection=id.database.collection.history_from_to_type(from,to,interval)
                 if (isNew){
                     console.log('inserting for new')
                     db.find(`select * from ${collection} order by ${id.database.id} desc limit 1`,(status,prevData)=>{
@@ -43,7 +43,7 @@ module.exports={
                 }else{
                     console.log(`status: ${status} data:${data} -- (updateCandleStick)==> something is worng,, inside outer else`)
                 }
-                lock_callback(false)
+                lock_callback(id.database.collection.history_from_to_type(from,to,interval),false)
                 return callback(status,data)
             }
         })
@@ -65,16 +65,16 @@ module.exports={
             console.log('inserting into the database')
             db.insert(tableName,id.database.collection.keyList.history,list,(status,message)=>{
                 if(status==values.status.ok){
-                    lock_callback(false)
+                    lock_callback(tableName,false)
                     return callback(status,list)
                 }else{
-                    lock_callback(false)
+                    lock_callback(tableName,false)
                     return callback(values.status.error,message)
                 }
             })
         }else{
             console.log(string.database.insert.emptyList)
-            lock_callback(false)
+            lock_callback(tableName,false)
             return callback(values.status.error,[])
         }
     },

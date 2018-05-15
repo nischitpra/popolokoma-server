@@ -8,7 +8,9 @@ const string = require('../constants').string
 const db = require('../database')
 // const WebSocket = require('ws')
 
-var lock=false
+/** lock is made into an array so as to accomodate multiple updates to different talbes. */
+var lock=[]
+
 var intervalList={
     _1m:undefined,
     _1h:undefined,
