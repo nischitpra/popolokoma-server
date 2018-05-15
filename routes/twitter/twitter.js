@@ -72,17 +72,6 @@ router.get('/ut',function(req, res, next) {
         if(symbol==undefined||symbol==null) symbol="btc"
         if(coinName==undefined||coinName==null) symbol="bitcoin"
         service.updateTweetDb(coinName,symbol)
-
-        // setInterval(()=>{
-        //     service.updateGoodBadTweets((status,message)=>{
-        //         console.log('\n\n\n\x1b[41m\x1b[36m%s\x1b[0m',`good bad service: ${status} ${message}`)
-        //         service.updateSentimentTrend((status,message)=>{
-        //             console.log('\n\n\n\x1b[41m\x1b[36m%s\x1b[0m',`sentiment trend service: ${status} ${message}`)
-        //         })
-        //     })
-        // },10*60*1000)// 1 hr
-
-
     }else if(locked){
         res.json({
             status:values.status.error,
@@ -123,4 +112,19 @@ router.get('/ggbf', function(req, res, next) {
     })
 });
 
-module.exports = router;
+module.exports ={
+    router: router,
+    uts: (interval,callback)=>{
+        setInterval(()=>{
+            service.updateGoodBadTweets((status,message)=>{
+                console.log(`updateGoodBadTweets:: status:${status}, message:${message}`)
+                if(status==values.status.ok){
+                    service.updateSentimentTrend((status,message)=>{
+                        console.log(`updateSentimentTrend:: status:${status}, message:${message}`)
+                    })
+                }
+            })
+        },values.binance.candle_interval_milliseconds[`_${interval}`])
+        callback(values.status.ok,`update tweet service started with interval ${interval}`)
+    }
+};

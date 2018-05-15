@@ -48,7 +48,7 @@ app.use(cors())
 app.use('/', index);
 app.use('/news', news);
 app.use('/cc',cryptoCompare.router);
-app.use('/twitter',twitter);
+app.use('/twitter',twitter.router);
 app.use('/m',mailer.router)
 app.use('/f',forecast)
 
@@ -58,6 +58,8 @@ cryptoCompare.uscs(1)
 /** Initialize 4 Day summary mailer */
 mailer.summary4Days('1d',(status,message)=>{ console.log(`status: ${status}, message: ${message}`) })
 
+/** Initialzie update tweet services */
+twitter.uts('1h',(status,message)=>{ console.log(`status: ${status}, message: ${message}`) })
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
