@@ -30,18 +30,16 @@ def consolidation(day_df):
     confidence=0
     for i in range(day_df.shape[0]):
         row=day_df.iloc[i]
-        if ((low<=row['low'])and(row['low']<=high)) or ((high>=row['high'])and(row['high']>=low)) or ((high<=row['high'])and(high>=row['low'])) or ((low>=row['low'])and(low<=row['high'])):
+        if ((low<row['low'])and(row['low']<high)) or ((high>row['high'])and(row['high']>low)) or ((high<=row['high'])and(high>row['low'])) or ((low>=row['low'])and(low<row['high'])):
             confidence=count/(i+1)
             index=i
             count=count+1
         elif i-index > trend_reversal_threshold: # this is to detect trend change
             break
-#     vola=(day_df['high'].iloc[0:-1].mean()+day_df['low'].iloc[0:-1].mean())/(2*max(count,1))
     vola=(day_df['high'].iloc[0:-1].std())
     vel=(day_df['close'].iloc[index]-day_df['close'].iloc[0])/max(count,1)
-    # return [confidence,index,vola,vel]
-    return [1-vola,index,vola,vel]
-    
+    return [confidence,index,vola,vel]
+
 def up_trend(day_df):
     index=0
     count=0
