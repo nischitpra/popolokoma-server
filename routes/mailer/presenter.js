@@ -55,8 +55,8 @@ module.exports={
                 <p>Dear subscriber,</p>
                 <h3>Heads up! ${from}:${to} Big ${currCS[id.binance.close]>prevCS[id.binance.close]?'Buy':'Sell'} !</h3>
                 <p>There has just big ${currCS[id.binance.close]>prevCS[id.binance.close]?'Buy':'Sell'}  volume of ${currCS[id.binance.volume]}, ${(currCS[id.binance.volume]/prevCS[id.binance.volume])*100}% more as compared to previous ${prevCS[id.binance.volume]}.</p>
-                <p>The closing price ${currCS[id.binance.close]>prevCS[id.binance.close]?'increased':'decreased'} from <b>${prevCS[id.binance.close]}</b> to <b>${currCS[id.binance.close]}</b>.</p>
-                <p>The movement happened at <b>${DateUtils.mmhh_ddMMM(currCS[id.binance.id])} utc</b></p>
+                <p>The closing price ${currCS[id.binance.close]>prevCS[id.binance.close]?'increased':'decreased'} from <b>${prevCS[id.binance.close]}</b> to <b>${currCS[id.binance.close]}</b>,(${(currCS[id.binance.close]/prevCS[id.binance.close])*100}% change), with high reaching upto <b>${currCS[id.binance.high]}</b> and low upto <b>${currCS[id.binance.low]}</b>.</p>
+                <p>The movement happened at <b>${DateUtils.mmhh_ddMMM(currCS[id.binance.id])} UTC</b></p>
                 <p><img src='cid:${id.database.collection.history_from_to_type(from,to,interval)}.png'/></p>
                 <p>regards,<br/>Popo Team</p></body></html>
             </body>
