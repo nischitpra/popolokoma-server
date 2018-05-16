@@ -37,8 +37,8 @@ module.exports = {
                 candlestick:`pythonscript/binance/candlestick.py`
             },
         },
-        buildPath:(pathFromBin)=>`/app/routes/bin/${pathFromBin}`,
-        buildPathImage:(name)=>`/app/public/images/${name}`,
+        buildPath:(pathFromBin)=>true?`/app/routes/bin/${pathFromBin}`:`/Users/nischit/Desktop/awesome/express/coins/routes/bin/${pathFromBin}`,
+        buildPathImage:(name)=>true?`/app/public/images/${name}`:`/Users/nischit/Desktop/awesome/express/coins/public/images/${name}`,
     },
     
     values:{

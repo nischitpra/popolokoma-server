@@ -176,4 +176,19 @@ module.exports={
             }
         })
     },
+    // get big volume alert
+    mailBigVolumeSpecific(from,to,interval,csdata,callback) {
+        db.find(`select ${id.database.email}, ${id.database.from}, ${id.database.to} from ${id.database.collection.subscribed} where ${id.database.from}='${from}' and ${id.database.to}='${to}' and ${id.database.isDeleted}='false';`,(status,data)=>{
+            callback(values.status.ok,`summary mail service started! subscriber: ${JSON.stringify(data)}`)
+            for(var i in data){
+                const email=data[i][id.database.email]
+                const from=data[i][id.database.from]
+                const to=data[i][id.database.to]
+                const type=1
+                this.sendImageMail(utils.base64Decode(email),`${from}:${to} Alert`,presenter.getBigVolumeMessage(from,to,interval,csdata),`${id.database.collection.history_from_to_type(from,to,interval)}.png`,(status,message)=>{
+                    console.log(`status: ${status}, message: ${message}`)
+                })
+            }
+        })
+    },
 }

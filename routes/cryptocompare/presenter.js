@@ -87,10 +87,17 @@ module.exports={
         })
     },
     hasTrendChanged(data){
-        if(data.length>0 && data[data.length-2][id.summarydays.trend]!=data[data.length-1][id.summarydays.trend]){
-            return data
+        if(data.length>0 && (new Date(data[data.length-1][id.summarydays.end_time]).getTime()-new Date(data[data.length-1][id.summarydays.start_time]).getTime())<=3*values.binance.candle_interval_milliseconds('_1h')){
+            return true
         }
-        return []
+        return false
+    },
+    hasBigVolume(data){
+        return true
+        if(data[data.length-1][id.binance.volume]>3*data[data.length-2][id.binance.volume]){
+            return true
+        }
+        return false
     },
     getFilterTrend(filterType,startTime,callback){
         db.find(`select * from ${id.database.collection.trend} where _id in (select max(_id) from ${id.database.collection.trend} group by _key) and trend=${filterType} and cast(end_time as bigint)>=${startTime} order by start_time;`,(status,data)=>{

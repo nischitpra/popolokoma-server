@@ -46,5 +46,21 @@ module.exports={
         `
         return message
     },
+    getBigVolumeMessage(from,to,interval,data){
+        const prevCS=data[data.length-2]
+        const currCS=data[data.length-1]
+        var message=`
+        <html>
+            <body>
+                <p>Dear subscriber,</p>
+                <h3>Heads up! ${from}:${to} Big ${currCS[id.binance.close]>prevCS[id.binance.close]?'Buy':'Sell'} !</h3>
+                <p>There has just been a rise in volume by ${(currCS[id.binance.volume]/prevCS[id.binance.volume]*100)}% moving the closing price from <b>${prevCS[id.binance.close]}</b> to <b>${currCS[id.binance.close]}</b>. The movement happened at <b>${DateUtils.mmhh_ddMMM(currCS[id.binance.id])}</b></p>
+                <p><img src='cid:${id.database.collection.history_from_to_type(from,to,interval)}.png'/></p>
+                <p>regards,<br/>Popo Team</p></body></html>
+            </body>
+        </html>
+        `
+        return message
+    },
     
 }

@@ -8,7 +8,10 @@ import math
 connection=psycopg2.connect("postgres://popo:weareawesome@popo-server.ckhrqovrxtw4.us-east-1.rds.amazonaws.com:5432/coins")
 cur=connection.cursor()
 
-base_path='/app/public/images'
+IS_PROD=True
+
+base_path='/app/public/images' if IS_PROD else '/Users/nischit/Desktop/awesome/express/coins/public/images'
+
 
 
 table_name=sys.argv[1]
@@ -36,7 +39,8 @@ def consolidation(day_df):
 #     vola=(day_df['high'].iloc[0:-1].mean()+day_df['low'].iloc[0:-1].mean())/(2*max(count,1))
     vola=(day_df['high'].iloc[0:-1].std())
     vel=(day_df['close'].iloc[index]-day_df['close'].iloc[0])/max(count,1)
-    return [confidence,index,vola,vel]
+    # return [confidence,index,vola,vel]
+    return [1-vola,index,vola,vel]
     
 def up_trend(day_df):
     index=0

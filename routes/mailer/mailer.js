@@ -82,5 +82,6 @@ module.exports={
     summary4Days:(interval,callback)=>{
         setInterval(()=>service.mailSummary(interval,callback),values.binance.candle_interval_milliseconds[`_${interval}`])
     },
-    trendChangeAlert:(from,to,interval,data,callback)=>{ service.mailTrendChangeSpecific(from,to,interval,data,callback) }
+    trendChangeAlert:(from,to,interval,data,callback)=>{ service.mailTrendChangeSpecific(from,to,interval,data,callback) },
+    bigVolumeAlert:(from,to,interval,data,callback)=>{ service.mailBigVolumeSpecific(from,to,interval,data,callback) },
 }

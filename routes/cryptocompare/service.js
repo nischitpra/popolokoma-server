@@ -85,11 +85,14 @@ module.exports={
                 for(var i in data){
                     const from=data[i][id.database.from]
                     const to=data[i][id.database.to]
-                    require('./presenter').initGCS(from,to,interval, new Date().getTime()-500,new Date().getTime(),true,(status,data)=>{
+                    require('./presenter').initGCS(from,to,interval, new Date().getTime()-500,new Date().getTime(),true,(status,csdata)=>{
                         if(status==values.status.ok){
                             pythoninvoker.get4DaySummary(id.database.collection.history_from_to_type(from,to,interval),(status,data)=>{
-                                data=require('./presenter').hasTrendChanged(data)
-                                if(data.length>0){
+                                if(require('./presenter').hasBigVolume(csdata)){
+                                    require('../mailer/mailer').bigVolumeAlert(from,to,interval,csdata,(status,message)=>{
+                                        console.log(`status: ${status}, message: ${message}`)
+                                    })
+                                }else if(require('./presenter').hasTrendChanged(data)){
                                     require('../mailer/mailer').trendChangeAlert(from,to,interval,data,(status,message)=>{
                                         console.log(`status: ${status}, message: ${message}`)
                                     })
