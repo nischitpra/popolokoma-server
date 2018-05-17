@@ -87,7 +87,7 @@ module.exports={
         })
     },
     hasTrendChanged(data){
-        if(data.length>0 && (new Date(data[data.length-1][id.summarydays.end_time]).getTime()-new Date(data[data.length-1][id.summarydays.start_time]).getTime())<=3*values.binance.candle_interval_milliseconds('_1h')){
+        if(data.length>0 && (new Date(data[data.length-1][id.summarydays.end_time]).getTime()-new Date(data[data.length-1][id.summarydays.start_time]).getTime())<=5*values.binance.candle_interval_milliseconds('_1h')){
             return true
         }
         return false
