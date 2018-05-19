@@ -49,16 +49,27 @@ module.exports={
     getBigVolumeMessage(from,to,interval,data){
         const prevCS=data[data.length-2]
         const currCS=data[data.length-1]
+        if(currCs==undefined|| prevCS==undefined){
+            return `
+            <html>
+                <body>
+                    <h1>ERROR:: UNDEFINED ${from}:${to}:${interval}</h1>
+                    <p>prevcs: ${JSON.stringify(prevCS)}</p>
+                    <p>currcs: ${JSON.stringify(currCS)}</p>
+                    <p>regards,<br/>Popo Team</p></body></html>
+                </body>
+            </html>`
+        }
         var message=`
         <html>
             <body>
                 <p>Dear subscriber,</p>
                 <h3>Heads up! ${from}:${to} Big ${currCS[id.binance.close]>prevCS[id.binance.close]?'Buy':'Sell'} !</h3>
-                <p>There has just big ${currCS[id.binance.close]>prevCS[id.binance.close]?'Buy':'Sell'}  volume of ${currCS[id.binance.volume]}, ${(currCS[id.binance.volume]/prevCS[id.binance.volume])*100}% more as compared to previous ${prevCS[id.binance.volume]}.</p>
-                The closing price ${currCS[id.binance.close]>prevCS[id.binance.close]?'increased':'decreased'} from <b>${prevCS[id.binance.close]}</b> to <b>${currCS[id.binance.close]}</b>,(${(currCS[id.binance.close]/prevCS[id.binance.close])*100}% change), with high reaching upto <b>${currCS[id.binance.high]}</b> and low upto <b>${currCS[id.binance.low]}</b>.
+                <p>There has just big ${currCS[id.binance.close]>prevCS[id.binance.close]?'Buy':'Sell'}  volume of ${currCS[id.binance.volume]}, ${((currCS[id.binance.volume]-prevCS[id.binance.volume])/prevCS[id.binance.volume])*100}% more as compared to previous ${prevCS[id.binance.volume]}.</p>
+                The closing price ${currCS[id.binance.close]>prevCS[id.binance.close]?'increased':'decreased'} from <b>${prevCS[id.binance.close]}</b> to <b>${currCS[id.binance.close]}</b>,(${((currCS[id.binance.close]-prevCS[id.binance.close])/prevCS[id.binance.close])*100}% change), with high reaching upto <b>${currCS[id.binance.high]}</b> and low upto <b>${currCS[id.binance.low]}</b>.
                 The movement happened at <b>${DateUtils.mmhh_ddMMM(currCS[id.binance.id])} UTC</b>
                 <p>
-                There has been <b>${Math.max(Math.abs(data[data.length-1][id.binance.high]-data[data.length-2][id.binance.low])/data[data.length-1][id.binance.high]*100>5,Math.abs(data[data.length-1][id.binance.low]-data[data.length-2][id.binance.high])/data[data.length-1][id.binance.low]*100>5)}%</b>
+                There has been <b>${Math.max((Math.abs(data[data.length-1][id.binance.high]-data[data.length-2][id.binance.low])/data[data.length-1][id.binance.high])*100>5,Math.abs((data[data.length-1][id.binance.low]-data[data.length-2][id.binance.high])/data[data.length-1][id.binance.low])*100>5)}%</b>
                 difference between the highs and lows of the last two intervals. 
                 </p>
                 <p><img src='cid:${id.database.collection.history_from_to_type(from,to,interval)}.png'/></p>
