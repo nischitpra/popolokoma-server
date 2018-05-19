@@ -25,7 +25,7 @@ module.exports={
     //     })
     // },
     getTweetsDb(callback){
-        console.log(`getting home tweets`)
+        // console.log(`getting home tweets`)
         db.find(`select * from ${id.database.collection.tweets} order by _id desc limit 20`,(status,data)=>{
             if(status==values.status.ok){
                 for(var i in data){
@@ -39,7 +39,7 @@ module.exports={
         })
     },
     searchTweets(name,symbol,callback){
-        console.log(`getting tweet for ${symbol}`)
+        // console.log(`getting tweet for ${symbol}`)
         connection.searchTweets(client,name,symbol,callback)
     },
     saveTweet(data){
@@ -59,7 +59,7 @@ module.exports={
     },
     postFilterTweetsList(data,filteredData){
         list=[]
-        console.log(`filtered data length: ${filteredData.length}`)
+        // console.log(`filtered data length: ${filteredData.length}`)
         for(var i in filteredData){
             var item=data[filteredData[i][id.twitter.tweet.index]]
             list.push(item)
@@ -67,14 +67,14 @@ module.exports={
         return list
     },
     getGoodBadTweetsDb(callback){
-        console.log(`getting good bad tweet`)
+        // console.log(`getting good bad tweet`)
         db.getGoodBadTweets((status,tweets)=>{
-            console.log(tweets)
+            // console.log(tweets)
             callback(status,tweets)
         })
     },
     getGoodBadTweetsFewDb(count,callback){
-        console.log(`getting good bad tweet few`)
+        // console.log(`getting good bad tweet few`)
         db.getGoodBadTweetsFew(count,(status,tweets)=>{
             callback(status,tweets)
         })
@@ -87,20 +87,22 @@ module.exports={
      * Need to bind context for this function call as it uses the context(this.) to call functions
      */
     saveTweetDb(tweets){
-        console.log(`${tweets.length} tweets received`)
+        // console.log(`${tweets.length} tweets received`)
         var preparedList=this.preFilterTweetsList(tweets)
         pythoninvoker.getFilteredTweet(JSON.stringify(preparedList),(status,filteredData)=>{
             filteredData=this.postFilterTweetsList(tweets,filteredData)
-            console.log(`${filteredData.length} tweets filtered`)
+            // console.log(`${filteredData.length} tweets filtered`)
             if(filteredData.length>0){
-                db.insert(id.database.collection.tweets,id.database.collection.keyList.tweets,filteredData,(status,message)=>console.log(message))
+                db.insert(id.database.collection.tweets,id.database.collection.keyList.tweets,filteredData,(status,message)=>{}
+                // console.log(message)
+            )
             }else{
                 console.log(string.database.insert.emptyList)
             }
         })
     },
     getSentimentTrend(callback){
-        console.log(`getting sentiment trend`)
+        // console.log(`getting sentiment trend`)
         db.find(`select * from ${id.database.collection.sentimentTrend} order by time asc`,(status,data)=>{
             callback(status,data)
         })

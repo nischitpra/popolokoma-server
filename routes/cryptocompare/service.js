@@ -16,10 +16,10 @@ module.exports={
     updateCandleStick(from,to,interval,fromTime,toTime,isNew,callback,lock_callback){
         connection.getCandleStick(from,to,interval,fromTime,toTime,(status,data)=>{
             if(status==values.status.ok&& data.length>0){
-                console.log(`no of records in json : ${data.length}`)
+                // console.log(`no of records in json : ${data.length}`)
                 const collection=id.database.collection.history_from_to_type(from,to,interval)
                 if (isNew){
-                    console.log('inserting for new')
+                    // console.log('inserting for new')
                     db.find(`select * from ${collection} order by ${id.database.id} desc limit 1`,(status,prevData)=>{
                         if(prevData.length==0){
                             this.saveHistoryDataset(collection,data,isNew,0,callback,lock_callback)
@@ -28,7 +28,7 @@ module.exports={
                         }
                     })
                 }else{
-                    console.log('inserting for old')
+                    // console.log('inserting for old')
                     db.find(`select * from ${collection} order by ${id.database.id} asc limit 1`,(status,prevData)=>{
                         if(prevData.length==0){
                             this.saveHistoryDataset(collection,data,isNew,new Date().getTime(),callback,lock_callback)
@@ -50,7 +50,7 @@ module.exports={
     },
 
     saveHistoryDataset(tableName,data,isNew,entryTime,callback,lock_callback){
-        console.log('saving dataset')
+        // console.log('saving dataset')
         var list=[]
 
         data.map(row=>{
@@ -73,7 +73,7 @@ module.exports={
                 }
             })
         }else{
-            console.log(string.database.insert.emptyList)
+            // console.log(string.database.insert.emptyList)
             lock_callback(tableName,false)
             return callback(values.status.error,[])
         }
@@ -90,18 +90,18 @@ module.exports={
                             pythoninvoker.get4DaySummary(id.database.collection.history_from_to_type(from,to,interval),(status,data)=>{
                                 if(require('./presenter').hasBigVolume(csdata)){
                                     require('../mailer/mailer').bigVolumeAlert(from,to,interval,csdata,(status,message)=>{
-                                        console.log(`status: ${status}, message: ${message}`)
+                                        console.log(`status: ${status}, message: big volume alert`)
                                     })
                                 }else if(require('./presenter').hasTrendChanged(data)){
                                     require('../mailer/mailer').trendChangeAlert(from,to,interval,data,(status,message)=>{
-                                        console.log(`status: ${status}, message: ${message}`)
+                                        console.log(`status: ${status}, message: trend change alert`)
                                     })
                                 }else{
                                     console.log(`${from} ${to}==> trend change alert calling ${JSON.stringify(data)}`)
                                 }
                             })
                         }else{
-                            console.log(`${status}, ${JSON.stringify(data)}`)  
+                            console.log(`checkupdateCS outer else :: ${status}, ${JSON.stringify(data)}`)  
                         }
                     },lock)
                 }

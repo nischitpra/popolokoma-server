@@ -11,7 +11,7 @@ const constants = require('../constants')
 
 module.exports={
     getHistory(key,callback){
-        console.log(`getting forecast history for ${key}`)
+        // console.log(`getting forecast history for ${key}`)
         db.findOne(id.database.collection.forecast,{[id.database.cc.id]:key},(status,data)=>{
             if(status==values.status.ok){
                 callback(status,data[id.database.cc.history])

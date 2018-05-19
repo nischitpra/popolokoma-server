@@ -64,7 +64,7 @@ router.get('/s',function(req, res, next) {
 router.get('/ut',function(req, res, next) {
     if(locked==false){
         db.createTweetsTable((status,message)=>{
-            console.log(`status: ${status}, message: ${message}`)
+            // console.log(`status: ${status}, message: ${message}`)
         })
         locked=true
         var symbol=req.query[id.twitter.symbol]
@@ -117,10 +117,10 @@ module.exports ={
     uts: (interval,callback)=>{
         setInterval(()=>{
             service.updateGoodBadTweets((status,message)=>{
-                console.log(`updateGoodBadTweets:: status:${status}, message:${message}`)
+                // console.log(`updateGoodBadTweets:: status:${status}, message:${message}`)
                 if(status==values.status.ok){
                     service.updateSentimentTrend((status,message)=>{
-                        console.log(`updateSentimentTrend:: status:${status}, message:${message}`)
+                        // console.log(`updateSentimentTrend:: status:${status}, message:${message}`)
                     })
                 }
             })

@@ -8,7 +8,7 @@ const fetch = require('node-fetch')
 
 module.exports={
     getNews(type,count,page,callback){
-        console.log('fetcing data')
+        // console.log('fetcing data')
         fetch(network.news(type,count,page),{
             method: 'GET',
             headers: {
@@ -17,7 +17,7 @@ module.exports={
                 "X-API-Key": values.news.apiKey
             },
         }).then(response=>{
-            console.log('data fetched')
+            // console.log('data fetched')
             if(response.ok){
                 response.json().then(json=>{
                     console.log('sending data back')
@@ -31,7 +31,7 @@ module.exports={
     },
 
     getHistory(type,from,to,exchange,toTime,callback){
-        console.log(network.history(type,from,to,exchange,toTime))
+        // console.log(network.history(type,from,to,exchange,toTime))
         fetch(network.history(type,from,to,exchange,toTime),{
             method: 'GET',
             headers: values.baseHeader,
@@ -46,7 +46,7 @@ module.exports={
     },
 
     getFavourites(from,to,exchange,callback){
-        console.log(network.favourites(from,to,exchange))
+        // console.log(network.favourites(from,to,exchange))
         fetch(network.favourites(from,to,exchange),{
             method: 'GET',
             headers: values.baseHeader,
@@ -65,7 +65,7 @@ module.exports={
     },
 
     getCoinList(callback){
-        console.log(network.coinList)
+        // console.log(network.coinList)
         fetch(network.coinList,{
             method: 'GET',
             headers: values.baseHeader,
@@ -80,7 +80,7 @@ module.exports={
     },
 
     getSocketScubscriptionList(from,to,callback){
-        console.log(network.socketSubsList(from,to))
+        // console.log(network.socketSubsList(from,to))
         fetch(network.socketSubsList(from,to),{
             method: 'GET',
             headers: values.baseHeader,
@@ -94,7 +94,7 @@ module.exports={
         })
     },
     searchTweets(client,name,symbol,callback){
-        console.log(network.searchTweet(name,symbol))
+        // console.log(network.searchTweet(name,symbol))
         client.get('search/tweets', {q: `${symbol}%20${name}`})
         .then((tweet)=>{
             callback(values.status.ok,tweet[id.twitter.statuses])
@@ -106,7 +106,7 @@ module.exports={
     },
     streamTweets(client,name,symbol,callback){
         var bufferTweets=[]
-        console.log('streaming tweets from twitter api')
+        // console.log('streaming tweets from twitter api')
         client.stream('statuses/filter', {track: `${symbol}`},  function(stream) {
             stream.on('data', function(tweet) {
                 const tweet_obj={}
@@ -119,10 +119,10 @@ module.exports={
                 tweet_obj[id.database.collection.keyList.tweets[6]]=tweet.timestamp_ms
 
                 bufferTweets.push(tweet_obj)
-                console.log(bufferTweets.length);
-                console.log(tweet.text)
+                // console.log(bufferTweets.length);
+                // console.log(tweet.text)
                 if(bufferTweets.length>50){
-                    console.log('--------------===========-------------')
+                    // console.log('--------------===========-------------')
                     callback(bufferTweets)
                     bufferTweets=[]
                 }
@@ -133,7 +133,7 @@ module.exports={
         });
     },
     get24HrTicker(from,to,callback){
-        console.log('fetching 24hrs ticker price')
+        // console.log('fetching 24hrs ticker price')
         var url=network.binance.ticker24h(from,to)
         if(from==undefined||to==undefined){
             url=network.binance.ticker24hAll
@@ -145,7 +145,7 @@ module.exports={
                 "Accept": 'application/json',
             },
         }).then(response=>{
-            console.log('ticker fetched')
+            // console.log('ticker fetched')
             if(response.ok){
                 response.json().then(json=>{
                     callback(values.status.ok,json)
@@ -157,7 +157,7 @@ module.exports={
         })
     },
     getCandleStick(from,to,interval,fromTime,toTime,callback){
-        console.log(`${network.binance.candleStick(from,to,interval,fromTime,toTime)}`)
+        // console.log(`${network.binance.candleStick(from,to,interval,fromTime,toTime)}`)
         fetch(network.binance.candleStick(from,to,interval,fromTime,toTime),{
             method: 'GET',
             headers: {
@@ -165,7 +165,7 @@ module.exports={
                 "Accept": 'application/json',
             },
         }).then(response=>{
-            console.log('candlestick fetched')
+            // console.log('candlestick fetched')
             if(response.ok){
                 response.json().then(json=>{
                     callback(values.status.ok,json)

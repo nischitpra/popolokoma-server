@@ -61,10 +61,10 @@ module.exports={
         }
     },
     getCandleStick(from,to,interval,fromTime,toTime,isNew,callback,lock,lock_callback){
-        console.log(`isNew: ${isNew} from time: ${fromTime} totime: ${toTime} key: ${id.database.cc.history_from_to_type(from,to,interval)}`)
+        // console.log(`isNew: ${isNew} from time: ${fromTime} totime: ${toTime} key: ${id.database.cc.history_from_to_type(from,to,interval)}`)
         db.find(`select * from ${id.database.cc.history_from_to_type(from,to,interval)} where cast(_id as bigint)>=${fromTime} and cast(_id as bigint)<=${toTime} order by cast(_id as bigint) asc limit 2000;`,(status,data)=>{
             if(status==values.status.ok){
-                console.log(`data length: ${data.length}`)
+                // console.log(`data length: ${data.length}`)
                 if(data.length>0 && !isNew && (toTime-parseInt(data[data.length-1][id.binance.id]))<=values.binance.candle_interval_milliseconds[`_${interval}`]){
                     return callback(status,data)
                 }else{
@@ -98,7 +98,7 @@ module.exports={
             return true
         }
         /** if % change between current high and previous low is greater than 5% */
-        if(Math.abs(data[data.length-1][id.binance.high]-data[data.length-2][id.binance.low])/data[data.length-1][id.binance.high]*100>5||Math.abs(data[data.length-1][id.binance.low]-data[data.length-2][id.binance.high])/data[data.length-1][id.binance.low]*100>5){
+        if((Math.abs(data[data.length-1][id.binance.high]-data[data.length-2][id.binance.low])/data[data.length-1][id.binance.high]*100)>5||(Math.abs(data[data.length-1][id.binance.low]-data[data.length-2][id.binance.high])/data[data.length-1][id.binance.low]*100)>5){
             return true
         }
         return false
@@ -124,7 +124,7 @@ module.exports={
             if(status==values.status.ok){
                 return callback(status,data)
             }
-            console.log(data)
+            // console.log(data)
             return callback(values.status.error,string.someWrong)
         })
     },

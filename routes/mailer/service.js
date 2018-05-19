@@ -17,7 +17,7 @@ module.exports={
             const otp= this.generateOtp()
             const otpUrl= network.subscribeOtp(user,from,to,otp)
             const message=string.subscribe.otpEmail(otp,otpUrl)
-            console.log(message)
+            // console.log(message)
             this.sendMailOtp(user,from,to,otp,string.subscribe.requestSubscription,message,callback)
         }else{
             callback(values.status.error,string.someWrong)
@@ -43,7 +43,7 @@ module.exports={
                 [id.database.collection.keyList.otp[2]]:new Date().getTime(),
                 [id.database.collection.keyList.otp[3]]:false
             }],(status,message)=>{
-                console.log(`status:${status}, message:${message}`)
+                // console.log(`status:${status}, message:${message}`)
                 return callback(values.status.ok,string.subscribe.optSent(user))   
             })
         }).catch((error)=>{
@@ -123,7 +123,7 @@ module.exports={
                     [id.database.collection.keyList.subscribed[4]]:false
                 }],
                 (status,message)=>{
-                    console.log(`save subscription: ${status}, ${JSON.stringify(message)}`)
+                    // console.log(`save subscription: ${status}, ${JSON.stringify(message)}`)
                 })
             }
         })
@@ -152,10 +152,10 @@ module.exports={
                 const from=data[i][id.database.from]
                 const to=data[i][id.database.to]
                 const type=1
-                console.log(`${email}, ${from}, ${to}`)
+                // console.log(`${email}, ${from}, ${to}`)
                 pythoninvoker.get4DaySummary(id.database.cc.history_from_to_type(from,to,id.cryptocompare.history[type]),(status,data)=>{
                     this.sendImageMail(utils.base64Decode(email),`${from}:${to} Summary`,presenter.getSummaryMessage(from,to,data),`${id.database.collection.history_from_to_type(from,to,interval)}.png`,(status,message)=>{
-                        console.log(`status: ${status}, message: ${message}`)
+                        // console.log(`status: ${status}, message: ${message}`)
                     })
                 })
             }
@@ -171,7 +171,7 @@ module.exports={
                 const to=data[i][id.database.to]
                 const type=1
                 this.sendImageMail(utils.base64Decode(email),`${from}:${to} Alert`,presenter.getTrendChangeMessage(from,to,interval,trendData),`${id.database.collection.history_from_to_type(from,to,interval)}.png`,(status,message)=>{
-                    console.log(`status: ${status}, message: ${message}`)
+                    // console.log(`status: ${status}, message: ${message}`)
                 })
             }
         })
@@ -186,7 +186,7 @@ module.exports={
                 const to=data[i][id.database.to]
                 const type=1
                 this.sendImageMail(utils.base64Decode(email),`${from}:${to} Alert`,presenter.getBigVolumeMessage(from,to,interval,csdata),`${id.database.collection.history_from_to_type(from,to,interval)}.png`,(status,message)=>{
-                    console.log(`status: ${status}, message: ${message}`)
+                    // console.log(`status: ${status}, message: ${message}`)
                 })
             }
         })

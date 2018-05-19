@@ -13,7 +13,7 @@ module.exports={
             if(status==values.status.ok){
                 if(data!=null && data.length>0){
                     this.deleteWhere(id.database.collection.otp,`_key='${key}' and otp = ${otp}`,(status,message)=>{
-                        console.log(`validateOtp database.js: status:${status}, message:${message}`)
+                        // console.log(`validateOtp database.js: status:${status}, message:${message}`)
                     })
                     return callback(values.status.ok,callback)
                 }else{
@@ -263,7 +263,7 @@ module.exports={
                 );`,(err, res) => {
                     if(err){
                         client.end()
-                        console.log(err)                    
+                        // console.log(err)                    
                         return callback(values.status.error,err)
                     }
                     client.end()
