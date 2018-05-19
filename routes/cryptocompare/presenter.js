@@ -101,6 +101,10 @@ module.exports={
         if((Math.abs(data[data.length-1][id.binance.high]-data[data.length-2][id.binance.low])/data[data.length-1][id.binance.high]*100)>5||(Math.abs(data[data.length-1][id.binance.low]-data[data.length-2][id.binance.high])/data[data.length-1][id.binance.low]*100)>5){
             return true
         }
+        /** difference between high and low is greater than 5% */
+        if((Math.abs(data[data.length-1][id.binance.high]-data[data.length-1][id.binance.low])/data[data.length-1][id.binance.low]*100)>5){
+            return true
+        }
         return false
     },
     getFilterTrend(filterType,startTime,callback){
