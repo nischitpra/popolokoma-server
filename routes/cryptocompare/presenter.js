@@ -147,8 +147,8 @@ module.exports={
             }
         })
     },
-    ucs(form,to,interval,fromTime,toTime,callback){
-        connection.getCandleStick(form,to,interval,fromTime,toTime,(status,data)=>{
+    ucs(from,to,interval,fromTime,toTime,callback){
+        connection.getCandleStick(from,to,interval,fromTime,toTime,(status,data)=>{
             var list=[]
             data.map(row=>{
                 var ob={}
@@ -218,13 +218,13 @@ module.exports={
     },
     processAlert(from,to,interval,data){
         if(data[data.length-1][id.binance.volume]>3*data[data.length-2][id.binance.volume]){
-            require('../mailer/mailer').bigVolumeAlert(form,to,interval,data[data.length-1],data[data.length-2],(status,message)=>{
+            require('../mailer/mailer').bigVolumeAlert(from,to,interval,data[data.length-1],data[data.length-2],(status,message)=>{
                 string.log_callback(status,message)
             })
         }
         /** if % change between current high and previous low is greater than 5% */
         if((Math.abs(data[data.length-1][id.binance.low]-data[data.length-1][id.binance.high])/data[data.length-1][id.binance.low])*100>5){
-            require('../mailer/mailer').bigPriceMove(form,to,interval,data[data.length-1],data[data.length-2],(status,message)=>{
+            require('../mailer/mailer').bigPriceMove(from,to,interval,data[data.length-1],data[data.length-2],(status,message)=>{
                 string.log_callback(status,message)
             })
         }

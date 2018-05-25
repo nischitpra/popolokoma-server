@@ -146,7 +146,7 @@ module.exports={
     // },
 
     puscs(){
-        db.find(`select * form ${id.database.collection.pairList} where interval='1h'`,(status,list)=>{
+        db.find(`select * from ${id.database.collection.pairList} where interval='1h'`,(status,list)=>{
             if(status==values.status.ok){
                 for(var i in list.length){
                     const params=[list[i][id.cryptocompare.from],list[i][id.cryptocompare.to],list[i][id.cryptocompare.historyType]]
