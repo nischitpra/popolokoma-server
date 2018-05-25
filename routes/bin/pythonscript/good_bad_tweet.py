@@ -13,7 +13,7 @@ cur=connection.cursor()
 
 IS_PROD=True
 
-base_path='/app/routes/bin/pythonscript' if IS_PROD else '/Users/nischit/Desktop/awesome/express/coins/routes/bin/pythonscript'
+base_path='/app/routes/bin/pythonscript' if IS_PROD else '/Users/nischit/Desktop/awesome/heroku-server/coins/routes/bin/pythonscript'
 
 HISTORY_TYPE=1*60*60*24 #1 day
 

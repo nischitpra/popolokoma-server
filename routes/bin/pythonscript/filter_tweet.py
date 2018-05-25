@@ -9,7 +9,7 @@ from nltk.stem.snowball import EnglishStemmer
 
 IS_PROD=True
 
-base_path='/app/routes/bin/pythonscript' if IS_PROD else '/Users/nischit/Desktop/awesome/express/coins/routes/bin/pythonscript'
+base_path='/app/routes/bin/pythonscript' if IS_PROD else '/Users/nischit/Desktop/awesome/heroku-server/coins/routes/bin/pythonscript'
 
 
 stemmer = EnglishStemmer()

@@ -56,6 +56,8 @@ router.get('/gcs', function(req, res, next) {
 router.get('/t', function(req, res, next) {
     var from=req.query[id.params.from]
     var to=req.query[id.params.to]
+    from=(from==undefined||from==null)?'XRP':from
+    to=(to==undefined||to==null)?'BTC':to
     
     service.get24HrTicker(from,to,(status,data)=>res.json({
             status:status,

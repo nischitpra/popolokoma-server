@@ -37,16 +37,16 @@ module.exports={
     getGoodBadTweet(callback){
         var spawn = require("child_process").spawn
         var process = spawn(files.python.compiler,[files.buildPath(files.python.goodBadTweet)] )
-        // console.log('get good bad tweet process spawned')
+        console.log('get good bad tweet process spawned')
         process.stdout.on('data', (data)=>{
-            // console.log('returned good bad from python')
+            console.log('returned good bad from python')
             callback(values.status.ok,data.toString('utf8'))
         })
 
         process.stderr.on('data',(error)=>{
-            // console.log('---ERROR-----')
-            // console.log(error.toString('utf8'))
-            // console.log('=============')
+            console.log('---ERROR-----')
+            console.log(error.toString('utf8'))
+            console.log('=============')
         })
     },
     updateForecastHistory(key,callback){
