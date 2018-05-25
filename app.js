@@ -17,7 +17,17 @@ const id=require('./routes/constants').id
 const network=require('./routes/constants').network
 const forecast=require('./routes/forecast/forecast')
 
+const Lifeline=require('./routes/lifeline/Lifeline')
+const LifeObject=require('./routes/lifeline/LifeObject')
+
 const database = require('./routes/database')
+
+
+
+global.LIFELINE_CS=new Lifeline()
+global.LIFELINE_MAILER=new Lifeline()
+
+
 
 var app = express();
 // view engine setup
@@ -42,6 +52,7 @@ database.createSentimentTrendTable((status,message)=>{console.log(`status: ${sta
 database.createTweetsTable((status,message)=>{console.log(`status: ${status}, message: ${message}`)})
 database.createOTPTable((status,message)=>{console.log(`status: ${status}, message: ${message}`)})
 database.createSubscribedTable((status,message)=>{console.log(`status: ${status}, message: ${message}`)})
+database.createPairListTable((status,message)=>{console.log(`status: ${status}, message: ${message}`)})
 
 /** Initialize url paths */
 app.use(cors())
@@ -52,8 +63,12 @@ app.use('/twitter',twitter.router);
 app.use('/m',mailer.router)
 app.use('/f',forecast)
 
+
+
+
+
 /** Initialize update sucscribed candlestick services */
-cryptoCompare.uscs(1)
+cryptoCompare.uscs()
 
 /** Initialize 4 Day summary mailer */
 mailer.summary4Days('1d',(status,message)=>{ console.log(`status: ${status}, message: ${message}`) })

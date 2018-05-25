@@ -30,8 +30,8 @@ module.exports={
         return message
     },
     
-    getTrendChangeMessage(from,to,interval,data){
-        const prevTrend=data[data.length-2][id.summarydays.trend]>0?'Up trend':data[data.length-2][id.summarydays.trend]<0?'Down trend':'Consolidation'
+    getTrendChangeMessage(from,to,interval,data,prevTrend){
+        const prevTrend=prevTrend>0?'Up trend':prevTrend<0?'Down trend':'Consolidation'
         const currTrend=data[data.length-1][id.summarydays.trend]>0?'Up trend':data[data.length-1][id.summarydays.trend]<0?'Down trend':'Consolidation'
         var message=`
         <html>
@@ -46,9 +46,7 @@ module.exports={
         `
         return message
     },
-    getBigVolumeMessage(from,to,interval,data){
-        const prevCS=data[data.length-2]
-        const currCS=data[data.length-1]
+    getBigVolumeMessage(from,to,interval,currCS,prevCS){
         if(currCs==undefined|| prevCS==undefined){
             return `
             <html>
@@ -69,9 +67,21 @@ module.exports={
                 The closing price ${currCS[id.binance.close]>prevCS[id.binance.close]?'increased':'decreased'} from <b>${prevCS[id.binance.close]}</b> to <b>${currCS[id.binance.close]}</b>,(${((currCS[id.binance.close]-prevCS[id.binance.close])/prevCS[id.binance.close])*100}% change), with high reaching upto <b>${currCS[id.binance.high]}</b> and low upto <b>${currCS[id.binance.low]}</b>.
                 The movement happened at <b>${DateUtils.mmhh_ddMMM(currCS[id.binance.id])} UTC</b>
                 <p>
-                There has been <b>${Math.max((Math.abs(data[data.length-1][id.binance.high]-data[data.length-2][id.binance.low])/data[data.length-1][id.binance.high])*100>5,Math.abs((data[data.length-1][id.binance.low]-data[data.length-2][id.binance.high])/data[data.length-1][id.binance.low])*100>5)}%</b>
-                difference between the highs and lows of the last two intervals. 
-                </p>
+                <p><img src='cid:${id.database.collection.history_from_to_type(from,to,interval)}.png'/></p>
+                <p>regards,<br/>Popo Team</p></body></html>
+            </body>
+        </html>
+        `
+        return message
+    },
+    getBigPriceMoveMessage(from,to,interval,current,previous){
+        const isBuy=current[id.database.close]>previous[id.database.close]
+        var message=`
+        <html>
+            <body>
+                <p>Dear subscriber,</p>
+                <h3>Heads up! ${from}:${to} Big Price Movement!</h3>
+                <p>There has been a big ${isBuy?'Buy':'Sell'} with low of <b>${low}</b> and high of <b>${high}</b> at <b>${DateUtils.mmhh_ddMMM(current[id.database.id])}</b></p>
                 <p><img src='cid:${id.database.collection.history_from_to_type(from,to,interval)}.png'/></p>
                 <p>regards,<br/>Popo Team</p></body></html>
             </body>

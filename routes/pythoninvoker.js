@@ -64,7 +64,7 @@ module.exports={
             // console.log('=============')
         })
     },
-    get4DaySummary(key,callback){
+    velvo(key,callback){
         var spawn = require("child_process").spawn
         var process = spawn(files.python.compiler,[files.buildPath(files.python.velvoCalculator),key] )
         process.stdout.on('data', (data)=>{
@@ -72,9 +72,9 @@ module.exports={
         })
 
         process.stderr.on('data',(error)=>{
-            // console.log('---ERROR-----')
-            // console.log(error.toString('utf8'))
-            // console.log('=============')
+            console.log('---ERROR-----')
+            console.log(error.toString('utf8'))
+            console.log('=============')
         })
     },
 

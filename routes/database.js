@@ -215,6 +215,30 @@ module.exports={
                 })
         })
     },
+    createPairListTable(callback){
+        const pg = require('pg');
+        var pool = new pg.Pool(network.database_details)
+        pool.connect((err, client, done)=>{
+            if(err){
+                done()
+                return callback(values.status.error,err)
+            }
+            const query = client.query(
+                `create table if not exists ${id.database.collection.pairList} (
+                    _id serial primary key,
+                    _from varchar(7),
+                    _to varchar(7),
+                    history_type varchar(3)
+                );`,(err, res) => {
+                    if(err){
+                        client.end()
+                        return callback(values.status.error,err)
+                    }
+                    client.end()
+                    return callback(values.status.ok,string.database.create.table(id.database.collection.pairList))
+                })
+        })
+    },
     createTweetsTable(callback){
         const pg = require('pg');
         var pool = new pg.Pool(network.database_details)

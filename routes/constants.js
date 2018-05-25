@@ -37,8 +37,8 @@ module.exports = {
                 candlestick:`pythonscript/binance/candlestick.py`
             },
         },
-        buildPath:(pathFromBin)=>true?`/app/routes/bin/${pathFromBin}`:`/Users/nischit/Desktop/awesome/express/coins/routes/bin/${pathFromBin}`,
-        buildPathImage:(name)=>true?`/app/public/images/${name}`:`/Users/nischit/Desktop/awesome/express/coins/public/images/${name}`,
+        buildPath:(pathFromBin)=>true?`/app/routes/bin/${pathFromBin}`:`/Users/nischit/Desktop/awesome/heroku-server/coins/routes/bin/${pathFromBin}`,
+        buildPathImage:(name)=>true?`/app/public/images/${name}`:`/Users/nischit/Desktop/awesome/heroku-server/coins/public/images/${name}`,
     },
     
     values:{
@@ -128,7 +128,21 @@ module.exports = {
             taker_buy_quote_asset_volume:'taker_buy_quote_asset_volume',
         },
         application:{db:'db'},
-        
+        lifeline:{
+            ucs:(from,to,interval)=>`ucs_${from}_${to}_${interval}`,
+            mailer:{
+                alert:{
+                    trendChange:(key)=>`a_tc${key}`,
+                    bigVolume:(key)=>`a_bv${key}`,
+                },
+                summary:(key)=>`summary_${key}`,
+            },
+        },
+        pythonInvoker:{
+            isAlert:'is_alert',
+            previousTrend:'previous_trend',
+            currentTrend:'current_trend',
+        },
         database:{
             name:'coins',
             collection:{
@@ -141,6 +155,7 @@ module.exports = {
                 forecast:'forecast',
                 trend:'trend',
                 volatility:'volatility',
+                pairList:'pair_list',
                 history_from_to_type:(from,to,type)=>`${from}_${to}_${type}`,
                 trend_velocity:(from,to)=>`trend_velocity`,
                 dump:{
@@ -154,6 +169,7 @@ module.exports = {
                     tweets:['created_at','id_str','text','name','screen_name','profile_image_url','timestamp_ms'],
                     otp:['_key','otp','created_at','is_deleted'],
                     subscribed:['email','_from','_to','created_at','is_deleted'],
+                    pairList:['_from','_to','history_type'],
                 },
             },
             id:'_id',
@@ -182,6 +198,7 @@ module.exports = {
             email:'email',
             from:'_from',
             to:'_to',
+            historyType:'history_type',
             cc:{
                 id:'_id',
                 history:'history',
@@ -257,6 +274,7 @@ module.exports = {
                 validationError:false,
             },
         },
+        
     },
     string:{
         subscribe:{
@@ -287,6 +305,7 @@ module.exports = {
         },
         inserted:(count)=>`${count} items added!`,
         functionLocked:`Function Locked! An instance of the function is already running.`,
+        log_callback:(status,message)=>{console.log(`status:${status},message:${JSON.stringify(message)}`)},
         
     },
 }

@@ -3,6 +3,7 @@ import psycopg2
 import pandas as pd
 import numpy as np
 from matplotlib import pyplot as plot
+import json
 import math
 
 connection=psycopg2.connect("postgres://popo:weareawesome@popo-server.ckhrqovrxtw4.us-east-1.rds.amazonaws.com:5432/coins")
@@ -125,6 +126,9 @@ def summary_days(df):
     return trend_df,vola_df
 
 # delete old values
+cur.execute("select * from trend where _key='{}' order by cast(start_time as bigint) asc;".format(table_name))
+prev_trend_df = pd.DataFrame(list(cur.fetchall()))
+prev_trend_df.columns=[ '_id', '_key', 'trend', 'confidence', 'velocity', 'start_time', 'end_time' ]
 cur.execute("delete from trend where _key='{}';".format(table_name))
 cur.execute("delete from volatility where _key='{}';".format(table_name))
 
@@ -146,5 +150,13 @@ cur.execute("insert into volatility (_key, volatility, start_time, end_time) val
 
 connection.commit()
 
-print(trend_df.to_json(orient='records'))
+cur_trend=trend_df[trend_df['start_time']==prev_trend_df['start_time'].iloc[-1]]
+prev_trend=prev_trend_df['trend'].iloc[-1]
+if cur_trend.shape[0]>1 or cur_trend['trend'].iloc[0]!=prev_trend:
+    should_alert=1.0
+else :
+    should_alert=0.0
+
+# .item() to convert numpy int to python int
+print(json.dumps({"is_alert":should_alert,"previous_trend":prev_trend.item(),"current_trend":cur_trend['trend'].iloc[0].item()}))
 sys.stdout.flush()

@@ -35,7 +35,14 @@ router.get('/gcs', function(req, res, next) {
     isNew=(isNew==undefined||isNew==null)?true:isNew
     isNew=isNew=='true'
 
-    presenter.initGCS(from,to,interval,fromTime,toTime,isNew,(status,data)=>{
+    // presenter.initGCS(from,to,interval,fromTime,toTime,isNew,(status,data)=>{
+    //     res.json({
+    //         status:status,
+    //         type:interval,
+    //         message: data,
+    //     })
+    // },lock)
+    presenter.gcs(from,to,interval,fromTime,toTime,isNew,(status,data)=>{
         res.json({
             status:status,
             type:interval,
@@ -120,12 +127,27 @@ router.get('/gs', function(req, res, next) {
     )
 });
 
-/** update candle stick force */
-router.get('/ucsf', function(req, res, next) {
-    service.ucsf(1,(status,data)=>res.json({
-            status:status,
-            message: data
-        }),lock)
+// /** update candle stick force */
+// router.get('/ucsf', function(req, res, next) {
+//     service.ucsf(1,(status,data)=>res.json({
+//             status:status,
+//             message: data
+//         }),lock)
+// });
+
+
+/** test velvo */
+router.get('/tvelvo', function(req, res, next) {
+    var from=req.query[id.params.from]
+    var to=req.query[id.params.to]
+    from=(from==undefined||from==null)?'XRP':from
+    to=(to==undefined||to==null)?'BTC':to
+    const interval='1h'
+    require('./service').velvo(from,to,interval)
+    res.json({
+        status:values.status.ok,
+        message: "tvelvo initialized."
+    })
 });
 
 
@@ -134,7 +156,14 @@ module.exports = {
     lock:lock,
     intervalList:intervalList,
     service:service,
-    uscs:(type)=>service.uscs(intervalList,type,(status,message)=>{
-        console.log(`status: ${status}, message: ${message}`)
-      },lock)
+    // uscs:(type)=>service.uscs(intervalList,type,(status,message)=>{
+    //     console.log(`status: ${status}, message: ${message}`)
+    //   },lock),
+    uscs:()=>{
+        setInterval(()=>{
+            service.puscs()
+            console.log('puscs initialized')
+        },values.binance.candle_interval_milliseconds[`_1h`])
+    },
+    
 }
