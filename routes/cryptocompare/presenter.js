@@ -148,7 +148,7 @@ module.exports={
         })
     },
     ucs(form,to,interval,fromTime,toTime,callback){
-        connection.getCandleStick(from,to,interval,fromTime,toTime,(status,data)=>{
+        connection.getCandleStick(form,to,interval,fromTime,toTime,(status,data)=>{
             var list=[]
             data.map(row=>{
                 var ob={}
