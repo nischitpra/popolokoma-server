@@ -188,6 +188,8 @@ module.exports={
                 if(data[id.pythonInvoker.isAlert]>0){
                     /** perform alert mail service for trend change  */
                     db.find(`select * from ${id.database.collection.trend} where _key='${id.database.collection.history_from_to_type(from,to,interval)}' order by cast(${id.database.id} as bigint) asc`,(status,trendData)=>{
+                        console.log('velvo after python: ')
+                        string.log_callback(status,trendData)
                         if(status==values.status.ok){
                             console.log('velvo')
                             require('../mailer/mailer').trendChangeAlert(from,to,interval,trendData,data[id.pythonInvoker.previousTrend],(status,message)=>{
