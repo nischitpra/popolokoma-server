@@ -7,7 +7,7 @@ import re
 from nltk.corpus import stopwords
 from nltk.stem.snowball import EnglishStemmer
 
-IS_PROD=False
+IS_PROD=True
 
 base_path='/app/routes/bin/pythonscript' if IS_PROD else '/Users/nischit/Desktop/awesome/heroku-server/coins/routes/bin/pythonscript'
 

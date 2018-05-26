@@ -9,7 +9,7 @@ import math
 connection=psycopg2.connect("postgres://popo:weareawesome@popo-server.ckhrqovrxtw4.us-east-1.rds.amazonaws.com:5432/coins")
 cur=connection.cursor()
 
-IS_PROD=False
+IS_PROD=True
 
 base_path='/app/public/images' if IS_PROD else '/Users/nischit/Desktop/awesome/heroku-server/coins/public/images'
 

@@ -37,8 +37,8 @@ module.exports = {
                 candlestick:`pythonscript/binance/candlestick.py`
             },
         },
-        buildPath:(pathFromBin)=>false?`/app/routes/bin/${pathFromBin}`:`/Users/nischit/Desktop/awesome/heroku-server/coins/routes/bin/${pathFromBin}`,
-        buildPathImage:(name)=>false?`/app/public/images/${name}`:`/Users/nischit/Desktop/awesome/heroku-server/coins/public/images/${name}`,
+        buildPath:(pathFromBin)=>true?`/app/routes/bin/${pathFromBin}`:`/Users/nischit/Desktop/awesome/heroku-server/coins/routes/bin/${pathFromBin}`,
+        buildPathImage:(name)=>true?`/app/public/images/${name}`:`/Users/nischit/Desktop/awesome/heroku-server/coins/public/images/${name}`,
     },
     
     values:{
