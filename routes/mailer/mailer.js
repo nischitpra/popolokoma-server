@@ -80,6 +80,7 @@ router.get('/sum', function(req, res, next) {
 module.exports={
     router:router,
     summary4Days:(interval,callback)=>{
+        service.mailSummary(interval,callback),values.binance.candle_interval_milliseconds[`_${interval}`]
         setInterval(()=>service.mailSummary(interval,callback),values.binance.candle_interval_milliseconds[`_${interval}`])
     },
     trendChangeAlert:(from,to,interval,data,prevTrend,callback)=>{ service.mailTrendChangeSpecific(from,to,interval,data,prevTrend,callback) },
