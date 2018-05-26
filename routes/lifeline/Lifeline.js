@@ -36,18 +36,10 @@ function Lineline(){
         for(var i=this.position;i<this.line.length;i++){
             clearTimeout(this.line[i].timer) 
             this.line[i].timer=setTimeout(()=>{
-                console.log(`invalidate : #${this.position} of ${this.line.length}`)
-                const x=Object.assign({}, this.line[this.position]) /** clone variable properly*/ 
+                console.log(`invalidate : ${this.line[this.position].id} -> #${this.position} of ${this.line.length}`)
+                this.line[this.position].functionCallback(this.line[this.position].params)
                 delete this.line[this.position] /** delete item without changing array position */
                 this.position++
-                new Promise(()=>{x.functionCallback(this.line[this.position].params)}).then(()=>{
-                    console.log(`calling invalidate from promise function completion `)
-                    // x.lifelineCallback()
-                    // x=undefined
-                }).catch(()=>{
-                    console.log(`inside catch`)
-                })
-                
             }, offset)
             offset+=delay
         }

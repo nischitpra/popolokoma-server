@@ -37,8 +37,8 @@ module.exports = {
                 candlestick:`pythonscript/binance/candlestick.py`
             },
         },
-        buildPath:(pathFromBin)=>true?`/app/routes/bin/${pathFromBin}`:`/Users/nischit/Desktop/awesome/heroku-server/coins/routes/bin/${pathFromBin}`,
-        buildPathImage:(name)=>true?`/app/public/images/${name}`:`/Users/nischit/Desktop/awesome/heroku-server/coins/public/images/${name}`,
+        buildPath:(pathFromBin)=>false?`/app/routes/bin/${pathFromBin}`:`/Users/nischit/Desktop/awesome/heroku-server/coins/routes/bin/${pathFromBin}`,
+        buildPathImage:(name)=>false?`/app/public/images/${name}`:`/Users/nischit/Desktop/awesome/heroku-server/coins/public/images/${name}`,
     },
     
     values:{
@@ -132,8 +132,8 @@ module.exports = {
             ucs:(from,to,interval)=>`ucs_${from}_${to}_${interval}`,
             mailer:{
                 alert:{
-                    trendChange:(key)=>`a_tc${key}`,
-                    bigVolume:(key)=>`a_bv${key}`,
+                    trendChange:(key)=>`a_tc_${key}`,
+                    bigVolume:(key)=>`a_bv_${key}`,
                 },
                 summary:(key)=>`summary_${key}`,
             },

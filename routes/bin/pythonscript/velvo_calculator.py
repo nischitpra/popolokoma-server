@@ -9,7 +9,7 @@ import math
 connection=psycopg2.connect("postgres://popo:weareawesome@popo-server.ckhrqovrxtw4.us-east-1.rds.amazonaws.com:5432/coins")
 cur=connection.cursor()
 
-IS_PROD=True
+IS_PROD=False
 
 base_path='/app/public/images' if IS_PROD else '/Users/nischit/Desktop/awesome/heroku-server/coins/public/images'
 
@@ -121,7 +121,6 @@ def summary_days(df):
     plot.plot(range(df.shape[0]),df['high'],'r') 
     plot.plot(range(df.shape[0]),df['low'],'g') 
     plot.savefig(base_path+'/{}.png'.format(sys.argv[1]))
-    print(base_path+'/{}.png'.format(sys.argv[1]))
     trend_df.columns=['trend','confidence','velocity','start_time','end_time']
     vola_df.columns=['volatility','start_time','end_time']
     return trend_df,vola_df
@@ -151,7 +150,7 @@ cur.execute("insert into volatility (_key, volatility, start_time, end_time) val
 
 connection.commit()
 
-cur_trend=trend_df[trend_df['start_time']==prev_trend_df['start_time'].iloc[-1]]
+cur_trend=trend_df[(trend_df['start_time']<=prev_trend_df['start_time'].iloc[-1]) & (trend_df['end_time']>=prev_trend_df['start_time'].iloc[-1])]
 prev_trend=prev_trend_df['trend'].iloc[-1]
 if cur_trend.shape[0]>1 or cur_trend['trend'].iloc[0]!=prev_trend:
     should_alert=1.0

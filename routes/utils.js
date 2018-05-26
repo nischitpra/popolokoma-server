@@ -27,8 +27,8 @@ module.exports={
             return `${require('./utils').DateUtils.mmhh(date)}, ${require('./utils').DateUtils.ddMMM(date)}`
         },
         mmhh_ddMMM_range:(start,end)=>{
-            s=new Date(start)
-            e=new Date(end)
+            s=new Date(parseInt(start))
+            e=new Date(parseInt(end))
             if(s.getDate()==e.getDate()){
                 return `${require('./utils').DateUtils.mmhh(s)} - ${require('./utils').DateUtils.mmhh(e)}, ${require('./utils').DateUtils.ddMMM(s)}`
             }else{

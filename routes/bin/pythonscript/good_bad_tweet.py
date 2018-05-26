@@ -11,7 +11,7 @@ connection=psycopg2.connect("postgres://popo:weareawesome@popo-server.ckhrqovrxt
 cur=connection.cursor()
 
 
-IS_PROD=True
+IS_PROD=False
 
 base_path='/app/routes/bin/pythonscript' if IS_PROD else '/Users/nischit/Desktop/awesome/heroku-server/coins/routes/bin/pythonscript'
 

@@ -104,10 +104,11 @@ module.exports={
             callback(values.status.error,[])
         })
     },
-    streamTweets(client,track,symbol,follow,callback){
+    streamTweets(client,track,follow,callback){
         var bufferTweets=[]
         // console.log('streaming tweets from twitter api')
-        client.stream('statuses/filter', {track: `${track}`, follow:`${follow}`},  function(stream) {
+        // client.stream('statuses/filter', {track: `${track}`,follow: `${follow}`,language: 'en'},  function(stream) {
+        client.stream('statuses/filter', { follow: follow,language: 'en'},  function(stream) {
             stream.on('data', function(tweet) {
                 const tweet_obj={}
                 tweet_obj[id.database.collection.keyList.tweets[0]]=tweet.created_at
@@ -120,7 +121,7 @@ module.exports={
 
                 bufferTweets.push(tweet_obj)
                 // console.log(bufferTweets.length);
-                // console.log(tweet.text)
+                console.log(tweet.text)
                 if(bufferTweets.length>50){
                     // console.log('--------------===========-------------')
                     callback(bufferTweets)

@@ -96,8 +96,9 @@ module.exports={
             cid: imageName
         }]
         }).then(()=>{
+            console.log('mail sent')
             if(callback!=undefined){
-                callback(values.status.ok,message)    
+                // callback(values.status.ok,message)    
             }
         }).catch((error)=>{
             console.log(error);
@@ -163,10 +164,10 @@ module.exports={
                     const interval = params[i++]
                     db.find(`select * from ${id.database.collection.trend} where _key='${id.database.collection.history_from_to_type(from,to,interval)}' order by ${id.summarydays.start_time} asc;`,(status,data)=>{
                         this.sendImageMail(utils.base64Decode(email),`${from}:${to} Summary`,presenter.getSummaryMessage(from,to,data),`${id.database.collection.history_from_to_type(from,to,interval)}.png`,(status,message)=>{
-                            // string.log_callback(status,message)
+                            string.log_callback(status,message)
                         })
                     })
-                },LIFELINE_MAILER.invalidate))
+                }))
             }
             LIFELINE_MAILER.invalidate()            
         })
@@ -174,7 +175,7 @@ module.exports={
     // get trend change alert
     mailTrendChangeSpecific(from,to,interval,trendData,prevTrend,callback) {
         db.find(`select ${id.database.email}, ${id.database.from}, ${id.database.to} from ${id.database.collection.subscribed} where ${id.database.from}='${from}' and ${id.database.to}='${to}' and ${id.database.isDeleted}='false';`,(status,data)=>{
-            callback(values.status.ok,`summary mail service started! subscriber: ${JSON.stringify(data)}`)
+            callback(values.status.ok,`trend change mail service started! subscriber: ${JSON.stringify(data)}`)
             for(var i in data){
                 const email=data[i][id.database.email]
                 const from=data[i][id.database.from]
@@ -182,6 +183,7 @@ module.exports={
                 const type='1h'
                 
                 const params=[email,from,to,type,trendData,prevTrend]
+                console.log(`mail trend change: ${JSON.stringify(params)}`)
                 LIFELINE_MAILER.push(new LifeObject(id.lifeline.mailer.alert.trendChange(from,to,type),params,(params)=>{
                     var i=0
                     const email = params[i++]
@@ -190,10 +192,10 @@ module.exports={
                     const interval = params[i++]
                     const trendData = params[i++]
                     const prevTrend = params[i++]
-                    this.sendImageMail(utils.base64Decode(email),`${from}:${to} Alert`,presenter.getTrendChangeMessage(from,to,interval,trendData,prevTrend),`${id.database.collection.history_from_to_type(from,to,interval)}.png`,(status,message)=>{
-                        // console.log(`status: ${status}, message: ${message}`)
+                    this.sendImageMail(utils.base64Decode(email),`${from}:${to} Trend Change Alert`,presenter.getTrendChangeMessage(from,to,interval,trendData,prevTrend),`${id.database.collection.history_from_to_type(from,to,interval)}.png`,(status,message)=>{
+                        console.log(`status: ${status}, message: ${message}`)
                     })
-                },LIFELINE_MAILER.invalidate))
+                }))
             }
             LIFELINE_MAILER.invalidate()
         })
@@ -201,7 +203,7 @@ module.exports={
     // get big volume alert
     mailBigVolumeSpecific(from,to,interval,currentPrice,prevPrice,callback) {
         db.find(`select ${id.database.email}, ${id.database.from}, ${id.database.to} from ${id.database.collection.subscribed} where ${id.database.from}='${from}' and ${id.database.to}='${to}' and ${id.database.isDeleted}='false';`,(status,data)=>{
-            callback(values.status.ok,`summary mail service started! subscriber: ${JSON.stringify(data)}`)
+            callback(values.status.ok,`big volume mail service started! subscriber: ${JSON.stringify(data)}`)
             for(var i in data){
                 const email=data[i][id.database.email]
                 const from=data[i][id.database.from]
@@ -209,6 +211,7 @@ module.exports={
                 const type='1h'
                 
                 const params=[email,from,to,type,currentPrice,prevPrice]
+                console.log(`mail big volume: ${JSON.stringify(params)}`)
                 LIFELINE_MAILER.push(new LifeObject(id.lifeline.mailer.alert.trendChange(from,to,type),params,(params)=>{
                     var i=0
                     const email = params[i++]
@@ -217,17 +220,17 @@ module.exports={
                     const interval = params[i++]
                     const currentPrice = params[i++]
                     const prevPrice = params[i++]
-                    this.sendImageMail(utils.base64Decode(email),`${from}:${to} Alert`,presenter.getBigVolumeMessage(from,to,interval,currentPrice,prevPrice),`${id.database.collection.history_from_to_type(from,to,interval)}.png`,(status,message)=>{
-                        // console.log(`status: ${status}, message: ${message}`)
+                    this.sendImageMail(utils.base64Decode(email),`${from}:${to} Big Volume Alert`,presenter.getBigVolumeMessage(from,to,interval,currentPrice,prevPrice),`${id.database.collection.history_from_to_type(from,to,interval)}.png`,(status,message)=>{
+                        console.log(`status: ${status}, message: ${message}`)
                     })
-                },LIFELINE_MAILER.invalidate))
+                }))
             }
             LIFELINE_MAILER.invalidate()
         })
     },
     mailBigPriceMove(from,to,interval,currentPrice,prevPrice,callback){
         db.find(`select ${id.database.email}, ${id.database.from}, ${id.database.to} from ${id.database.collection.subscribed} where ${id.database.from}='${from}' and ${id.database.to}='${to}' and ${id.database.isDeleted}='false';`,(status,data)=>{
-            callback(values.status.ok,`summary mail service started! subscriber: ${JSON.stringify(data)}`)
+            callback(values.status.ok,`big price move mail service started! subscriber: ${JSON.stringify(data)}`)
             for(var i in data){
                 const email=data[i][id.database.email]
                 const from=data[i][id.database.from]
@@ -235,6 +238,7 @@ module.exports={
                 const type='1h'
                 
                 const params=[email,from,to,type,currentPrice,prevPrice]
+                console.log(`mail big price move: ${JSON.stringify(params)}`)
                 LIFELINE_MAILER.push(new LifeObject(id.lifeline.mailer.alert.trendChange(from,to,type),params,(params)=>{
                     var i=0
                     const email = params[i++]
@@ -243,10 +247,10 @@ module.exports={
                     const interval = params[i++]
                     const currentPrice = params[i++]
                     const prevPrice = params[i++]
-                    this.sendImageMail(utils.base64Decode(email),`${from}:${to} Alert`,presenter.getBigPriceMoveMessage(from,to,interval,currentPrice,prevPrice),`${id.database.collection.history_from_to_type(from,to,interval)}.png`,(status,message)=>{
-                        // console.log(`status: ${status}, message: ${message}`)
+                    this.sendImageMail(utils.base64Decode(email),`${from}:${to} Big Price Move Alert`,presenter.getBigPriceMoveMessage(from,to,interval,currentPrice,prevPrice),`${id.database.collection.history_from_to_type(from,to,interval)}.png`,(status,message)=>{
+                        console.log(`status: ${status}, message: ${message}`)
                     })
-                },LIFELINE_MAILER.invalidate))
+                }))
             }
             LIFELINE_MAILER.invalidate()
         })

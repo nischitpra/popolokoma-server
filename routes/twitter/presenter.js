@@ -80,7 +80,7 @@ module.exports={
         })
     },
     streamTweets(track,follow){
-        connection.streamTweets(client,track,follow,this.saveTweetDb.bind(this)) // need to bind context 
+        connection.streamTweets(client,track,follow,(tweets)=>{require('./presenter').saveTweetDb(tweets)})
     },
 
     /**

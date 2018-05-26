@@ -148,6 +148,7 @@ module.exports={
         })
     },
     ucs(from,to,interval,fromTime,toTime,callback){
+        console.log('ucs')
         connection.getCandleStick(from,to,interval,fromTime,toTime,(status,data)=>{
             var list=[]
             data.map(row=>{
