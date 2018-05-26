@@ -27,6 +27,9 @@ function Lineline(){
         this.invalidate()
     }
     this.invalidate=()=>{
+        if(this.line.length==0){
+            return
+        } 
         const delay=this.interval/this.line.length
         var offset=0
         console.log(`invalidate delay: ${delay/1000/60} mins`)
