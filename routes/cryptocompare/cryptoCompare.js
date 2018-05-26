@@ -129,15 +129,6 @@ router.get('/gs', function(req, res, next) {
     )
 });
 
-// /** update candle stick force */
-// router.get('/ucsf', function(req, res, next) {
-//     service.ucsf(1,(status,data)=>res.json({
-//             status:status,
-//             message: data
-//         }),lock)
-// });
-
-
 /** test velvo */
 router.get('/tvelvo', function(req, res, next) {
     var from=req.query[id.params.from]
@@ -158,9 +149,6 @@ module.exports = {
     lock:lock,
     intervalList:intervalList,
     service:service,
-    // uscs:(type)=>service.uscs(intervalList,type,(status,message)=>{
-    //     console.log(`status: ${status}, message: ${message}`)
-    //   },lock),
     uscs:()=>{
         service.puscs() /** call funciton  then create an interval for it */
         setInterval(()=>{
