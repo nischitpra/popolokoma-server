@@ -169,8 +169,6 @@ module.exports={
                         return callback(values.status.error,message)
                     }
                 })
-                /** check if should alert */
-                require('./presenter').processAlert(from,to,interval,data)
             }else{
                 return callback(values.status.error,[])
             }
@@ -185,6 +183,10 @@ module.exports={
                         require('./presenter').ucs(from,to,interval,parseInt(data[data.length-1][id.binance.id]),new Date().getTime(),(status,message)=>{
                             if(status==values.status.ok){
                                 db.find(`select * from ${id.database.collection.history_from_to_type(from,to,interval)} where cast(${id.database.id} as bigint)>=${startTime} and cast(${id.database.id} as bigint)<=${endTime} order by cast(${id.database.id} as bigint) asc`,(status,data)=>{
+                                    if(status==values.status.ok){
+                                        /** check if should alert */
+                                        require('./presenter').processAlert(from,to,interval,data)
+                                    }
                                     return callback(status,data)
                                 })
                             }else{
