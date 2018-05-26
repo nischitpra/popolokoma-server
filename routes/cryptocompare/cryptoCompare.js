@@ -162,6 +162,7 @@ module.exports = {
     //     console.log(`status: ${status}, message: ${message}`)
     //   },lock),
     uscs:()=>{
+        service.puscs() /** call funciton  then create an interval for it */
         setInterval(()=>{
             service.puscs()
             console.log('puscs initialized')

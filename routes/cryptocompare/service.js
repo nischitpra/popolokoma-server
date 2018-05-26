@@ -146,23 +146,29 @@ module.exports={
     // },
 
     puscs(){
-        db.find(`select * from ${id.database.collection.pairList} where interval='1h'`,(status,list)=>{
+        console.log('puscs function called')
+        db.find(`select * from ${id.database.collection.pairList} where ${id.database.historyType}='1h';`,(status,list)=>{
             if(status==values.status.ok){
-                for(var i in list.length){
-                    const params=[list[i][id.cryptocompare.from],list[i][id.cryptocompare.to],list[i][id.cryptocompare.historyType]]
-                    LIFELINE_CS.push(new LifeObject(id.lifeline.ucs(list[i][id.cryptocompare.from],list[i][id.cryptocompare.to],list[i][id.cryptocompare.historyType]),params,()=>{
+                for(var i in list){
+                    const params=[list[i][id.database.from],list[i][id.database.to],list[i][id.database.historyType]]
+                    LIFELINE_CS.push(new LifeObject(id.lifeline.ucs(list[i][id.database.from],list[i][id.database.to],list[i][id.database.historyType]),params,()=>{
+                        console.log('function callback')
                         var i=0
                         const from=params[i++]
                         const to=params[i++]
                         const interval=params[i++]
                         require('./service').uscs(from,to,interval)
-                    }))
+                    },LIFELINE_CS.invalidate))
                 }
+                console.log('above invalidate')
                 LIFELINE_CS.invalidate()
+            }else{
+                console.log('puscs error getting pairlist data')
             }
         })
     },
     uscs(from,to,interval){
+        console.log('uscs service')
         db.find(`select * from ${id.database.collection.history_from_to_type(from,to,interval)} order by cast(${id.binance.id} as bigint) desc limit 1`,(status,data)=>{
             if(status==values.status.ok){
                 if(new Date().getTime()-parseInt(data[data.length-1][id.binance.id])>values.binance.candle_interval_milliseconds[`_${interval}`]){
@@ -170,6 +176,8 @@ module.exports={
                         console.log(`uscs ${from}_${to}_${interval} -> status:${status}, message:${message}`)
                     })
                 }
+            }else{
+                console.log(`uscs else: ${data}`)
             }
         })
     },

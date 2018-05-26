@@ -166,7 +166,7 @@ module.exports={
                             // string.log_callback(status,message)
                         })
                     })
-                }))
+                },LIFELINE_MAILER.invalidate))
             }
             LIFELINE_MAILER.invalidate()            
         })
@@ -193,7 +193,7 @@ module.exports={
                     this.sendImageMail(utils.base64Decode(email),`${from}:${to} Alert`,presenter.getTrendChangeMessage(from,to,interval,trendData,prevTrend),`${id.database.collection.history_from_to_type(from,to,interval)}.png`,(status,message)=>{
                         // console.log(`status: ${status}, message: ${message}`)
                     })
-                }))
+                },LIFELINE_MAILER.invalidate))
             }
             LIFELINE_MAILER.invalidate()
         })
@@ -220,7 +220,7 @@ module.exports={
                     this.sendImageMail(utils.base64Decode(email),`${from}:${to} Alert`,presenter.getBigVolumeMessage(from,to,interval,currentPrice,prevPrice),`${id.database.collection.history_from_to_type(from,to,interval)}.png`,(status,message)=>{
                         // console.log(`status: ${status}, message: ${message}`)
                     })
-                }))
+                },LIFELINE_MAILER.invalidate))
             }
             LIFELINE_MAILER.invalidate()
         })
@@ -246,7 +246,7 @@ module.exports={
                     this.sendImageMail(utils.base64Decode(email),`${from}:${to} Alert`,presenter.getBigPriceMoveMessage(from,to,interval,currentPrice,prevPrice),`${id.database.collection.history_from_to_type(from,to,interval)}.png`,(status,message)=>{
                         // console.log(`status: ${status}, message: ${message}`)
                     })
-                }))
+                },LIFELINE_MAILER.invalidate))
             }
             LIFELINE_MAILER.invalidate()
         })
