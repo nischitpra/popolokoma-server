@@ -121,6 +121,7 @@ def summary_days(df):
     plot.plot(range(df.shape[0]),df['high'],'r') 
     plot.plot(range(df.shape[0]),df['low'],'g') 
     plot.savefig(base_path+'/{}.png'.format(sys.argv[1]))
+    print(base_path+'/{}.png'.format(sys.argv[1]))
     trend_df.columns=['trend','confidence','velocity','start_time','end_time']
     vola_df.columns=['volatility','start_time','end_time']
     return trend_df,vola_df
