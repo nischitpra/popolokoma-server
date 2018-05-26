@@ -79,8 +79,8 @@ module.exports={
             callback(status,tweets)
         })
     },
-    streamTweets(name,symbol){
-        connection.streamTweets(client,name,symbol,this.saveTweetDb.bind(this)) // need to bind context 
+    streamTweets(track,follow){
+        connection.streamTweets(client,track,follow,this.saveTweetDb.bind(this)) // need to bind context 
     },
 
     /**

@@ -104,10 +104,10 @@ module.exports={
             callback(values.status.error,[])
         })
     },
-    streamTweets(client,name,symbol,callback){
+    streamTweets(client,track,symbol,follow,callback){
         var bufferTweets=[]
         // console.log('streaming tweets from twitter api')
-        client.stream('statuses/filter', {track: `${symbol}`},  function(stream) {
+        client.stream('statuses/filter', {track: `${track}`, follow:`${follow}`},  function(stream) {
             stream.on('data', function(tweet) {
                 const tweet_obj={}
                 tweet_obj[id.database.collection.keyList.tweets[0]]=tweet.created_at

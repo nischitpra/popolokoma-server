@@ -12,8 +12,10 @@ module.exports={
             callback(status,data)
         })
     },
-    updateTweetDb(name,symbol){
-        presenter.streamTweets(name,symbol)
+    updateTweetDb(){
+        const track="BTC XRP XVG BCN XMR EOS IOST LOOM TRX NCASH POE CND FUEL DNT MANA IOST ETH ZEN LINK CHAT INS RPX"
+        const follow="Bytecoin_BCN BTCTN BelleZoeLan Bitcoin CoinDeskMarkets Cointelegraph CryptoCoinsNews Ripple SalihSarikaya Tronfoundation bitbns coindesk justinsuntron loomnetwork thee_wolf vergestatus"
+        presenter.streamTweets(track,follow)
     },
     updateGoodBadTweets(callback){
         pythoninvoker.getGoodBadTweet((status,message)=>{

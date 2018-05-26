@@ -67,11 +67,7 @@ router.get('/ut',function(req, res, next) {
             // console.log(`status: ${status}, message: ${message}`)
         })
         locked=true
-        var symbol=req.query[id.twitter.symbol]
-        var coinName=req.query[id.twitter.coinName]
-        if(symbol==undefined||symbol==null) symbol="btc"
-        if(coinName==undefined||coinName==null) symbol="bitcoin"
-        service.updateTweetDb(coinName,symbol)
+        service.updateTweetDb()
     }else if(locked){
         res.json({
             status:values.status.error,
