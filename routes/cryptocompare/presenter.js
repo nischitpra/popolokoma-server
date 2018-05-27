@@ -176,35 +176,44 @@ module.exports={
         })
     },
     gcs(from,to,interval,startTime,endTime,isNew,callback){
-        require('./presenter').ppl(from,to,interval)
-        db.find(`select * from ${id.database.collection.history_from_to_type(from,to,interval)} where cast(${id.database.id} as bigint)>=${startTime} and cast(${id.database.id} as bigint)<=${endTime} order by cast(${id.database.id} as bigint) asc`,(status,data)=>{
-            if(status==values.status.ok && data.length>0){
-                if(isNew){
-                    console.log('is new')
-                    if(new Date().getTime()-parseInt(data[data.length-1][id.binance.id])>values.binance.candle_interval_milliseconds[`_${interval}`]){
-                        require('./presenter').ucs(from,to,interval,parseInt(data[data.length-1][id.binance.id]),new Date().getTime(),(status,message)=>{
-                            if(status==values.status.ok){
-                                console.log('ucs data')
-                                db.find(`select * from ${id.database.collection.history_from_to_type(from,to,interval)} where cast(${id.database.id} as bigint)>=${startTime} and cast(${id.database.id} as bigint)<=${endTime} order by cast(${id.database.id} as bigint) asc`,(status,data)=>{
+        db.createCandleStickTable(id.database.cc.history_from_to_type(from,to,interval),(status,message)=>{
+            if(status==values.status.ok){
+                require('./presenter').ppl(from,to,interval)
+                db.find(`select * from ${id.database.collection.history_from_to_type(from,to,interval)} where cast(${id.database.id} as bigint)>=${startTime} and cast(${id.database.id} as bigint)<=${endTime} order by cast(${id.database.id} as bigint) asc`,(status,data)=>{
+                    if(status==values.status.ok && data.length>0){
+                        if(isNew){
+                            console.log('is new')
+                            if(new Date().getTime()-parseInt(data[data.length-1][id.binance.id])>values.binance.candle_interval_milliseconds[`_${interval}`]){
+                                require('./presenter').ucs(from,to,interval,parseInt(data[data.length-1][id.binance.id]),new Date().getTime(),(status,message)=>{
                                     if(status==values.status.ok){
-                                        /** check if should alert */
-                                        require('./presenter').processAlert(from,to,interval,data)
+                                        console.log('ucs data')
+                                        db.find(`select * from ${id.database.collection.history_from_to_type(from,to,interval)} where cast(${id.database.id} as bigint)>=${startTime} and cast(${id.database.id} as bigint)<=${endTime} order by cast(${id.database.id} as bigint) asc`,(status,data)=>{
+                                            if(status==values.status.ok){
+                                                /** check if should alert */
+                                                require('./presenter').processAlert(from,to,interval,data)
+                                            }
+                                            return callback(status,data)
+                                        })
+                                    }else{
+                                        return callback(status,data)
                                     }
-                                    return callback(status,data)
-                                })
+                                }) 
                             }else{
+                                console.log(`${from}_${to}_${interval} already upto date`)
                                 return callback(status,data)
                             }
-                        }) 
+                        }else{
+                            return callback(status,data)
+                        }
                     }else{
-                        console.log(`${from}_${to}_${interval} already upto date`)
-                        return callback(status,data)
+                        if(status==values.status.ok){
+                        /** has no data and need to download */
+                            require('./presenter').ucs(from,to,interval,startTime,endTime,callback)
+                        }else{
+                            return callback(values.status.error,[])
+                        }
                     }
-                }else{
-                    return callback(status,data)
-                }
-            }else{
-                return callback(values.status.error,[])
+                })
             }
         })
     },
