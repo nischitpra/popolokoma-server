@@ -19,8 +19,8 @@ table_name=sys.argv[1]
 window_size=24
 day=0
 trend_reversal_threshold=3 # if has been decreasing for x hrs 
-consolidation_threshold=0.9 # to consider if is consolidating
-up_down_trend_threshhold=0.5 # to consider if is uptrend or down trend
+consolidation_threshold=0.95 # to consider if is consolidating
+up_down_trend_threshhold=0.65 # to consider if is uptrend or down trend
 volatility_threshold=0.023
 
 def consolidation(day_df):
@@ -128,7 +128,10 @@ def summary_days(df):
 # delete old values
 cur.execute("select * from trend where _key='{}' order by cast(start_time as bigint) asc;".format(table_name))
 prev_trend_df = pd.DataFrame(list(cur.fetchall()))
-prev_trend_df.columns=[ '_id', '_key', 'trend', 'confidence', 'velocity', 'start_time', 'end_time' ]
+if prev_trend_df.shape[0]>0:
+    prev_trend_df.columns=[ '_id', '_key', 'trend', 'confidence', 'velocity', 'start_time', 'end_time' ]
+else:
+    prev_trend_df=None
 cur.execute("delete from trend where _key='{}';".format(table_name))
 cur.execute("delete from volatility where _key='{}';".format(table_name))
 
@@ -149,13 +152,12 @@ for index, row in vola_df.iterrows():
 cur.execute("insert into volatility (_key, volatility, start_time, end_time) values {};".format(','.join(query)))
 
 connection.commit()
-
-cur_trend=trend_df[(trend_df['start_time']<=prev_trend_df['start_time'].iloc[-1]) & (trend_df['end_time']>=prev_trend_df['start_time'].iloc[-1])]
-prev_trend=prev_trend_df['trend'].iloc[-1]
-if cur_trend.shape[0]>1 or cur_trend['trend'].iloc[0]!=prev_trend:
-    should_alert=1.0
-else :
-    should_alert=0.0
+should_alert=0.0
+if prev_trend_df!=None:
+    cur_trend=trend_df[(trend_df['start_time']<=prev_trend_df['end_time'].iloc[-1]) & (trend_df['end_time']>=prev_trend_df['end_time'].iloc[-1])]
+    prev_trend=prev_trend_df['trend'].iloc[-1]
+    if cur_trend.shape[0]>1 or cur_trend['trend'].iloc[0]!=prev_trend:
+        should_alert=1.0
 
 # .item() to convert numpy int to python int
 print(json.dumps({"is_alert":should_alert,"previous_trend":prev_trend.item(),"current_trend":cur_trend['trend'].iloc[0].item()}))

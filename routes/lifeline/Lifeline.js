@@ -36,7 +36,7 @@ function Lineline(){
         for(var i=this.position;i<this.line.length;i++){
             clearTimeout(this.line[i].timer) 
             this.line[i].timer=setTimeout(()=>{
-                console.log(`invalidate : ${this.line[this.position].id} -> #${this.position} of ${this.line.length}`)
+                console.log(`invalidate : ${this.line[this.position].id} -> #${this.position} of ${this.line.length-1}`)
                 this.line[this.position].functionCallback(this.line[this.position].params)
                 delete this.line[this.position] /** delete item without changing array position */
                 this.position++

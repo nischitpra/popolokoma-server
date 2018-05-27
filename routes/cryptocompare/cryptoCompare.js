@@ -8,16 +8,6 @@ const string = require('../constants').string
 const db = require('../database')
 // const WebSocket = require('ws')
 
-/** lock is made into an array so as to accomodate multiple updates to different talbes. */
-var lock=[]
-
-var intervalList={
-    _1m:undefined,
-    _1h:undefined,
-    _1d:undefined,
-}
-
-
 /** get candle stick data from db */
 router.get('/gcs', function(req, res, next) {
     var from=req.query[id.params.from]
@@ -35,20 +25,13 @@ router.get('/gcs', function(req, res, next) {
     isNew=(isNew==undefined||isNew==null)?true:isNew
     isNew=isNew=='true'
 
-    // presenter.initGCS(from,to,interval,fromTime,toTime,isNew,(status,data)=>{
-    //     res.json({
-    //         status:status,
-    //         type:interval,
-    //         message: data,
-    //     })
-    // },lock)
     presenter.gcs(from,to,interval,fromTime,toTime,isNew,(status,data)=>{
         res.json({
             status:status,
             type:interval,
             message: data,
         })
-    },lock)
+    })
 });
 
 
@@ -144,8 +127,6 @@ router.get('/tvelvo', function(req, res, next) {
 
 module.exports = { 
     router:router,
-    lock:lock,
-    intervalList:intervalList,
     service:service,
     uscs:()=>{
         service.puscs() /** call funciton  then create an interval for it */
