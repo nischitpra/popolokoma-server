@@ -52,12 +52,10 @@ router.get('/gcs', function(req, res, next) {
 });
 
 
-/** ticker 24 hours for all pair supported in binance api */
+/** ticker 24 hours for all pair supported in binance api,, defaule from, to undefied returns all*/
 router.get('/t', function(req, res, next) {
     var from=req.query[id.params.from]
     var to=req.query[id.params.to]
-    from=(from==undefined||from==null)?'XRP':from
-    to=(to==undefined||to==null)?'BTC':to
     
     service.get24HrTicker(from,to,(status,data)=>res.json({
             status:status,
