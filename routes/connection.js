@@ -121,7 +121,7 @@ module.exports={
 
                 bufferTweets.push(tweet_obj)
                 // console.log(bufferTweets.length);
-                console.log(tweet.text)
+                // console.log(tweet.text)
                 if(bufferTweets.length>50){
                     // console.log('--------------===========-------------')
                     callback(bufferTweets)

@@ -130,8 +130,6 @@ cur.execute("select * from trend where _key='{}' order by cast(start_time as big
 prev_trend_df = pd.DataFrame(list(cur.fetchall()))
 if prev_trend_df.shape[0]>0:
     prev_trend_df.columns=[ '_id', '_key', 'trend', 'confidence', 'velocity', 'start_time', 'end_time' ]
-else:
-    prev_trend_df=None
 cur.execute("delete from trend where _key='{}';".format(table_name))
 cur.execute("delete from volatility where _key='{}';".format(table_name))
 
@@ -153,7 +151,7 @@ cur.execute("insert into volatility (_key, volatility, start_time, end_time) val
 
 connection.commit()
 should_alert=0.0
-if prev_trend_df!=None:
+if prev_trend_df.shape[0]>0:
     cur_trend=trend_df[(trend_df['start_time']<=prev_trend_df['end_time'].iloc[-1]) & (trend_df['end_time']>=prev_trend_df['end_time'].iloc[-1])]
     prev_trend=prev_trend_df['trend'].iloc[-1]
     if cur_trend.shape[0]>1 or cur_trend['trend'].iloc[0]!=prev_trend:

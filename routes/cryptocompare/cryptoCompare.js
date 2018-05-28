@@ -129,11 +129,11 @@ module.exports = {
     router:router,
     service:service,
     uscs:()=>{
-        service.puscs() /** call funciton  then create an interval for it */
+        require('./service').puscs() /** call funciton  then create an interval for it */
         setInterval(()=>{
-            service.puscs()
+            require('./service').puscs()
             console.log('puscs initialized')
-        },values.binance.candle_interval_milliseconds[`_1h`])
+        },require('../constants').values.binance.candle_interval_milliseconds[`_1h`])
     },
     
 }
