@@ -30,7 +30,7 @@ function Lineline(){
         if(this.line.length==0){
             return
         } 
-        const delay=this.interval/(this.line.length-this.position)
+        const delay=this.interval/Math.max(1,(this.line.length-this.position))
         var offset=0
         console.log(`invalidate delay: ${delay/1000/60} mins`)
         for(var i=this.position;i<this.line.length;i++){
