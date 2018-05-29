@@ -7,7 +7,7 @@ const service = require('./service')
 
 module.exports={
     getFilterTrend(filterType,startTime,callback){
-        db.find(`select * from ${id.database.collection.trend} where _id in (select max(_id) from ${id.database.collection.trend} group by _key) and trend=${filterType} and cast(end_time as bigint)>=${startTime} order by start_time;`,(status,data)=>{
+        db.find(`select * from ${id.database.collection.trend} where _id in (select max(_id) from ${id.database.collection.trend} group by _key having _key like '%_1h') and trend=${filterType} and cast(end_time as bigint)>=${startTime} order by start_time;`,(status,data)=>{
             if(status==values.status.ok){
                 return callback(status,data)
             }
