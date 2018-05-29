@@ -59,6 +59,7 @@ else:
     high=opn
     low=opn
 checkpoint_id=0.0
+_id=int(df['_id'].iloc[-1])
 for i in range(df.shape[0]):
     if df['timestamp'].iloc[i]>=endTime:
         senti_df=senti_df.append({'_id':df['_id'].iloc[i],'time':endTime,'open':opn,'high':high,'low':low,'close':close},ignore_index=True)
@@ -67,21 +68,23 @@ for i in range(df.shape[0]):
         close=opn
         high=opn
         low=opn
-        while endTime<df['timestamp'].iloc[i]:
-            senti_df=senti_df.append({'_id':df['_id'].iloc[i],'time':endTime,'open':opn,'high':high,'low':low,'close':close},ignore_index=True)
+        while endTime<=df['timestamp'].iloc[i]:
+            _id+=1
+            senti_df=senti_df.append({'_id':_id,'time':endTime,'open':opn,'high':high,'low':low,'close':close},ignore_index=True)
             endTime+=window_size
             opn=close
             close=opn
             high=opn
             low=opn
+            print(_id,df['_id'].iloc[-1],senti_df['_id'].iloc[-1])
     if float(df['category'].iloc[i])==0.0:
-        close+=float(df['probability'].iloc[i])
+        close+=float(df['probability'].iloc[i]) if df['timestamp'].iloc[i]>=1527524532459 else float(df['probability'].iloc[i])*100
     elif float(df['category'].iloc[i])==1.0:
-        close-=float(df['probability'].iloc[i])
-    elif float(df['category'].iloc[i])==4.0:
-        close+=float(df['probability'].iloc[i])*0.25 # less good
-    elif float(df['category'].iloc[i])==5.0:
-        close-=float(df['probability'].iloc[i])*0.5 # less bad
+        close-=float(df['probability'].iloc[i]) if df['timestamp'].iloc[i]>=1527524532459 else float(df['probability'].iloc[i])*100
+    elif float(df['category'].iloc[i])==4.0: # less good
+        close+=float(df['probability'].iloc[i])*0.25 if df['timestamp'].iloc[i]>=1527524532459 else float(df['probability'].iloc[i])*100*0.25 
+    elif float(df['category'].iloc[i])==5.0: # less bad
+        close-=float(df['probability'].iloc[i])*0.5 if df['timestamp'].iloc[i]>=1527524532459 else float(df['probability'].iloc[i])*100*0.5 
     low=close if close<low else low
     high=close if close>high else high
 
