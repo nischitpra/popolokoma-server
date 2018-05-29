@@ -67,6 +67,13 @@ for i in range(df.shape[0]):
         close=opn
         high=opn
         low=opn
+        while endTime<df['timestamp'].iloc[i]:
+            senti_df=senti_df.append({'_id':df['_id'].iloc[i],'time':endTime,'open':opn,'high':high,'low':low,'close':close},ignore_index=True)
+            endTime+=window_size
+            opn=close
+            close=opn
+            high=opn
+            low=opn
     if float(df['category'].iloc[i])==0.0:
         close+=float(df['probability'].iloc[i])
     elif float(df['category'].iloc[i])==1.0:
