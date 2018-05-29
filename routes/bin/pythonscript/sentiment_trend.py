@@ -62,7 +62,7 @@ checkpoint_id=0.0
 for i in range(df.shape[0]):
     if df['timestamp'].iloc[i]>=endTime:
         senti_df=senti_df.append({'_id':df['_id'].iloc[i],'time':endTime,'open':opn,'high':high,'low':low,'close':close},ignore_index=True)
-        endTime+=window_size
+        endTime=df['timestamp'].iloc[i]+window_size
         opn=close
         close=opn
         high=opn
