@@ -118,7 +118,7 @@ module.exports={
     },
     /** populate pairlist */
     ppl(from,to,interval){
-        if(to=='USDT'||t0=='BTC'||to=="ETH"||to=='BNB'){
+        if(to=='USDT'||to=='BTC'||to=="ETH"||to=='BNB'){
             db.find(`select * from ${id.database.collection.pairList} where ${id.database.from}='${from}' and ${id.database.to}='${to}' and ${id.database.historyType}='${interval}' limit 1`,(status,data)=>{
                 if(status==values.status.ok && data.length==0){
                     const list=[]
