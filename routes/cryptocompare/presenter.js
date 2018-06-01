@@ -118,19 +118,24 @@ module.exports={
     },
     /** populate pairlist */
     ppl(from,to,interval){
-        db.find(`select * from ${id.database.collection.pairList} where ${id.database.from}='${from}' and ${id.database.to}='${to}' and ${id.database.historyType}='${interval}' limit 1`,(status,data)=>{
-            if(status==values.status.ok && data.length==0){
-                const list=[]
-                list.push({
-                    [id.database.collection.keyList.pairList[0]]:from,
-                    [id.database.collection.keyList.pairList[1]]:to,
-                    [id.database.collection.keyList.pairList[2]]:interval,
-                })
-                db.insert(id.database.collection.pairList,id.database.collection.keyList.pairList,list,(status,message)=>{
-                    console.log(`ppl -> status:${status}, message:${message}, data:${JSON.stringify(list)}`)
-                })
-            }
-        })
+        if(to=='USDT'||t0=='BTC'||to=="ETH"||to=='BNB'){
+            db.find(`select * from ${id.database.collection.pairList} where ${id.database.from}='${from}' and ${id.database.to}='${to}' and ${id.database.historyType}='${interval}' limit 1`,(status,data)=>{
+                if(status==values.status.ok && data.length==0){
+                    const list=[]
+                    list.push({
+                        [id.database.collection.keyList.pairList[0]]:from,
+                        [id.database.collection.keyList.pairList[1]]:to,
+                        [id.database.collection.keyList.pairList[2]]:interval,
+                    })
+                    db.insert(id.database.collection.pairList,id.database.collection.keyList.pairList,list,(status,message)=>{
+                        console.log(`ppl -> status:${status}, message:${message}, data:${JSON.stringify(list)}`)
+                    })
+                }
+            })
+        }else{
+            return
+        }
+        
     },
     processAlert(from,to,interval,data){
         if(data[data.length-1][id.binance.volume]>3*data[data.length-2][id.binance.volume]){
