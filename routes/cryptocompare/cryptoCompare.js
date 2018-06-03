@@ -17,21 +17,29 @@ router.get('/gcs', function(req, res, next) {
     var toTime=req.query[id.params.toTime]
     var isNew=req.query[id.params.isNew]
     
-    from=(from==undefined||from==null)?'XRP':from
-    to=(to==undefined||to==null)?'BTC':to
+    from=(from==undefined||from==null)?'XRP':from.toUpperCase()
+    to=(to==undefined||to==null)?'BTC':to.toUpperCase()
     interval=(interval==undefined||interval==null)?'1h':interval
     fromTime=(fromTime==undefined||fromTime==null)?new Date().getTime()-1000*60*60*500:fromTime
     toTime=(toTime==undefined||toTime==null)?new Date().getTime():toTime
     isNew=(isNew==undefined||isNew==null)?true:isNew
     isNew=isNew=='true'
 
-    presenter.gcs(from,to,interval,fromTime,toTime,isNew,(status,data)=>{
-        res.json({
-            status:status,
-            type:interval,
-            message: data,
+    if(to=='USDT'||to=='BTC'||to=="ETH"||to=='BNB'){
+        presenter.gcs(from,to,interval,fromTime,toTime,isNew,(status,data)=>{
+            res.json({
+                status:status,
+                type:interval,
+                message: data,
+            })
         })
-    })
+    }else{
+        res.json({
+            status:values.status.error,
+            type:interval,
+            message: [],
+        })
+    }
 });
 
 
@@ -39,12 +47,22 @@ router.get('/gcs', function(req, res, next) {
 router.get('/t', function(req, res, next) {
     var from=req.query[id.params.from]
     var to=req.query[id.params.to]
-    
-    service.get24HrTicker(from,to,(status,data)=>res.json({
-            status:status,
-            message: data
+
+    if(to=='USDT'||to=='BTC'||to=="ETH"||to=='BNB'){
+        service.get24HrTicker(from,to,(status,data)=>res.json({
+                status:status,
+                message: data
+            })
+        )
+    }else{
+        res.json({
+            status:values.status.error,
+            type:interval,
+            message: [],
         })
-    )
+    }
+    
+    
 });
 
 /** filtered trend for pairs*/
@@ -66,15 +84,25 @@ router.get('/gsft', function(req, res, next) {
     var to=req.query[id.params.to]
     var fromTime=req.query[id.params.fromTime]
 
-    from=(from==undefined||from==null)?'XRP':from
-    to=(to==undefined||to==null)?'BTC':to
+    from=(from==undefined||from==null)?'XRP':from.toUpperCase()
+    to=(to==undefined||to==null)?'BTC':to.toUpperCase()
     fromTime=(fromTime==undefined||fromTime==null)?new Date().getTime()-96*values.binance.candle_interval_milliseconds['_1h']:fromTime
 
-    presenter.getSpecificTrend(id.database.collection.history_from_to_type(from,to,'1h'),fromTime,(status,data)=>res.json({
-            status:status,
-            message: data
+
+    if(to=='USDT'||to=='BTC'||to=="ETH"||to=='BNB'){
+        presenter.getSpecificTrend(id.database.collection.history_from_to_type(from,to,'1h'),fromTime,(status,data)=>res.json({
+                status:status,
+                message: data
+            })
+        )
+    }else{
+        res.json({
+            status:values.status.error,
+            type:interval,
+            message: [],
         })
-    )
+    }
+    
 });
 
 /** filtered trend for pairs*/
@@ -82,15 +110,25 @@ router.get('/gv', function(req, res, next) {
     var from=req.query[id.params.from]
     var to=req.query[id.params.to]
     var fromTime=req.query[id.params.fromTime]
-    from=(from==undefined||from==null)?'XRP':from
-    to=(to==undefined||to==null)?'BTC':to
+    from=(from==undefined||from==null)?'XRP':from.toUpperCase()
+    to=(to==undefined||to==null)?'BTC':to.toUpperCase()
     fromTime=(fromTime==undefined||fromTime==null)?new Date().getTime()-96*values.binance.candle_interval_milliseconds['_1h']:fromTime
 
-    presenter.getSpecificVolatility(id.database.collection.history_from_to_type(from,to,'1h'),fromTime,(status,data)=>res.json({
-            status:status,
-            message: data
+    if(to=='USDT'||to=='BTC'||to=="ETH"||to=='BNB'){
+        presenter.getSpecificVolatility(id.database.collection.history_from_to_type(from,to,'1h'),fromTime,(status,data)=>res.json({
+                status:status,
+                message: data
+            })
+        )
+    }else{
+        res.json({
+            status:values.status.error,
+            type:interval,
+            message: [],
         })
-    )
+    }
+    
+    
 });
 
 /** get summary */
@@ -99,29 +137,48 @@ router.get('/gs', function(req, res, next) {
     var to=req.query[id.params.to]
     var fromTime=req.query[id.params.fromTime]
 
-    from=(from==undefined||from==null)?'XRP':from
-    to=(to==undefined||to==null)?'BTC':to
+    from=(from==undefined||from==null)?'XRP':from.toUpperCase()
+    to=(to==undefined||to==null)?'BTC':to.toUpperCase()
     fromTime=(fromTime==undefined||fromTime==null)?new Date().getTime()-96*values.binance.candle_interval_milliseconds['_1h']:fromTime
-
-    presenter.getSummary(id.database.collection.history_from_to_type(from,to,'1h'),fromTime,(status,data)=>res.json({
-            status:status,
-            message: data
+    
+    if(to=='USDT'||to=='BTC'||to=="ETH"||to=='BNB'){
+        presenter.getSummary(id.database.collection.history_from_to_type(from,to,'1h'),fromTime,(status,data)=>res.json({
+                status:status,
+                message: data
+            })
+        )
+    }else{
+        res.json({
+            status:values.status.error,
+            type:interval,
+            message: [],
         })
-    )
+    }
+    
 });
 
 /** test velvo */
 router.get('/tvelvo', function(req, res, next) {
     var from=req.query[id.params.from]
     var to=req.query[id.params.to]
-    from=(from==undefined||from==null)?'XRP':from
-    to=(to==undefined||to==null)?'BTC':to
+    from=(from==undefined||from==null)?'XRP':from.toUpperCase()
+    to=(to==undefined||to==null)?'BTC':to.toUpperCase()
     const interval='1h'
-    require('./service').velvo(from,to,interval)
-    res.json({
-        status:values.status.ok,
-        message: "tvelvo initialized."
-    })
+
+    if(to=='USDT'||to=='BTC'||to=="ETH"||to=='BNB'){
+        require('./service').velvo(from,to,interval)
+        res.json({
+            status:values.status.ok,
+            message: "tvelvo initialized."
+        })
+    }else{
+        res.json({
+            status:values.status.error,
+            type:interval,
+            message: `${to} cannot be found for tvelvo`,
+        })
+    }
+    
 });
 
 

@@ -2,7 +2,6 @@ import sys
 import pickle
 import pandas as pd
 import numpy as np
-from pprint import pprint
 import re
 from nltk.corpus import stopwords
 from nltk.stem.snowball import EnglishStemmer

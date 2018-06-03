@@ -77,9 +77,9 @@ module.exports={
     gcs(from,to,interval,startTime,endTime,isNew,callback){
         db.createCandleStickTable(id.database.cc.history_from_to_type(from,to,interval),(status,message)=>{
             if(status==values.status.ok){
-                require('./presenter').ppl(from,to,interval)
                 db.find(`select * from ${id.database.collection.history_from_to_type(from,to,interval)} where cast(${id.database.id} as bigint)>=${startTime} and cast(${id.database.id} as bigint)<=${endTime} order by cast(${id.database.id} as bigint) asc`,(status,data)=>{
                     if(status==values.status.ok && data.length>0){
+                        require('./presenter').ppl(from,to,interval)
                         if(isNew){
                             console.log('is new')
                             if(new Date().getTime()-parseInt(data[data.length-1][id.binance.id])>values.binance.candle_interval_milliseconds[`_${interval}`]){
@@ -107,6 +107,7 @@ module.exports={
                     }else{
                         if(status==values.status.ok){
                         /** has no data and need to download */
+                            require('./presenter').ppl(from,to,interval)
                             require('./presenter').ucs(from,to,interval,startTime,endTime,callback)
                         }else{
                             return callback(values.status.error,[])
@@ -118,7 +119,7 @@ module.exports={
     },
     /** populate pairlist */
     ppl(from,to,interval){
-        if(to=='USDT'||to=='BTC'||to=="ETH"||to=='BNB'){
+        // if(to=='USDT'||to=='BTC'||to=="ETH"||to=='BNB'){
             db.find(`select * from ${id.database.collection.pairList} where ${id.database.from}='${from}' and ${id.database.to}='${to}' and ${id.database.historyType}='${interval}' limit 1`,(status,data)=>{
                 if(status==values.status.ok && data.length==0){
                     const list=[]
@@ -132,9 +133,9 @@ module.exports={
                     })
                 }
             })
-        }else{
-            return
-        }
+        // }else{
+            // return
+        // }
         
     },
     processAlert(from,to,interval,data){

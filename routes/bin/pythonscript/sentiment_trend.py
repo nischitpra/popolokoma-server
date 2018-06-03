@@ -76,7 +76,6 @@ for i in range(df.shape[0]):
             close=opn
             high=opn
             low=opn
-            print(_id,df['_id'].iloc[-1],senti_df['_id'].iloc[-1])
     if float(df['category'].iloc[i])==0.0:
         close+=float(df['probability'].iloc[i]) 
     elif float(df['category'].iloc[i])==1.0:
