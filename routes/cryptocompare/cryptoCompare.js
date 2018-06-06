@@ -105,7 +105,7 @@ router.get('/gsft', function(req, res, next) {
     
 });
 
-/** filtered trend for pairs*/
+/** get specific volatility*/
 router.get('/gv', function(req, res, next) {
     var from=req.query[id.params.from]
     var to=req.query[id.params.to]
@@ -179,6 +179,15 @@ router.get('/tvelvo', function(req, res, next) {
         })
     }
     
+});
+
+/** get feed list*/
+router.get('/gfl', function(req, res, next) {
+    presenter.getFeedList('1h',(status,data)=>res.json({
+            status:status,
+            message: data
+        })
+    )
 });
 
 

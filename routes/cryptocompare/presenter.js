@@ -152,4 +152,14 @@ module.exports={
         }
         return false
     },
+    getFeedList(interval,callback){
+        db.find(`select _from as from , _to as to, history_type as historyType from ${id.database.collection.pairList} where ${id.database.historyType}='${interval}' order by _from;`,(status,data)=>{
+            if(status==values.status.ok){
+                callback(status,data)
+            }else{
+                string.log_callback(status,callback)
+                callback(status,[])
+            }
+        })
+    },
 }
