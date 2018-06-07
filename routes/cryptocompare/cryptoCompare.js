@@ -48,7 +48,7 @@ router.get('/t', function(req, res, next) {
     var from=req.query[id.params.from]
     var to=req.query[id.params.to]
 
-    if(to=='USDT'||to=='BTC'||to=="ETH"||to=='BNB'){
+    if(to=='USDT'||to=='BTC'||to=="ETH"||to=='BNB'||to==undefined){
         service.get24HrTicker(from,to,(status,data)=>res.json({
                 status:status,
                 message: data
@@ -57,7 +57,6 @@ router.get('/t', function(req, res, next) {
     }else{
         res.json({
             status:values.status.error,
-            type:interval,
             message: [],
         })
     }
