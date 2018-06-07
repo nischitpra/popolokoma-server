@@ -16,13 +16,13 @@ module.exports = {
         },
 
         subscribeOtp:(email,from,to,otp)=>`https://poposerver.herokuapp.com/m/subscribe/validate?email=${email}&from=${from}&to=${to}&otp=${otp}`,
-        database:`postgres://popo:weareawesome@popo-server.ckhrqovrxtw4.us-east-1.rds.amazonaws.com:5432/coins`,
+        database:process.env.database,
         database_details:{
-            host: 'popo-server.ckhrqovrxtw4.us-east-1.rds.amazonaws.com',
-            database: 'coins',
-            user: 'popo',
-            password: 'weareawesome',
-            port: 5432,
+            host: process.env.db_host,
+            database: process.env.db_database,
+            user: process.env.db_user,
+            password: process.env.db_password,
+            port: process.env.db_port,
         },
     },
     files:{
@@ -40,30 +40,29 @@ module.exports = {
         buildPath:(pathFromBin)=>true?`/app/routes/bin/${pathFromBin}`:`/Users/nischit/Desktop/awesome/heroku-server/coins/routes/bin/${pathFromBin}`,
         buildPathImage:(name)=>true?`/app/public/images/${name}`:`/Users/nischit/Desktop/awesome/heroku-server/coins/public/images/${name}`,
     },
-    
     values:{
         baseHeader:{
             "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:57.0) Gecko/20100101 Firefox/57.0",
             "Accept": 'application/json',
         },
         news:{
-            apiKey:'d2a968870c6c41e0b2f172bad1c2ef10',
+            apiKey: process.env.news_apikey,
             everything:'everything',
             headlines:'top-headlines',
             articles:'articles',
         },
         twitter:{
-            consumerKey: 'q3RPMgFxS26kHOUfSl2qOCt3w',
-            consumerSecret: 'XfGCLJZFJmDBCEvF0RjlRmd592TS9jWXgXFi6PpddcxCXqEOG5',
-            accessTokenKey: '941802374707822592-kLwiBWC7k6Bdqu2Gg5NkFymyKtOJbfU',
-            accessTokenSecret: '7HTsCnI7M3IJeb4wkWomngCYQb6AHwyoSilvhLD3kXywH',
+            consumerKey: process.env.twitter_consumerKey,
+            consumerSecret: process.env.twitter_consumerSecret,
+            accessTokenKey: process.env.twitter_accessTokenKey,
+            accessTokenSecret: process.env.twitter_accessTokenSecret,
         },
         status:{
             ok:'ok',
             error:'error',
         },
         mailer:{
-            server:{name:'Gmail',email:'popolokoma@gmail.com',password:'weRock123'},
+            server:{name:'Gmail',email:process.env.mailer_email,password:process.env.mailer_password},
         },
         binance:{
             candle_interval:{   
