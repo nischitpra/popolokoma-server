@@ -48,6 +48,7 @@ high_list=[]
 low_list=[]
 time_list=[]
 id_list=[]
+_id=0
 if len(last_insert)==0:
     opn=1000.0
     close=opn
@@ -58,11 +59,13 @@ else:
     close=opn
     high=opn
     low=opn
+    cur.execute('select max(_id) from sentiment_trend;')
+    _id=cur.fetchall()[0][0]
 checkpoint_id=0.0
-_id=int(df['_id'].iloc[-1])
+
 for i in range(df.shape[0]):
     if df['timestamp'].iloc[i]>=endTime:
-        senti_df=senti_df.append({'_id':df['_id'].iloc[i],'time':endTime,'open':opn,'high':high,'low':low,'close':close},ignore_index=True)
+        senti_df=senti_df.append({'_id':_id+i+1,'time':endTime,'open':opn,'high':high,'low':low,'close':close},ignore_index=True)
         endTime+=window_size
         opn=close
         close=opn
