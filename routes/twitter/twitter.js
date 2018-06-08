@@ -15,15 +15,8 @@ router.get('/q', function(req, res, next) {
     const from=req.query[id.params.from]
     const coinName=req.query[id.twitter.coinName]
 
-    from=(from==undefined||from==null)?'XVG':from
+    from=(from==undefined||from==null)?'XVG':from.toUpperCase()
     coinName=(coinName==undefined||to==null)?'Verge':coinName
-
-    // presenter.getSpecificTweetsDb(coinName,from,10,(status,data)=>{
-    //     res.json({
-    //         status:status,
-    //         message: data
-    //     })
-    // })
     presenter.getTweetsDb((status,data)=>{
         res.json({
             status:status,

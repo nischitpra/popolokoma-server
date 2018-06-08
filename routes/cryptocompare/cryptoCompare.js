@@ -48,7 +48,13 @@ router.get('/t', function(req, res, next) {
     var from=req.query[id.params.from]
     var to=req.query[id.params.to]
 
+    from=from!=undefined?from.toUpperCase():from
+    to=to!=undefined?to.toUpperCase():to
+    
     if(to=='USDT'||to=='BTC'||to=="ETH"||to=='BNB'||to==undefined){
+        if(from!=undefined && to!=undefined){
+            presenter.cppl(from,to,'1h')
+        }
         service.get24HrTicker(from,to,(status,data)=>res.json({
                 status:status,
                 message: data
@@ -60,8 +66,6 @@ router.get('/t', function(req, res, next) {
             message: [],
         })
     }
-    
-    
 });
 
 /** filtered trend for pairs*/

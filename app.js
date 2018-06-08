@@ -68,13 +68,13 @@ app.use('/f',forecast)
 
 
 /** Initialize update sucscribed candlestick services */
-cryptoCompare.uscs()
-
 /** Initialize 4 Day summary mailer */
-mailer.summary4Days('1d',(status,message)=>{ console.log(`status: ${status}, message: ${message}`) })
-
 /** Initialzie update tweet services */
+cryptoCompare.uscs()
+mailer.summary4Days('1d',(status,message)=>{ console.log(`status: ${status}, message: ${message}`) })
 twitter.uts('1h',(status,message)=>{ console.log(`status: ${status}, message: ${message}`) })
+
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

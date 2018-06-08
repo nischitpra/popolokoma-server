@@ -119,24 +119,19 @@ module.exports={
     },
     /** populate pairlist */
     ppl(from,to,interval){
-        // if(to=='USDT'||to=='BTC'||to=="ETH"||to=='BNB'){
-            db.find(`select * from ${id.database.collection.pairList} where ${id.database.from}='${from}' and ${id.database.to}='${to}' and ${id.database.historyType}='${interval}' limit 1`,(status,data)=>{
-                if(status==values.status.ok && data.length==0){
-                    const list=[]
-                    list.push({
-                        [id.database.collection.keyList.pairList[0]]:from,
-                        [id.database.collection.keyList.pairList[1]]:to,
-                        [id.database.collection.keyList.pairList[2]]:interval,
-                    })
-                    db.insert(id.database.collection.pairList,id.database.collection.keyList.pairList,list,(status,message)=>{
-                        console.log(`ppl -> status:${status}, message:${message}, data:${JSON.stringify(list)}`)
-                    })
-                }
-            })
-        // }else{
-            // return
-        // }
-        
+        db.find(`select * from ${id.database.collection.pairList} where ${id.database.from}='${from}' and ${id.database.to}='${to}' and ${id.database.historyType}='${interval}' limit 1`,(status,data)=>{
+            if(status==values.status.ok && data.length==0){
+                const list=[]
+                list.push({
+                    [id.database.collection.keyList.pairList[0]]:from,
+                    [id.database.collection.keyList.pairList[1]]:to,
+                    [id.database.collection.keyList.pairList[2]]:interval,
+                })
+                db.insert(id.database.collection.pairList,id.database.collection.keyList.pairList,list,(status,message)=>{
+                    console.log(`ppl -> status:${status}, message:${message}, data:${JSON.stringify(list)}`)
+                })
+            }
+        })
     },
     processAlert(from,to,interval,data){
         if(data[data.length-1][id.binance.volume]>3*data[data.length-2][id.binance.volume]){
@@ -159,6 +154,15 @@ module.exports={
             }else{
                 string.log_callback(status,callback)
                 callback(status,[])
+            }
+        })
+    },
+
+    // create populate pair list
+    cppl(from,to,interval){
+        db.createCandleStickTable(id.database.cc.history_from_to_type(from,to,interval),(status,message)=>{
+            if(status==values.status.ok){
+                this.ppl(from,to,interval)
             }
         })
     },
