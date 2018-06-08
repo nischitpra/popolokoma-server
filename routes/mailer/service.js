@@ -10,6 +10,7 @@ const network = require('../constants').network
 const nodemailer = require('nodemailer')
 const files = require('../constants').files
 const LifeObject = require('../lifeline/LifeObject')
+const fs = require('fs')
 
 
 module.exports={
@@ -78,34 +79,39 @@ module.exports={
         })
     },
     sendImageMail(user,subject,message,imageName,callback){
-        var transporter = nodemailer.createTransport({
-            service: values.mailer.server.name,
-            auth: {
-                user:  values.mailer.server.email,
-                pass: values.mailer.server.password
-            }
-        });
-        transporter.sendMail({
-        from: values.mailer.server.email,
-          to: user,
-          subject: subject,
-          html: message,
-          attachments: [{
-            filename: imageName,
-            path: files.buildPathImage(imageName),
-            cid: imageName
-        }]
-        }).then(()=>{
-            console.log('mail sent')
-            if(callback!=undefined){
-                // callback(values.status.ok,message)    
-            }
-        }).catch((error)=>{
-            console.log(error);
-            if(callback!=undefined){
-                callback(values.status.error,string.someWrong)
-            }
-        })
+        if(!fs.existsSync(files.buildPathImage(imageName))){
+            this.sendMail(user,subject,message,callback)
+        }else{
+            var transporter = nodemailer.createTransport({
+                service: values.mailer.server.name,
+                auth: {
+                    user:  values.mailer.server.email,
+                    pass: values.mailer.server.password
+                }
+            });
+            
+            transporter.sendMail({
+            from: values.mailer.server.email,
+              to: user,
+              subject: subject,
+              html: message,
+              attachments: [{
+                filename: imageName,
+                path: files.buildPathImage(imageName),
+                cid: imageName
+            }]
+            }).then(()=>{
+                console.log('mail sent')
+                if(callback!=undefined){
+                    // callback(values.status.ok,message)    
+                }
+            }).catch((error)=>{
+                console.log(error);
+                if(callback!=undefined){
+                    callback(values.status.error,string.someWrong)
+                }
+            })
+        }
     },
 
     validateOtp(user,from,to,otp,mailerCallback){
