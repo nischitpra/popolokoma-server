@@ -13,7 +13,6 @@ module.exports={
         process.stdout.on('data', (data)=>{
             // console.log('trend returned from python')
             callback(values.status.ok,data.toString('utf8'))
-            process.disconnect()
         })
         process.stderr.on('data',(error)=>{
             // console.log('---ERROR-----')
@@ -28,7 +27,6 @@ module.exports={
         process.stdout.on('data', (data)=>{
             // console.log('trend returned from python')
             callback(values.status.ok,JSON.parse(data.toString('utf8')))
-            process.disconnect()
         })
 
         process.stderr.on('data',(error)=>{
@@ -43,7 +41,6 @@ module.exports={
         process.stdout.on('data', (data)=>{
             console.log('returned good bad from python')
             callback(values.status.ok,data.toString('utf8'))
-            process.disconnect()
         })
 
         process.stderr.on('data',(error)=>{
@@ -59,7 +56,6 @@ module.exports={
         process.stdout.on('data', (message)=>{
             // console.log('returned update forecast from python')
             callback(values.status.ok,message.toString('utf8'))
-            process.disconnect()
         })
 
         process.stderr.on('data',(error)=>{
@@ -73,7 +69,6 @@ module.exports={
         var process = spawn(files.python.compiler,[files.buildPath(files.python.velvoCalculator),key] )
         process.stdout.on('data', (data)=>{
             callback(values.status.ok,JSON.parse(data.toString('utf8')))
-            process.disconnect()
         })
 
         process.stderr.on('data',(error)=>{
