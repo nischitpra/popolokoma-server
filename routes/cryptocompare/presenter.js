@@ -66,10 +66,12 @@ module.exports={
                         require('./service').velvo(from,to,interval)
                         return callback(status,message)
                     }else{
+                        LIFELINE_CS.invalidate()
                         return callback(values.status.error,message)
                     }
                 })
             }else{
+                LIFELINE_CS.invalidate()
                 return callback(values.status.error,[])
             }
         })

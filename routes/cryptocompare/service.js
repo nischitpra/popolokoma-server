@@ -45,7 +45,7 @@ module.exports={
                     if(new Date().getTime()-parseInt(data[data.length-1][id.binance.id])>values.binance.candle_interval_milliseconds[`_${interval}`]){
                         require('./presenter').ucs(from,to,interval,parseInt(data[data.length-1][id.binance.id])+1,new Date().getTime(),(status,message)=>{
                             console.log(`uscs ${from}_${to}_${interval} -> status:${status}, message:${message}`)
-                            LIFELINE_CS.invalidate()
+                            // LIFELINE_CS.invalidate()
                         })
                     }else{
                         console.log(`${from}_${to} upto date`)
@@ -73,18 +73,24 @@ module.exports={
                     /** perform alert mail service for trend change  */
                     db.find(`select * from ${id.database.collection.trend} where _key='${id.database.collection.history_from_to_type(from,to,interval)}' order by cast(${id.database.id} as bigint) asc`,(status,trendData)=>{
                         if(status==values.status.ok){
+                            LIFELINE_CS.invalidate()
                             console.log('velvo mailer')
                             string.log_callback(status,data)
                             require('../mailer/mailer').trendChangeAlert(from,to,interval,trendData,data[id.pythonInvoker.previousTrend],(status,message)=>{
                                 string.log_callback(status,message)
                             })
+                        }else{
+                            LIFELINE_CS.invalidate()
+                            string.log_callback(`velvo inner trendData value.status!=ok => ${status}`,trendData)
                         }
                     })
                 }else{
-                    string.log_callback(status,`velvo not alert: ${data}`)
+                    LIFELINE_CS.invalidate()
+                    string.log_callback(`velvo data[alert]>0] => ${status}`,data)
                 }
             }else{
-                string.log_callback(status,`velvo else: ${data}`)
+                LIFELINE_CS.invalidate()
+                string.log_callback(`velvo outer value.status!=ok => ${status}`,data)
             }
         })
     }
