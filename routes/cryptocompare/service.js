@@ -41,14 +41,22 @@ module.exports={
         console.log('uscs service')
         db.find(`select * from ${id.database.collection.history_from_to_type(from,to,interval)} order by cast(${id.binance.id} as bigint) desc limit 1`,(status,data)=>{
             if(status==values.status.ok){
-                if(new Date().getTime()-parseInt(data[data.length-1][id.binance.id])>values.binance.candle_interval_milliseconds[`_${interval}`]){
-                    require('./presenter').ucs(from,to,interval,parseInt(data[data.length-1][id.binance.id])+1,new Date().getTime(),(status,message)=>{
+                if(data.length>0 ){
+                    if(new Date().getTime()-parseInt(data[data.length-1][id.binance.id])>values.binance.candle_interval_milliseconds[`_${interval}`]){
+                        require('./presenter').ucs(from,to,interval,parseInt(data[data.length-1][id.binance.id])+1,new Date().getTime(),(status,message)=>{
+                            console.log(`uscs ${from}_${to}_${interval} -> status:${status}, message:${message}`)
+                            LIFELINE_CS.invalidate()
+                        })
+                    }else{
+                        console.log(`${from}_${to} upto date`)
+                        LIFELINE_CS.invalidate()
+                    }
+                }else{
+                    console.log('data does not exist,, download data')
+                    require('./presenter').ucs(from,to,interval,new Date().getTime()-500*values.binance.candle_interval_milliseconds[`_${interval}`],new Date().getTime(),(status,message)=>{
                         console.log(`uscs ${from}_${to}_${interval} -> status:${status}, message:${message}`)
                         LIFELINE_CS.invalidate()
                     })
-                }else{
-                    console.log(`${from}_${to} upto date`)
-                    LIFELINE_CS.invalidate()
                 }
             }else{
                 console.log(`uscs else: ${data}`)

@@ -189,6 +189,30 @@ router.get('/gfl', function(req, res, next) {
     )
 });
 
+/** test uscs */
+router.get('/tuscs', function(req, res, next) {
+    var from=req.query[id.params.from]
+    var to=req.query[id.params.to]
+    from=(from==undefined||from==null)?'XRP':from.toUpperCase()
+    to=(to==undefined||to==null)?'BTC':to.toUpperCase()
+    const interval='1h'
+
+    if(to=='USDT'||to=='BTC'||to=="ETH"||to=='BNB'){
+        require('./service').uscs(from,to,interval)
+        res.json({
+            status:values.status.ok,
+            message: "tvelvo initialized."
+        })
+    }else{
+        res.json({
+            status:values.status.error,
+            type:interval,
+            message: `${to} cannot be found for tvelvo`,
+        })
+    }
+    
+});
+
 
 module.exports = { 
     router:router,
