@@ -155,6 +155,7 @@ module.exports = {
                 trend:'trend',
                 volatility:'volatility',
                 pairList:'pair_list',
+                prediction:'prediction',
                 history_from_to_type:(from,to,type)=>`${from}_${to}_${type}`,
                 trend_velocity:(from,to)=>`trend_velocity`,
                 dump:{

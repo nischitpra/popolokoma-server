@@ -239,6 +239,34 @@ module.exports={
                 })
         })
     },
+    createPredictionTable(callback){
+        const pg = require('pg');
+        var pool = new pg.Pool(network.database_details)
+        pool.connect((err, client, done)=>{
+            if(err){
+                done()
+                return callback(values.status.error,err)
+            }
+            const query = client.query(
+                `create table if not exists ${id.database.collection.prediction} (
+                    _id serial primary key,
+                    _from varchar(7),
+                    _to varchar(7),
+                    start_time bigint,
+                    end_time bigint,
+                    price real,
+                    trend_change_time bigint,
+                    trend char(1)
+                );`,(err, res) => {
+                    if(err){
+                        client.end()
+                        return callback(values.status.error,err)
+                    }
+                    client.end()
+                    return callback(values.status.ok,string.database.create.table(id.database.collection.prediction))
+                })
+        })
+    },
     createTweetsTable(callback){
         const pg = require('pg');
         var pool = new pg.Pool(network.database_details)
