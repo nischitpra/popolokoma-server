@@ -54,6 +54,7 @@ database.createOTPTable((status,message)=>{console.log(`status: ${status}, messa
 database.createSubscribedTable((status,message)=>{console.log(`status: ${status}, message: ${message}`)})
 database.createPairListTable((status,message)=>{console.log(`status: ${status}, message: ${message}`)})
 database.createPredictionTable((status,message)=>{console.log(`status: ${status}, message: ${message}`)})
+database.createClusterTweetsTable((status,message)=>{console.log(`status: ${status}, message: ${message}`)})
 
 /** Initialize url paths */
 app.use(cors())
@@ -74,6 +75,7 @@ app.use('/f',forecast)
 cryptoCompare.uscs()
 mailer.summary4Days('1d',(status,message)=>{ console.log(`status: ${status}, message: ${message}`) })
 twitter.uts('1h',(status,message)=>{ console.log(`status: ${status}, message: ${message}`) })
+twitter.uct('1d',(status,message)=>{ console.log(`status: ${status}, message: ${message}`) })
 
 
 

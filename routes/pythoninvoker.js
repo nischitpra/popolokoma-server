@@ -77,6 +77,21 @@ module.exports={
             console.log('=============')
         })
     },
+    custerTweets(callback){
+        var spawn = require("child_process").spawn
+        var process = spawn(files.python.compiler,[files.buildPath(files.python.clusterTweets)] )
+        // console.log('update forecast process spawned')
+        process.stdout.on('data', (message)=>{
+            // console.log('returned update forecast from python')
+            callback(values.status.ok,message.toString('utf8'))
+        })
+
+        process.stderr.on('data',(error)=>{
+            // console.log('---ERROR-----')
+            // console.log(error.toString('utf8'))
+            // console.log('=============')
+        })
+    },
 
     
 }

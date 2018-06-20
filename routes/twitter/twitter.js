@@ -44,6 +44,7 @@ router.get('/ust',function(req, res, next) {
         })
     })
 });
+
 router.get('/s',function(req, res, next) {
     presenter.getSentimentTrend((status,data)=>{
         res.json({
@@ -80,6 +81,7 @@ router.get('/ugb', function(req, res, next) {
         })
     })
 });
+
 // get good bad tweets
 router.get('/ggb', function(req, res, next) {
     presenter.getGoodBadTweetsDb((status,data)=>{
@@ -89,11 +91,32 @@ router.get('/ggb', function(req, res, next) {
         })
     })
 });
+
 // get good bad few
 router.get('/ggbf', function(req, res, next) {
     var count=parseInt(req.query[id.params.count])
     if(count==undefined||count==null||count==''||count=='undefined'||isNaN(count)) count=20
     presenter.getGoodBadTweetsFewDb(count,(status,data)=>{
+        res.json({
+            status:status,
+            message: data
+        })
+    })
+});
+
+// update cluster tweet
+router.get('/uct', function(req, res, next) {
+    service.updateClusterTweets((status,data)=>{
+        res.json({
+            status:status,
+            message: data
+        })
+    })
+});
+
+// get cluster tweets
+router.get('/gct', function(req, res, next) {
+    presenter.getClusterTweets((status,data)=>{
         res.json({
             status:status,
             message: data
@@ -115,5 +138,13 @@ module.exports ={
             })
         },values.binance.candle_interval_milliseconds[`_${interval}`])
         callback(values.status.ok,`update tweet service started with interval ${interval}`)
+    },
+    uct: (interval,callback)=>{
+        setInterval(()=>{
+            service.updateClusterTweets((status,message)=>{
+                // console.log(`updateClusterTweets:: status:${status}, message:${message}`)
+            })
+        },values.binance.candle_interval_milliseconds[`_${interval}`])
+        callback(values.status.ok,`update cluster service started with interval ${interval}`)
     }
 };

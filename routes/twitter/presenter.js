@@ -103,9 +103,13 @@ module.exports={
     },
     getSentimentTrend(callback){
         // console.log(`getting sentiment trend`)
-        db.find(`select * from ${id.database.collection.sentimentTrend} order by time asc`,(status,data)=>{
+        db.find(`select * from ${id.database.collection.sentimentTrend} order by time asc;`,(status,data)=>{
             callback(status,data)
         })
     },
+    getClusterTweets(callback){
+        // console.log(`getting cluster trend`)
+        db.getClusterTweets(callback)
+    }
     
 }

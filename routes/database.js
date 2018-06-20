@@ -80,6 +80,19 @@ module.exports={
             return callback(status,data)
         })
     },
+    getClusterTweets(callback){
+        this.find(`select * from ${id.database.collection.clusterTweets} inner join ${id.database.collection.tweets} on ${id.database.collection.clusterTweets}._id=${id.database.collection.tweets}._id;`,(status,data)=>{
+            if(status==values.status.ok){
+                for(var i in data){
+                    data[i][id.database.text]=utils.base64Decode(data[i][id.database.text])
+                    data[i][id.database.name]=utils.base64Decode(data[i][id.database.name])
+                    data[i][id.database.screenName]=utils.base64Decode(data[i][id.database.screenName])
+                    data[i][id.database.profileImageUrl]=utils.base64Decode(data[i][id.database.profileImageUrl])
+                }
+            }
+            return callback(status,data)
+        })
+    },
     createSubscribedTable(callback){
         const pg = require('pg');
         var pool = new pg.Pool(network.database_details)
@@ -185,6 +198,30 @@ module.exports={
                     }
                     client.end()
                     return callback(values.status.ok,string.database.create.table(id.database.collection.goodBadTweets))
+                })
+        })
+    },
+    createClusterTweetsTable(callback){
+        const pg = require('pg');
+        var pool = new pg.Pool(network.database_details)
+        pool.connect((err, client, done)=>{
+            if(err){
+                done()
+                return callback(values.status.error,err)
+            }
+            const query = client.query(
+                `create table if not exists ${id.database.collection.clusterTweets} (
+                    _id bigint,
+                    cluster varchar(2),
+                    frequency int,
+                    primary key(_id)
+                );`,(err, res) => {
+                    if(err){
+                        client.end()
+                        return callback(values.status.error,err)
+                    }
+                    client.end()
+                    return callback(values.status.ok,string.database.create.table(id.database.collection.clusterTweets))
                 })
         })
     },

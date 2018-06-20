@@ -33,6 +33,7 @@ module.exports = {
             goodBadTweet:`pythonscript/good_bad_tweet.py`,
             forecaster:`pythonscript/forecaster/model_latest_trend.py`,
             velvoCalculator:`pythonscript/velvo_calculator.py`,
+            clusterTweets:`pythonscript/cluster_tweets.py`,
             binance:{
                 candlestick:`pythonscript/binance/candlestick.py`
             },
@@ -150,6 +151,7 @@ module.exports = {
                 tweets:'tweets',
                 goodBadTweets:'good_bad_tweets',
                 sentimentTrend:'sentiment_trend',
+                clusterTweets:'cluster_tweets',
                 history:'history',
                 forecast:'forecast',
                 trend:'trend',
@@ -170,6 +172,7 @@ module.exports = {
                     otp:['_key','otp','created_at','is_deleted'],
                     subscribed:['email','_from','_to','created_at','is_deleted'],
                     pairList:['_from','_to','history_type'],
+                    clusterTweets:['_id','cluster','frequency'],
                 },
             },
             id:'_id',
@@ -199,6 +202,8 @@ module.exports = {
             from:'_from',
             to:'_to',
             historyType:'history_type',
+            cluster:'cluster',
+            frequency:'frequency',
             cc:{
                 id:'_id',
                 history:'history',

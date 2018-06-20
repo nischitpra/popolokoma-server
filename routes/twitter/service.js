@@ -67,5 +67,10 @@ module.exports={
         pythoninvoker.getGoodBadTweet((status,message)=>{
             callback(values.status.ok,message)
         })
+    },
+    updateClusterTweets(callback){
+        pythoninvoker.custerTweets((status,message)=>{
+            callback(values.status.ok,message)
+        })
     }
 }
