@@ -81,7 +81,7 @@ module.exports={
         })
     },
     getClusterTweets(callback){
-        this.find(`select * from ${id.database.collection.clusterTweets} inner join ${id.database.collection.tweets} on ${id.database.collection.clusterTweets}._id=${id.database.collection.tweets}._id order by ${id.database.collection.clusterTweets}.cluster;`,(status,data)=>{
+        this.find(`select * from ${id.database.collection.clusterTweets} inner join ${id.database.collection.tweets} on ${id.database.collection.clusterTweets}._id=${id.database.collection.tweets}._id order by ${id.database.collection.clusterTweets}.cluster,${id.database.collection.tweets}.timestamp_ms ;`,(status,data)=>{
             if(status==values.status.ok){
                 for(var i in data){
                     data[i][id.database.text]=utils.base64Decode(data[i][id.database.text])
