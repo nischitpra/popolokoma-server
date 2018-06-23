@@ -214,10 +214,6 @@ module.exports={
                     _id serial primary key,
                     _key varchar(15), 
                     close real, 
-                    high real, 
-                    low real, 
-                    time bigint, 
-                    trend smallint, 
                     type char(1)
                 );`,(err, res) => {
                     if(err){
