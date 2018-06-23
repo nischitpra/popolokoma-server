@@ -2,8 +2,8 @@ const id = require('../constants').id
 const values = require('../constants').values
 const string = require('../constants').string
 
-function Lineline(){
-    this.interval=values.binance.candle_interval_milliseconds['_1h']
+function Lineline(interval){
+    this.interval=values.binance.candle_interval_milliseconds[interval==undefined?'_1h':interval]
     this.position=0
     this.line=[]
     /** add item to end of queue */

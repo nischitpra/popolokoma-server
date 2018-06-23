@@ -154,7 +154,7 @@ module.exports={
             if(status==values.status.ok){
                 callback(status,data)
             }else{
-                string.log_callback(status,callback)
+                string.log_callback(status,data)
                 callback(status,[])
             }
         })
@@ -168,4 +168,15 @@ module.exports={
             }
         })
     },
+    getTrendLevels(key,callback){
+        db.find(`select * from ${id.database.collection.trendLevels} where _key='${key}';`,(status,data)=>{
+            if(status==values.status.ok){
+                callback(status,data)
+            }else{
+                console.log('getTrendLevel')
+                string.log_callback(status,data)
+                callback(status,[])
+            }
+        })
+    }
 }

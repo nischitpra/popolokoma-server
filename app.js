@@ -26,6 +26,7 @@ const database = require('./routes/database')
 
 global.LIFELINE_CS=new Lifeline()
 global.LIFELINE_MAILER=new Lifeline()
+global.LIFELINE_DAILY=new Lifeline('_1d')
 
 
 
@@ -55,6 +56,7 @@ database.createSubscribedTable((status,message)=>{console.log(`status: ${status}
 database.createPairListTable((status,message)=>{console.log(`status: ${status}, message: ${message}`)})
 database.createPredictionTable((status,message)=>{console.log(`status: ${status}, message: ${message}`)})
 database.createClusterTweetsTable((status,message)=>{console.log(`status: ${status}, message: ${message}`)})
+database.createTrendLevelsTable((status,message)=>{console.log(`status: ${status}, message: ${message}`)})
 
 /** Initialize url paths */
 app.use(cors())
@@ -69,13 +71,19 @@ app.use('/f',forecast)
 
 
 
-/** Initialize update sucscribed candlestick services */
-/** Initialize 4 Day summary mailer */
-/** Initialzie update tweet services */
+/** 
+ * Initialize update sucscribed candlestick services 
+ * Initialize 4 Day summary mailer 
+ * Initializie update tweet services 
+ * Initialize cluster tweets
+ * Initialize update trend levels
+ */
+
 cryptoCompare.uscs()
 mailer.summary4Days('1d',(status,message)=>{ console.log(`status: ${status}, message: ${message}`) })
 twitter.uts('1h',(status,message)=>{ console.log(`status: ${status}, message: ${message}`) })
 twitter.uct('1d',(status,message)=>{ console.log(`status: ${status}, message: ${message}`) })
+cryptoCompare.utl()
 
 
 

@@ -17,7 +17,7 @@ from nltk.stem.snowball import EnglishStemmer
 from sklearn.metrics import silhouette_score
 from collections import Counter
 
-connection=psycopg2.connect("postgres://popo:weareawesome@popo-server.ckhrqovrxtw4.us-east-1.rds.amazonaws.com:5432/coins")
+connection=psycopg2.connect(os.environ['database'])
 cur=connection.cursor()
 
 cur.execute("select tweets._id,text,timestamp,probability,category from tweets inner join (select * from good_bad_tweets where cast(timestamp as bigint)>{}) as t on tweets._id=t._id;".format(int(round(time.time() * 1000))-1000*60*60*24*4))

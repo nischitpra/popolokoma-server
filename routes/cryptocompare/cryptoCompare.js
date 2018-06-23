@@ -217,6 +217,40 @@ router.get('/tuscs', function(req, res, next) {
     
 });
 
+/** test update trend levels  */
+router.get('/tutl', function(req, res, next) {
+    service.utl('BTC','USDT','1h',(status,data)=>res.json({
+            status:status,
+            message: data
+        })
+    )
+});
+/** test update trend levels  */
+router.get('/gtl', function(req, res, next) {
+    var from=req.query[id.params.from]
+    var to=req.query[id.params.to]
+    from=(from==undefined||from==null)?'BTC':from.toUpperCase()
+    to=(to==undefined||to==null)?'USDT':to.toUpperCase()
+    const interval='1h'
+
+    if(to=='USDT'||to=='BTC'||to=="ETH"||to=='BNB'){
+        const key=id.database.collection.history_from_to_type(from,to,interval)
+        presenter.getTrendLevels(key,(status,data)=>res.json({
+                status:status,
+                message: data
+            })
+        )
+    }else{
+        res.json({
+            status:values.status.error,
+            type:interval,
+            message: `${to} cannot be found for tvelvo`,
+        })
+    }
+
+    
+});
+
 
 module.exports = { 
     router:router,
@@ -228,5 +262,11 @@ module.exports = {
             console.log('puscs initialized')
         },require('../constants').values.binance.candle_interval_milliseconds[`_1h`])
     },
-    
+    utl:()=>{
+        require('./service').putl() /** call funciton  then create an interval for it */
+        setInterval(()=>{
+            require('./service').putl()
+            console.log('putl initialized')
+        },require('../constants').values.binance.candle_interval_milliseconds[`_1d`])
+    },
 }

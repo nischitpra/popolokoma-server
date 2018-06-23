@@ -93,5 +93,42 @@ module.exports={
                 string.log_callback(`velvo outer value.status!=ok => ${status}`,data)
             }
         })
-    }
+    },
+    utl(from,to,interval){
+        pythoninvoker.utl(id.database.collection.history_from_to_type(from,to,interval),(status,data)=>{
+            string.log_callback(status,data)
+            if(status==values.status.ok){
+                string.log_callback(status,data)
+                LIFELINE_DAILY.invalidate()
+            }else{
+                LIFELINE_DAILY.invalidate()
+                string.log_callback(`trend levels outer value.status!=ok => ${status}`,data)
+            }
+        })
+    },
+    putl(from,to,interval){
+        console.log('utl function called')
+        db.find(`select * from ${id.database.collection.pairList} where ${id.database.historyType}='1h';`,(status,list)=>{
+            if(status==values.status.ok){
+                console.log(`utl length:${list.length}`)
+                for(var i in list){
+                    const params=[list[i][id.database.from],list[i][id.database.to],list[i][id.database.historyType]]
+                    LIFELINE_DAILY.push(new LifeObject(id.lifeline.utl(list[i][id.database.from],list[i][id.database.to],list[i][id.database.historyType]),params,(params)=>{
+                        console.log('function callback')
+                        var i=0
+                        const from=params[i++]
+                        const to=params[i++]
+                        const interval=params[i++]
+                        require('./service').utl(from,to,interval)
+                    }))
+                }
+                console.log('utl invalidate')
+                LIFELINE_DAILY.invalidate()
+            }else{
+                console.log('utl error getting pairlist data')
+            }
+        })
+
+       
+    },
 }

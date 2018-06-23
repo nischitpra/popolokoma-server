@@ -33,6 +33,7 @@ module.exports = {
             goodBadTweet:`pythonscript/good_bad_tweet.py`,
             forecaster:`pythonscript/forecaster/model_latest_trend.py`,
             velvoCalculator:`pythonscript/velvo_calculator.py`,
+            trendLevel:`pythonscript/trend_levels.py`,
             clusterTweets:`pythonscript/cluster_tweets.py`,
             binance:{
                 candlestick:`pythonscript/binance/candlestick.py`
@@ -130,6 +131,7 @@ module.exports = {
         application:{db:'db'},
         lifeline:{
             ucs:(from,to,interval)=>`ucs_${from}_${to}_${interval}`,
+            utl:(from,to,interval)=>`utl_${from}_${to}_${interval}`,
             mailer:{
                 alert:{
                     trendChange:(key)=>`a_tc_${key}`,
@@ -152,6 +154,7 @@ module.exports = {
                 goodBadTweets:'good_bad_tweets',
                 sentimentTrend:'sentiment_trend',
                 clusterTweets:'cluster_tweets',
+                trendLevels:'trend_levels',
                 history:'history',
                 forecast:'forecast',
                 trend:'trend',
