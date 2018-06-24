@@ -1,11 +1,11 @@
 import sys
+import os
 import psycopg2
 import pandas as pd
 import numpy as np
 import json
 from matplotlib import pyplot as plot
 import math
-import os
 
 
 connection=psycopg2.connect(os.environ['database'])

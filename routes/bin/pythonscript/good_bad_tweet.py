@@ -1,4 +1,5 @@
 import sys
+import os
 import re
 from nltk.stem.snowball import EnglishStemmer
 import pickle

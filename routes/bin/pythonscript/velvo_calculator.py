@@ -1,4 +1,5 @@
 import sys
+import os
 import psycopg2
 import pandas as pd
 import numpy as np
