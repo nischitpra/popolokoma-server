@@ -269,4 +269,11 @@ module.exports = {
             console.log('putl initialized')
         },require('../constants').values.binance.candle_interval_milliseconds[`_1d`])
     },
+    forecast:()=>{
+        require('./service').forecast()
+        setInterval(()=>{
+            require('./service').forecast()
+            console.log('forecast initialized')
+        },require('../constants').values.binance.candle_interval_milliseconds[`_1d`])
+    },
 }

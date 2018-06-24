@@ -15,7 +15,6 @@ var mailer = require('./routes/mailer/mailer')
 const connection=require('./routes/connection')
 const id=require('./routes/constants').id
 const network=require('./routes/constants').network
-const forecast=require('./routes/forecast/forecast')
 
 const Lifeline=require('./routes/lifeline/Lifeline')
 const LifeObject=require('./routes/lifeline/LifeObject')
@@ -65,7 +64,6 @@ app.use('/news', news);
 app.use('/cc',cryptoCompare.router);
 app.use('/twitter',twitter.router);
 app.use('/m',mailer.router)
-app.use('/f',forecast)
 
 
 
@@ -77,13 +75,15 @@ app.use('/f',forecast)
  * Initializie update tweet services 
  * Initialize cluster tweets
  * Initialize update trend levels
+ * Initialize forecast
  */
 
 cryptoCompare.uscs()
-mailer.summary4Days('1d',(status,message)=>{ console.log(`status: ${status}, message: ${message}`) })
+// mailer.summary4Days('1d',(status,message)=>{ console.log(`status: ${status}, message: ${message}`) })
 twitter.uts('1h',(status,message)=>{ console.log(`status: ${status}, message: ${message}`) })
 twitter.uct('1d',(status,message)=>{ console.log(`status: ${status}, message: ${message}`) })
 cryptoCompare.utl()
+cryptoCompare.forecast()
 
 
 

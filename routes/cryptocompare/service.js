@@ -128,7 +128,11 @@ module.exports={
                 console.log('utl error getting pairlist data')
             }
         })
-
-       
     },
+    forecast(){
+        const params=[]
+        LIFELINE_DAILY.push(new LifeObject(id.lifeline.forecast(),params,(params)=>{
+            require('../../routes/pythoninvoker').forecast()
+        }))
+    }
 }
