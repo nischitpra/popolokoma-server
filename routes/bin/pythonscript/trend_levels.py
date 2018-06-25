@@ -66,12 +66,13 @@ df = pd.DataFrame(list(cur.fetchall()))
 df.columns = ['high', 'low', 'close', 'time']
 
 sup_df,res_df=supres(np.array(df['close'].iloc[:]),70)
-sup_df.columns=['close']
-res_df.columns=['close']
 
 if sup_df.empty or res_df.empty:
     print(json.dumps({'status':'error','message':'res_df or sup_df is empty {}'.format(table_name)}))
-    sys.exit()        
+    sys.exit()   
+
+sup_df.columns=['close']
+res_df.columns=['close']     
         
 highest=l_max=df.iloc[-zoom:]['high'].max()
 l_min=df.iloc[-zoom:]['low'].min()
