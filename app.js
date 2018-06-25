@@ -23,9 +23,9 @@ const database = require('./routes/database')
 
 
 
-global.LIFELINE_CS=new Lifeline()
-global.LIFELINE_MAILER=new Lifeline()
-global.LIFELINE_DAILY=new Lifeline('_1d')
+global.LIFELINE_CS=new Lifeline('_1h',true) /** candle stick price updates + velvo  */
+global.LIFELINE_MAILER=new Lifeline('_1h',true) /** for mailer services */
+global.LIFELINE_DAILY=new Lifeline('_1d') /** any task to be performed daily (trend levels, prediction) */
 
 
 

@@ -175,7 +175,7 @@ module.exports={
                     })
                 }))
             }
-            LIFELINE_MAILER.invalidate()            
+            LIFELINE_MAILER.invalidate(true)            
         })
     },
     // get trend change alert
@@ -203,7 +203,7 @@ module.exports={
                     })
                 }))
             }
-            LIFELINE_MAILER.invalidate()
+            LIFELINE_MAILER.invalidate(true)
         })
     },
     // get big volume alert
@@ -231,7 +231,7 @@ module.exports={
                     })
                 }))
             }
-            LIFELINE_MAILER.invalidate()
+            LIFELINE_MAILER.invalidate(true)
         })
     },
     mailBigPriceMove(from,to,interval,currentPrice,prevPrice,callback){
@@ -258,7 +258,7 @@ module.exports={
                     })
                 }))
             }
-            LIFELINE_MAILER.invalidate()
+            LIFELINE_MAILER.invalidate(true)
         })
     },
 }

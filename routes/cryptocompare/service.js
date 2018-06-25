@@ -31,7 +31,7 @@ module.exports={
                     }))
                 }
                 console.log('puscs invalidate')
-                LIFELINE_CS.invalidate()
+                LIFELINE_CS.invalidate(true)
             }else{
                 console.log('puscs error getting pairlist data')
             }
@@ -123,7 +123,7 @@ module.exports={
                     }))
                 }
                 console.log('utl invalidate')
-                LIFELINE_DAILY.invalidate()
+                LIFELINE_DAILY.invalidate(true)
             }else{
                 console.log('utl error getting pairlist data')
             }
@@ -134,5 +134,6 @@ module.exports={
         LIFELINE_DAILY.push(new LifeObject(id.lifeline.forecast(),params,(params)=>{
             require('../../routes/pythoninvoker').forecast()
         }))
+        LIFELINE_DAILY.invalidate(true)
     }
 }
