@@ -13,7 +13,7 @@ cur=connection.cursor()
 
 plot.rcParams["figure.figsize"] = (20,5)
 
-table_name='xvg_btc_1h'
+table_name=sys.argv[1]
 data_count=24*30*8
 zoom=24*10
 def supres(ltp, n):
