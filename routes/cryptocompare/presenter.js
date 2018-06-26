@@ -181,7 +181,7 @@ module.exports={
         })
     },
     getStopPercentageLevel(callback){
-        db.find(`select * from ${id.database.collection.stopLossLevel};`,(status,data)=>{
+        db.find(`select * from ${id.database.collection.stopLossLevel} inner join (select * from ${id.database.collection.trend} where _id in (select max(_id) from ${id.database.collection.trend} group by _key having _key like '%_1h')) as t on t._key=${id.database.collection.stopLossLevel}._key ;`,(status,data)=>{
             if(status==values.status.ok){
                 callback(status,data)
             }else{

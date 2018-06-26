@@ -161,28 +161,28 @@ router.get('/gs', function(req, res, next) {
 });
 
 /** test velvo */
-router.get('/tvelvo', function(req, res, next) {
-    var from=req.query[id.params.from]
-    var to=req.query[id.params.to]
-    from=(from==undefined||from==null)?'XRP':from.toUpperCase()
-    to=(to==undefined||to==null)?'BTC':to.toUpperCase()
-    const interval='1h'
+// router.get('/tvelvo', function(req, res, next) {
+//     var from=req.query[id.params.from]
+//     var to=req.query[id.params.to]
+//     from=(from==undefined||from==null)?'XRP':from.toUpperCase()
+//     to=(to==undefined||to==null)?'BTC':to.toUpperCase()
+//     const interval='1h'
 
-    if(to=='USDT'||to=='BTC'||to=="ETH"||to=='BNB'){
-        require('./service').velvo(from,to,interval)
-        res.json({
-            status:values.status.ok,
-            message: "tvelvo initialized."
-        })
-    }else{
-        res.json({
-            status:values.status.error,
-            type:interval,
-            message: `${to} cannot be found for tvelvo`,
-        })
-    }
+//     if(to=='USDT'||to=='BTC'||to=="ETH"||to=='BNB'){
+//         require('./service').velvo(from,to,interval)
+//         res.json({
+//             status:values.status.ok,
+//             message: "tvelvo initialized."
+//         })
+//     }else{
+//         res.json({
+//             status:values.status.error,
+//             type:interval,
+//             message: `${to} cannot be found for tvelvo`,
+//         })
+//     }
     
-});
+// });
 
 /** get feed list*/
 router.get('/gfl', function(req, res, next) {
@@ -194,62 +194,60 @@ router.get('/gfl', function(req, res, next) {
 });
 
 /** test uscs */
-router.get('/tuscs', function(req, res, next) {
-    var from=req.query[id.params.from]
-    var to=req.query[id.params.to]
-    from=(from==undefined||from==null)?'XRP':from.toUpperCase()
-    to=(to==undefined||to==null)?'BTC':to.toUpperCase()
-    const interval='1h'
+// router.get('/tuscs', function(req, res, next) {
+//     var from=req.query[id.params.from]
+//     var to=req.query[id.params.to]
+//     from=(from==undefined||from==null)?'XRP':from.toUpperCase()
+//     to=(to==undefined||to==null)?'BTC':to.toUpperCase()
+//     const interval='1h'
 
-    if(to=='USDT'||to=='BTC'||to=="ETH"||to=='BNB'){
-        require('./service').uscs(from,to,interval)
-        res.json({
-            status:values.status.ok,
-            message: "tvelvo initialized."
-        })
-    }else{
-        res.json({
-            status:values.status.error,
-            type:interval,
-            message: `${to} cannot be found for tvelvo`,
-        })
-    }
+//     if(to=='USDT'||to=='BTC'||to=="ETH"||to=='BNB'){
+//         require('./service').uscs(from,to,interval)
+//         res.json({
+//             status:values.status.ok,
+//             message: "tvelvo initialized."
+//         })
+//     }else{
+//         res.json({
+//             status:values.status.error,
+//             type:interval,
+//             message: `${to} cannot be found for tvelvo`,
+//         })
+//     }
     
-});
+// });
 
 /** test update trend levels  */
-router.get('/tutl', function(req, res, next) {
-    service.utl('BTC','USDT','1h',(status,data)=>res.json({
-            status:status,
-            message: data
-        })
-    )
-});
+// router.get('/tutl', function(req, res, next) {
+//     service.utl('BTC','USDT','1h',(status,data)=>res.json({
+//             status:status,
+//             message: data
+//         })
+//     )
+// });
 /** test update trend levels  */
-router.get('/gtl', function(req, res, next) {
-    var from=req.query[id.params.from]
-    var to=req.query[id.params.to]
-    from=(from==undefined||from==null)?'BTC':from.toUpperCase()
-    to=(to==undefined||to==null)?'USDT':to.toUpperCase()
-    const interval='1h'
+// router.get('/gtl', function(req, res, next) {
+//     var from=req.query[id.params.from]
+//     var to=req.query[id.params.to]
+//     from=(from==undefined||from==null)?'BTC':from.toUpperCase()
+//     to=(to==undefined||to==null)?'USDT':to.toUpperCase()
+//     const interval='1h'
 
-    if(to=='USDT'||to=='BTC'||to=="ETH"||to=='BNB'){
-        const key=id.database.collection.history_from_to_type(from,to,interval)
-        presenter.getTrendLevels(key,(status,data)=>res.json({
-                status:status,
-                message: data
-            })
-        )
-    }else{
-        res.json({
-            status:values.status.error,
-            type:interval,
-            message: `${to} cannot be found for tvelvo`,
-        })
-    }
-
-    
-});
+//     if(to=='USDT'||to=='BTC'||to=="ETH"||to=='BNB'){
+//         const key=id.database.collection.history_from_to_type(from,to,interval)
+//         presenter.getTrendLevels(key,(status,data)=>res.json({
+//                 status:status,
+//                 message: data
+//             })
+//         )
+//     }else{
+//         res.json({
+//             status:values.status.error,
+//             type:interval,
+//             message: `${to} cannot be found for tvelvo`,
+//         })
+//     }
+// });
 
 /** get stop percentage level :: calculate percentage diff from price to level  */
 /** stop percentage is set to default value of 98.0 from the last cloing price i.e 2% below closing price */
