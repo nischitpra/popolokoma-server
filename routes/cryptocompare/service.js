@@ -45,7 +45,6 @@ module.exports={
                     if(new Date().getTime()-parseInt(data[data.length-1][id.binance.id])>values.binance.candle_interval_milliseconds[`_${interval}`]){
                         require('./presenter').ucs(from,to,interval,parseInt(data[data.length-1][id.binance.id])+1,new Date().getTime(),(status,message)=>{
                             console.log(`uscs ${from}_${to}_${interval} -> status:${status}, message:${message}`)
-                            // LIFELINE_CS.invalidate()
                         })
                     }else{
                         console.log(`${from}_${to} upto date`)
