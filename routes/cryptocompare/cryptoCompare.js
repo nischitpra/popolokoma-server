@@ -225,29 +225,28 @@ router.get('/gfl', function(req, res, next) {
 //         })
 //     )
 // });
-/** test update trend levels  */
-// router.get('/gtl', function(req, res, next) {
-//     var from=req.query[id.params.from]
-//     var to=req.query[id.params.to]
-//     from=(from==undefined||from==null)?'BTC':from.toUpperCase()
-//     to=(to==undefined||to==null)?'USDT':to.toUpperCase()
-//     const interval='1h'
+router.get('/gtl', function(req, res, next) {
+    var from=req.query[id.params.from]
+    var to=req.query[id.params.to]
+    from=(from==undefined||from==null)?'BTC':from.toUpperCase()
+    to=(to==undefined||to==null)?'USDT':to.toUpperCase()
+    const interval='1h'
 
-//     if(to=='USDT'||to=='BTC'||to=="ETH"||to=='BNB'){
-//         const key=id.database.collection.history_from_to_type(from,to,interval)
-//         presenter.getTrendLevels(key,(status,data)=>res.json({
-//                 status:status,
-//                 message: data
-//             })
-//         )
-//     }else{
-//         res.json({
-//             status:values.status.error,
-//             type:interval,
-//             message: `${to} cannot be found for tvelvo`,
-//         })
-//     }
-// });
+    if(to=='USDT'||to=='BTC'||to=="ETH"||to=='BNB'){
+        const key=id.database.collection.history_from_to_type(from,to,interval)
+        presenter.getTrendLevels(key,(status,data)=>res.json({
+                status:status,
+                message: data
+            })
+        )
+    }else{
+        res.json({
+            status:values.status.error,
+            type:interval,
+            message: `${to} cannot be found for tvelvo`,
+        })
+    }
+});
 
 /** get stop percentage level :: calculate percentage diff from price to level  */
 /** stop percentage is set to default value of 98.0 from the last cloing price i.e 2% below closing price */
