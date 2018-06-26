@@ -409,6 +409,29 @@ module.exports={
                 })
         })
     },
+    createStopLossLevelTable(callback){
+        const pg = require('pg');
+        var pool = new pg.Pool(network.database_details)
+        pool.connect((err, client, done)=>{
+            if(err){
+                done()
+                return callback(values.status.error,err)
+            }
+            const query = client.query(
+                `create table if not exists ${id.database.collection.stopLossLevel} (
+                    _id serial PRIMARY KEY,
+                    _key varchar(15),
+                    close real
+                );`,(err, res) => {
+                    if(err){
+                        client.end()
+                        return callback(values.status.error,err)
+                    }
+                    client.end()
+                    return callback(values.status.ok,string.database.create.table(id.database.collection.stopLossLevel))
+                })
+        })
+    },
     insert(tableName,keys,_values,callback){
         const pg = require('pg');
         var pool = new pg.Pool(network.database_details)

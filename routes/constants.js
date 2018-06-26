@@ -114,6 +114,7 @@ module.exports = {
             fromTime:'ft',
             isNew:'n',
             filterType:'filt',
+            stopPercentage:'sp',
         },
         binance:{
             id:'_id',
@@ -133,6 +134,7 @@ module.exports = {
             ucs:(from,to,interval)=>`ucs_${from}_${to}_${interval}`,
             utl:(from,to,interval)=>`utl_${from}_${to}_${interval}`,
             forecast:(from,to,interval)=>`forecast_${from}_${to}_${interval}`,
+            sll:(from,to,interval)=>`sll_${from}_${to}_${interval}`,
             mailer:{
                 alert:{
                     trendChange:(key)=>`a_tc_${key}`,
@@ -163,6 +165,8 @@ module.exports = {
                 pairList:'pair_list',
                 prediction:'prediction',
                 history_from_to_type:(from,to,type)=>`${from}_${to}_${type}`,
+                stopLossLevel:`stop_loss_level`,
+                
                 trend_velocity:(from,to)=>`trend_velocity`,
                 dump:{
                     candlestick:'candlestick_dump'

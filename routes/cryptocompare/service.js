@@ -135,5 +135,5 @@ module.exports={
             require('../../routes/pythoninvoker').forecast()
         }))
         LIFELINE_DAILY.invalidate(true)
-    }
+    },
 }

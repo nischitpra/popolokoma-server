@@ -21,7 +21,7 @@ const LifeObject=require('./routes/lifeline/LifeObject')
 
 const database = require('./routes/database')
 
-
+/** need to create pool of treads to handle this.  */
 
 global.LIFELINE_CS=new Lifeline('_1h',true) /** candle stick price updates + velvo  */
 global.LIFELINE_MAILER=new Lifeline('_1h',true) /** for mailer services */
@@ -56,6 +56,7 @@ database.createPairListTable((status,message)=>{console.log(`status: ${status}, 
 database.createPredictionTable((status,message)=>{console.log(`status: ${status}, message: ${message}`)})
 database.createClusterTweetsTable((status,message)=>{console.log(`status: ${status}, message: ${message}`)})
 database.createTrendLevelsTable((status,message)=>{console.log(`status: ${status}, message: ${message}`)})
+database.createStopLossLevelTable((status,message)=>{console.log(`status: ${status}, message: ${message}`)})
 
 /** Initialize url paths */
 app.use(cors())
@@ -70,16 +71,16 @@ app.use('/m',mailer.router)
 
 
 /** 
- * Initialize update sucscribed candlestick services 
  * Initialize 4 Day summary mailer 
+ * Initialize update sucscribed candlestick services 
  * Initializie update tweet services 
  * Initialize cluster tweets
  * Initialize update trend levels
  * Initialize forecast
  */
 
+/* mailer.summary4Days('1d',(status,message)=>{ console.log(`status: ${status}, message: ${message}`) })*/
 cryptoCompare.uscs()
-// mailer.summary4Days('1d',(status,message)=>{ console.log(`status: ${status}, message: ${message}`) })
 twitter.uts('1h',(status,message)=>{ console.log(`status: ${status}, message: ${message}`) })
 twitter.uct('1d',(status,message)=>{ console.log(`status: ${status}, message: ${message}`) })
 cryptoCompare.utl()

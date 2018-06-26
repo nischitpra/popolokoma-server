@@ -178,5 +178,28 @@ module.exports={
                 callback(status,[])
             }
         })
-    }
+    },
+    // getStopPercentageLevel(key,stopPercentage,callback){
+    //     stopPercentage=(100-stopPercentage)/100
+    //     db.find(`select trend_levels._key, trend_levels.close from trend_levels, (select * from ${key} order by close_time desc limit 1 ) as t where trend_levels._key='${key}' and trend_levels.close>=t.close*${stopPercentage} and trend_levels.close<t.close;`,(status,data)=>{
+    //         if(status==values.status.ok){
+    //             callback(status,data)
+    //         }else{
+    //             console.log('getStopPercentageLevel')
+    //             string.log_callback(status,data)
+    //             callback(status,[])
+    //         }
+    //     })
+    // },
+    getStopPercentageLevel(callback){
+        db.find(`select * from ${id.database.collection.stopLossLevel};`,(status,data)=>{
+            if(status==values.status.ok){
+                callback(status,data)
+            }else{
+                console.log('getStopPercentageLevel')
+                string.log_callback(status,data)
+                callback(status,[])
+            }
+        })
+    },
 }
