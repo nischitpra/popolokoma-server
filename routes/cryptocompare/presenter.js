@@ -146,7 +146,9 @@ module.exports={
             })
         }
         /** if % change between current high and previous low is greater than 5% */
-        if((Math.abs(data[data.length-1][id.binance.low]-data[data.length-1][id.binance.high])/data[data.length-1][id.binance.low])*100>5){
+        const prevLow=data[data.length-1][id.binance.low]
+        const currHigh=data[data.length-1][id.binance.high]
+        if((Math.abs(prevLow-currHigh)/prevLow)>0.05){
             require('../mailer/mailer').bigPriceMove(from,to,interval,data[data.length-1],data[data.length-2],(status,message)=>{
                 string.log_callback(status,message)
             })
