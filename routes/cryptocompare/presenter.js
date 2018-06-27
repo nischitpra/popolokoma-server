@@ -138,7 +138,9 @@ module.exports={
     },
     processAlert(from,to,interval,data){
         /** if current volume has increased by more than 30% from the previous volume */
-        if(data[data.length-1][id.binance.volume]>1.3*data[data.length-2][id.binance.volume]){
+        const prevVol=data[data.length-2][id.binance.volume]
+        const currVol=data[data.length-1][id.binance.volume]
+        if(Math.abs(currVol-prevVol)/prevVol>0.3){
             require('../mailer/mailer').bigVolumeAlert(from,to,interval,data[data.length-1],data[data.length-2],(status,message)=>{
                 string.log_callback(status,message)
             })
