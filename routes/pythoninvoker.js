@@ -102,6 +102,13 @@ module.exports={
             // console.log('=============')
         })
     },
+    updateStrategyFilter(interval){
+        var spawn = require("child_process").spawn
+        var process = spawn(files.python.compiler,[files.buildPath(files.python.strategyFilter), interval] )
 
-    
+        process.stderr.on('data',(error)=>{
+            console.log('---ERROR-----(usf)')
+            console.log(error.toString('utf8'))
+        }) 
+    }
 }

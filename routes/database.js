@@ -432,6 +432,32 @@ module.exports={
                 })
         })
     },
+    createStrategyFilterTable(callback){
+        const pg = require('pg');
+        var pool = new pg.Pool(network.database_details)
+        pool.connect((err, client, done)=>{
+            if(err){
+                done()
+                return callback(values.status.error,err)
+            }
+            const query = client.query(
+                `create table if not exists ${id.database.collection.strategyFilterTable} (
+                    _id serial primary key , 
+                    _key varchar(8), 
+                    interval varchar(3),
+                    strategy_name varchar(52),
+                    time bigint, 
+                    is_deleted varchar(13) 
+                );`,(err, res) => {
+                    if(err){
+                        client.end()
+                        return callback(values.status.error,err)
+                    }
+                    client.end()
+                    return callback(values.status.ok,string.database.create.table(id.database.collection.strategyFilterTable))
+                })
+        })
+    },
     insert(tableName,keys,_values,callback){
         const pg = require('pg');
         var pool = new pg.Pool(network.database_details)

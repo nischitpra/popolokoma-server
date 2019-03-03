@@ -23,6 +23,7 @@ module.exports = {
             user: process.env.db_user,
             password: process.env.db_password,
             port: process.env.db_port,
+            connectionTimeoutMillis: 5000,
         },
     },
     files:{
@@ -38,9 +39,10 @@ module.exports = {
             binance:{
                 candlestick:`pythonscript/binance/candlestick.py`
             },
+            strategyFilter:`pythonscript/strategyfilter/main.py`,
         },
-        buildPath:(pathFromBin)=>true?`/app/routes/bin/${pathFromBin}`:`/Users/nischit/Desktop/awesome/heroku-server/coins/routes/bin/${pathFromBin}`,
-        buildPathImage:(name)=>true?`/app/public/images/${name}`:`/Users/nischit/Desktop/awesome/heroku-server/coins/public/images/${name}`,
+        buildPath:(pathFromBin)=>false?`/app/routes/bin/${pathFromBin}`:`/Users/nischit/Desktop/awesome/heroku-server/coins/routes/bin/${pathFromBin}`,
+        buildPathImage:(name)=>false?`/app/public/images/${name}`:`/Users/nischit/Desktop/awesome/heroku-server/coins/public/images/${name}`,
     },
     values:{
         baseHeader:{
@@ -166,6 +168,7 @@ module.exports = {
                 prediction:'prediction',
                 history_from_to_type:(from,to,type)=>`${from}_${to}_${type}`,
                 stopLossLevel:`stop_loss_level`,
+                strategyFilterTable:`strategy_filter`,
                 
                 trend_velocity:(from,to)=>`trend_velocity`,
                 dump:{
@@ -184,6 +187,7 @@ module.exports = {
                 },
             },
             id:'_id',
+            key:'_key',
             open:'open',
             high:'high',
             low:'low',

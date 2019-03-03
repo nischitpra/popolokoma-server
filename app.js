@@ -11,6 +11,7 @@ var cryptoCompare = require('./routes/cryptocompare/cryptoCompare')
 var twitter = require('./routes/twitter/twitter')
 var news = require('./routes/news/news')
 var mailer = require('./routes/mailer/mailer')
+var strategyFilter = require('./routes/strategyfilter/strategyfilter')
 
 const connection=require('./routes/connection')
 const id=require('./routes/constants').id
@@ -57,6 +58,7 @@ database.createPredictionTable((status,message)=>{console.log(`status: ${status}
 database.createClusterTweetsTable((status,message)=>{console.log(`status: ${status}, message: ${message}`)})
 database.createTrendLevelsTable((status,message)=>{console.log(`status: ${status}, message: ${message}`)})
 database.createStopLossLevelTable((status,message)=>{console.log(`status: ${status}, message: ${message}`)})
+database.createStrategyFilterTable((status,message)=>{console.log(`status: ${status}, message: ${message}`)})
 
 /** Initialize url paths */
 app.use(cors())
@@ -65,7 +67,7 @@ app.use('/news', news);
 app.use('/cc',cryptoCompare.router);
 app.use('/twitter',twitter.router);
 app.use('/m',mailer.router)
-
+app.use('/sf',strategyFilter.router)
 
 
 
@@ -80,11 +82,24 @@ app.use('/m',mailer.router)
  */
 
 /* mailer.summary4Days('1d',(status,message)=>{ console.log(`status: ${status}, message: ${message}`) })*/
-cryptoCompare.uscs()
-twitter.uts('1h',(status,message)=>{ console.log(`status: ${status}, message: ${message}`) })
-twitter.uct('1d',(status,message)=>{ console.log(`status: ${status}, message: ${message}`) })
-cryptoCompare.utl()
-cryptoCompare.forecast()
+// cryptoCompare.uscs()
+// twitter.uts('1h',(status,message)=>{ console.log(`status: ${status}, message: ${message}`) })
+// twitter.uct('1d',(status,message)=>{ console.log(`status: ${status}, message: ${message}`) })
+// cryptoCompare.utl()
+// cryptoCompare.forecast()
+
+strategyFilter.usf('5m',(status,message)=>{ console.log(`status: ${status}, message: ${message}`) })
+strategyFilter.usf('15m',(status,message)=>{ console.log(`status: ${status}, message: ${message}`) })
+strategyFilter.usf('30m',(status,message)=>{ console.log(`status: ${status}, message: ${message}`) })
+strategyFilter.usf('1h',(status,message)=>{ console.log(`status: ${status}, message: ${message}`) })
+strategyFilter.usf('3h',(status,message)=>{ console.log(`status: ${status}, message: ${message}`) })
+strategyFilter.usf('6h',(status,message)=>{ console.log(`status: ${status}, message: ${message}`) })
+strategyFilter.usf('12h',(status,message)=>{ console.log(`status: ${status}, message: ${message}`) })
+strategyFilter.usf('1D',(status,message)=>{ console.log(`status: ${status}, message: ${message}`) })
+strategyFilter.usf('7D',(status,message)=>{ console.log(`status: ${status}, message: ${message}`) })
+strategyFilter.usf('14D',(status,message)=>{ console.log(`status: ${status}, message: ${message}`) })
+strategyFilter.usf('1M',(status,message)=>{ console.log(`status: ${status}, message: ${message}`) })
+
 
 
 
